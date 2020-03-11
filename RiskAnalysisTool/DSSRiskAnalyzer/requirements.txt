@@ -1,0 +1,4 @@
+OpenDSSDirect.py==0.3.7
+numpy==1.16.4
+toml==0.10.0
+pandas==0.24.2
