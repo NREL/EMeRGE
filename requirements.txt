@@ -1,0 +1,13 @@
+pyproj==1.9.6
+dash_html_components==1.0.2
+numpy==1.16.4
+networkx==2.3
+pandas==0.24.2
+plotly==4.4.1
+dash_daq==0.3.3
+dash_core_components==1.8.0
+OpenDSSDirect.py==0.3.7
+toml==0.10.0
+dash==1.9.0
+dash_table==4.6.0
+matplotlib==3.1.0
