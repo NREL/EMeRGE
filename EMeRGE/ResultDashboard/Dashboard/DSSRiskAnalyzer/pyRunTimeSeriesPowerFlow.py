@@ -1,10 +1,10 @@
 import opendssdirect as dss
 from datetime import timedelta
-from Dashboard.DSSRiskAnalyzer.MetricContainer.pyMetric import *
-from Dashboard.DSSRiskAnalyzer.SubModulesContainer.DateTimeProcessingContainer import *
-from Dashboard.DSSRiskAnalyzer.pyDistributionMetricSnapShot import *
-from Dashboard.DSSRiskAnalyzer.ResultContainer.pyResult import *
-from Dashboard.DSSRiskAnalyzer.ExportContainer.pyExport import *
+from ResultDashboard.Dashboard.DSSRiskAnalyzer.MetricContainer.pyMetric import *
+from ResultDashboard.Dashboard.DSSRiskAnalyzer.SubModulesContainer.DateTimeProcessingContainer import *
+from ResultDashboard.Dashboard.DSSRiskAnalyzer.pyDistributionMetricSnapShot import *
+from ResultDashboard.Dashboard.DSSRiskAnalyzer.ResultContainer.pyResult import *
+from ResultDashboard.Dashboard.DSSRiskAnalyzer.ExportContainer.pyExport import *
 
 
 class OpenDSS:

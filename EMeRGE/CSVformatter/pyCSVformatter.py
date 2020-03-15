@@ -4,14 +4,15 @@ import pandas as pd
 import shutil
 import numpy as np
 
+# Convert .toml file contents into dictionary 
 def readtoml(setting_toml_file):
-
     texts = ''
     f = open(setting_toml_file, "r")
     text = texts.join(f.readlines())
     settings_dict = toml.loads(text,_dict=dict)
     return settings_dict
 
+# Modify name if contains invalid characters 
 def ModifyName(Name):
     InvalidChars = [' ', ',', '.']
     for InvChar in InvalidChars:
@@ -20,10 +21,16 @@ def ModifyName(Name):
     Name = Name.lower()
     return Name 
 
+# Exporting csvs for line elements
+
 def export_linecsvs(settings_dict,line_or_cable,ht_or_lt,unique_geometry):
+    
     name = '{}_{}'.format(ht_or_lt,line_or_cable)
+
     node_dataframe = pd.read_csv(os.path.join(settings_dict['GIScsvsfolderpath'],'CSVfromQGIS',settings_dict[name]['node_file_name']))
+    
     attribute_dataframe = pd.read_csv(os.path.join(settings_dict['GIScsvsfolderpath'],'CSVfromQGIS',settings_dict[name]['attribute_file_name']))
+    
     if 'wiredata.csv' in os.listdir(os.path.join(os.path.join(settings_dict['GIScsvsfolderpath'],'ExtraCSVs'))):
         wiredata = pd.read_csv(os.path.join(settings_dict['GIScsvsfolderpath'],'ExtraCSVs','wiredata.csv'))
         cond_with_geom = list(wiredata.ID)
@@ -33,15 +40,23 @@ def export_linecsvs(settings_dict,line_or_cable,ht_or_lt,unique_geometry):
         'x' : list(node_dataframe.x),
         'y' : list(node_dataframe.y)
     }
+    
     nodecsvname = '{}_{}_nodes.csv'.format(ht_or_lt,line_or_cable)
+    
     node_df = pd.DataFrame.from_dict(node_df)
+    
     node_df.to_csv(os.path.join(settings_dict['GIScsvsfolderpath'],settings_dict['feeder_name'],nodecsvname),index=False)
+    
     print('Exported "{}" file successfully'.format(nodecsvname))
 
     attributecsvname = '{}_{}_attributes.csv'.format(ht_or_lt,line_or_cable)
+    
     attribute_df = {'shapeid': [],'length':[],'phase':[],'csize':[],'num_of_cond':[],'cname':[],'spacing':[],'units':[]}
+    
     columns = list(attribute_dataframe.columns)
+    
     attribute_df['shapeid'] = list(attribute_dataframe.shapeid)
+    
     for keys,items in settings_dict['line_column_mapper'].items():
         if keys in attribute_df:
             if items[0] == 'force': 
@@ -65,9 +80,12 @@ def export_linecsvs(settings_dict,line_or_cable,ht_or_lt,unique_geometry):
                 flag =1
             if flag == 0:
                 attribute_df['num_of_cond'].append('NA')
+    
     if settings_dict['force_lt_be_three_phase'] == 'yes' and ht_or_lt == 'lt': attribute_df['num_of_cond'] = [4]*len(attribute_dataframe)
+    
     if list(set(settings_dict['line_column_mapper']['nname'])&set(columns)) != []: 
         attribute_df['nname'] = list(attribute_dataframe[list(set(settings_dict['line_column_mapper']['nname'])&set(columns))[0]])
+    
     if list(set(settings_dict['line_column_mapper']['nsize'])&set(columns)) != []: 
         attribute_df['nsize'] = list(attribute_dataframe[list(set(settings_dict['line_column_mapper']['nsize'])&set(columns))[0]])       
     
@@ -97,15 +115,23 @@ def export_linecsvs(settings_dict,line_or_cable,ht_or_lt,unique_geometry):
                 unique_geometry['spacing'].append(attribute_df['spacing'][id])
             
     attribute_df = pd.DataFrame.from_dict(attribute_df)
+    
     attribute_df.to_csv(os.path.join(settings_dict['GIScsvsfolderpath'],settings_dict['feeder_name'],attributecsvname),index=False)
+    
     print('Exported "{}" file successfully'.format(attributecsvname))
 
 def export_transformercsvs(settings_dict,type):
+    
     csvname = 'distribution_transformer.csv' if type == 'DTs' else 'power_transformer.csv'
+    
     name = 'distribution_transformer' if type == 'DTs' else 'power_transformer'
+    
     attribute_df = {'ID': [],'KVA_cap':[],'HV_KV':[],'LV_KV':[],'maxtap':[],'mintap':[],'tap':[],'numtaps':[],'prim_con':[],'sec_con':[],'vector_group':[],'x':[],'y':[],'%resistance':[],'%reactance':[],'%noloadloss':[],'phase':[] }
+    
     attribute_dataframe = pd.read_csv(os.path.join(settings_dict['GIScsvsfolderpath'],'CSVfromQGIS',settings_dict[name]['file_name']))
+    
     columns = list(attribute_dataframe.columns)
+    
     for keys,items in settings_dict['transformer_column_mapper'].items():
         if keys in attribute_df:
             if items[0] == 'force': 
@@ -113,7 +139,9 @@ def export_transformercsvs(settings_dict,type):
             else:
                 if list(set(items)&set(columns)) != []:
                     attribute_df[keys] = list(attribute_dataframe[list(set(items)&set(columns))[0]])
+    
     if settings_dict["MVA_to_KVA_conversion_for_PT"] == "yes" and type != 'DTs': attribute_df['KVA_cap'] = [el*1000 for el in attribute_df['KVA_cap']]
+    
     if type == 'PTs':
         col,val = [],[]
         for keys,items in attribute_df.items():
@@ -122,24 +150,38 @@ def export_transformercsvs(settings_dict,type):
         attribute_df = pd.DataFrame.from_dict({'0':val},orient='index',columns=col)
     else:
         attribute_df = pd.DataFrame.from_dict(attribute_df)
+    
     attribute_df.to_csv(os.path.join(settings_dict['GIScsvsfolderpath'],settings_dict['feeder_name'],csvname),index=False)
+    
     print('Exported "{}" file successfully'.format(csvname))
 
 
 def extend_data(dataframe,settings_dict,tdata,load):
-        cols = list(dataframe.columns)
-        t_col = list(set(settings_dict['consumer_column_mapper']['tariff_type'])&set(cols))[0]
-        tdata.extend(list(dataframe[t_col]))
-        l_col = list(set(settings_dict['consumer_column_mapper']['Sanctioned_load'])&set(cols))[0] 
-        load.extend(list(dataframe[l_col]))
-        return tdata,load
+    
+    cols = list(dataframe.columns)
+    
+    t_col = list(set(settings_dict['consumer_column_mapper']['tariff_type'])&set(cols))[0]
+    
+    tdata.extend(list(dataframe[t_col]))
+    
+    l_col = list(set(settings_dict['consumer_column_mapper']['Sanctioned_load'])&set(cols))[0] 
+    
+    load.extend(list(dataframe[l_col]))
+    
+    return tdata,load
 
-def export_consumercsvs(settings_dict,type):
+def export_consumercsvs(list_of_csvs,settings_dict,type):
+    
     name = '{}_consumer'.format(type)
+    
     csvname = 'consumer_{}.csv'.format(type)
+    
     attribute_df = {'ID':[],'pf':[],'phase':[],'x':[],'y':[],'kv':[],'load_type':[],'kw':[],'tec':[],'cust_type':[]}
+    
     attribute_dataframe = pd.read_csv(os.path.join(settings_dict['GIScsvsfolderpath'],'CSVfromQGIS',settings_dict[name]['file_name']))
+    
     columns = list(attribute_dataframe.columns)
+    
     for keys,items in settings_dict['consumer_column_mapper'].items():
         if keys in attribute_df:
             if items[0] == 'force': 
@@ -147,6 +189,7 @@ def export_consumercsvs(settings_dict,type):
             else:
                 if list(set(items)&set(columns)) != []:
                     attribute_df[keys] = list(attribute_dataframe[list(set(items)&set(columns))[0]])
+    
     #print("As a final check make sure that voltage level is same for all single phase customers in {} file and same is true for all three phase customers otherwise you may encounter problem while running generated DSS files".format(csvname))
     for el in attribute_df['phase']:
         if el in settings_dict['single_phase'] and type=='lt':
@@ -214,7 +257,7 @@ def ClearProjectFolder(path):
     return
 
 
-def append_geometry(unique_geometry,tag):
+def append_geometry(settings_dict, unique_geometry,tag):
     id = settings_dict[tag]['phase_conductor']+'_'+str(settings_dict[tag]['num_of_cond'])+ '_'+ settings_dict[tag]['spacing']
     if id not in list(unique_geometry["ID"]):
         unique_geometry["ID"].append(id)
@@ -243,11 +286,11 @@ class CSVFormatter:
             export_linecsvs(settings_dict,'cable','lt',unique_geometry)
     
         if "Service_wire_single_phase" in settings_dict:
-            unique_geometry = append_geometry(unique_geometry,'Service_wire_single_phase')
+            unique_geometry = append_geometry(settings_dict ,unique_geometry,'Service_wire_single_phase')
         if "Service_wire_three_phase" in settings_dict:
-            unique_geometry = append_geometry(unique_geometry,'Service_wire_three_phase')
+            unique_geometry = append_geometry(settings_dict ,unique_geometry,'Service_wire_three_phase')
         if "ht_three_phase" in settings_dict:
-            unique_geometry = append_geometry(unique_geometry,'ht_three_phase')
+            unique_geometry = append_geometry(settings_dict , unique_geometry,'ht_three_phase')
     
         csvname = 'linegeometry.csv'
         unique_geometry = pd.DataFrame.from_dict(unique_geometry)
@@ -260,12 +303,12 @@ class CSVFormatter:
         if settings_dict['power_transformer']['file_name'] in list_of_csvs:
             export_transformercsvs(settings_dict,'PTs')
         if settings_dict['lt_consumer']['file_name'] in list_of_csvs:
-            export_consumercsvs(settings_dict,'lt')
+            export_consumercsvs(list_of_csvs,settings_dict,'lt')
         if settings_dict['ht_consumer']['file_name'] in list_of_csvs:
-            export_consumercsvs(settings_dict,'ht')
+            export_consumercsvs(list_of_csvs,settings_dict,'ht')
 
 
 if __name__ == '__main__':
     
-    setting_toml_file = r'C:\Users\KDUWADI\Desktop\NREL_Projects\CIFF-TANGEDCO\TANGEDCO\SoftwareTools\GIS_CSVs_to_Standard_CSVs\csvsetting.toml'
+    setting_toml_file = r"C:\Users\KDUWADI\Desktop\NREL_Projects\CIFF-TANGEDCO\TANGEDCO\SoftwareTools\GIS_CSVs_to_Standard_CSVs\csvsetting.toml"
     CSVFormatter(setting_toml_file)

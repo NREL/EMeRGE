@@ -1,5 +1,5 @@
 import numpy as np
-from Dashboard.DSSRiskAnalyzer.MetricContainer.pyMetric import *
+from ResultDashboard.Dashboard.DSSRiskAnalyzer.MetricContainer.pyMetric import *
 
 
 # A wrapper function to call desired

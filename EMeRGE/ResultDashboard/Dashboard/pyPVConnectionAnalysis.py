@@ -8,9 +8,9 @@ import shutil
 import math
 from datetime import timedelta
 from datetime import datetime as dt
-from Dashboard.DateTimeProcessingContainer import *
-from Dashboard.DSSRiskAnalyzer.pyRisk import *
-from ReadersContainer import *
+from ResultDashboard.Dashboard.DateTimeProcessingContainer import *
+from ResultDashboard.Dashboard.DSSRiskAnalyzer.pyRisk import *
+from ResultDashboard.Dashboard.ReadersContainer import *
 import toml
 
 class PVConnection:

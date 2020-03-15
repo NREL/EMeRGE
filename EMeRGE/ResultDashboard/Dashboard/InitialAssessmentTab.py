@@ -1,11 +1,11 @@
 import dash_html_components as html
-from Dashboard.DashContent import *
-from Dashboard.DashPlot import *
+from ResultDashboard.Dashboard.DashContent import *
+from ResultDashboard.Dashboard.DashPlot import *
 import dash_core_components as dcc
 from dash.dependencies import Input, Output, State
 import dash_daq as daq
 from datetime import datetime as dt
-from Dashboard.DashPlot import *
+from ResultDashboard.Dashboard.DashPlot import *
 import dash_table
 
 

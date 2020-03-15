@@ -1,8 +1,8 @@
 
 import os,pathlib
 import toml
-from pyReader import Reader
-from pyWriter import Writer
+from CSV2DSS.pyReader import Reader
+from CSV2DSS.pyWriter import Writer
 import shutil
 
 def create_scenario_dict(settings_dict):
@@ -51,7 +51,6 @@ class csv2dss:
                         Writer(network, settings_dict,os.path.join(path_to_export,keys,'monte_carlo_'+str(j)), values['PPV_customers']/100,values['PPV_capacity']/100)
 
         
-
 if __name__ == '__main__':
     setting_toml_file = r'C:\Users\KDUWADI\Desktop\NREL_Projects\CIFF-TANGEDCO\TANGEDCO\SoftwareTools\Standard_CSVs_to_DSS_files\scenario.toml'
     csv2dss(setting_toml_file)

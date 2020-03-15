@@ -7,7 +7,7 @@ setup(
     name='EMeRGE',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version='v1.0-alpha',
+    version='v1.1-alpha',
     description='Emerging technologies Management and Risk evaluation on distributions Grid Evolution',
     author='Kapil Duwadi',
     author_email='kapil.duwadi@nrel.gov',
@@ -29,7 +29,7 @@ setup(
                     "matplotlib==3.1.0"],
     package_dir={"": "EMeRGE"},   
     classifiers=[
-        "License :: OSI Approved :: BSD 3-Clause License",
+        "License :: OSI Approved :: BSD License",
         "Programming Language :: Python :: 3.7",
         "Operating System :: OS Independent"
     ]

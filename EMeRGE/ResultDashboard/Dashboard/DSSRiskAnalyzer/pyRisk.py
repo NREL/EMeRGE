@@ -1,6 +1,6 @@
 
-from Dashboard.DSSRiskAnalyzer.SubModulesContainer.ReadersContainer import *
-from Dashboard.DSSRiskAnalyzer.pyRunTimeSeriesPowerFlow import OpenDSS
+from ResultDashboard.Dashboard.DSSRiskAnalyzer.SubModulesContainer.ReadersContainer import *
+from ResultDashboard.Dashboard.DSSRiskAnalyzer.pyRunTimeSeriesPowerFlow import OpenDSS
 import os
 
 class RunRiskAnalysis:

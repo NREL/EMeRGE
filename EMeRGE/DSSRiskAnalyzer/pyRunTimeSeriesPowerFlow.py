@@ -2,7 +2,7 @@ import opendssdirect as dss
 from datetime import timedelta
 from DSSRiskAnalyzer.MetricContainer.pyMetric import *
 from DSSRiskAnalyzer.SubModulesContainer.DateTimeProcessingContainer import *
-from pyDistributionMetricSnapShot import *
+from DSSRiskAnalyzer.pyDistributionMetricSnapShot import *
 from DSSRiskAnalyzer.ResultContainer.pyResult import *
 from DSSRiskAnalyzer.ExportContainer.pyExport import *
 

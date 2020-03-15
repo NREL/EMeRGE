@@ -1,4 +1,4 @@
-from Dashboard.DSSRiskAnalyzer.MetricContainer.pyMetric import *
+from ResultDashboard.Dashboard.DSSRiskAnalyzer.MetricContainer.pyMetric import *
 class ResultProcessor:
 
     def __init__(self,*argv):

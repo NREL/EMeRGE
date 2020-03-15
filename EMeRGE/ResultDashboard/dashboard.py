@@ -7,15 +7,15 @@ Version: 0.0.1
 from ResultDashboard.Dashboard.CIFFDashboard import CreateApp
 import dash
 from ResultDashboard.ReadersContainer import *
-from pyProcessData import ProcessData
+from ResultDashboard.pyProcessData import ProcessData
 from ResultDashboard.ProcessForInitialAssessment import ProcessLoadProfile
 
 class DashApp:
 
-    def __init__(self):
+    def __init__(self,SettingsTomlFilePath):
 
         # Read settings file
-        SettingsTomlFilePath = r"C:\Users\KDUWADI\Desktop\VisualizingInDashboard\Projects\settings.toml"
+        #SettingsTomlFilePath = r"C:\Users\KDUWADI\Desktop\VisualizingInDashboard\Projects\settings.toml"
         
         self.DashboardSettings = ReadFromFile(SettingsTomlFilePath)
         

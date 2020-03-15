@@ -16,11 +16,26 @@ pip install EMeRGE
 ## Usage
 
 ```python
-from EMeRGE import CSVformatter.pyCSVformatter as converter
 
-# Convert normal CSVs into Standars CSVs which can be used for developing OpenDSS models
-
+# Convert CSV files into Standard CSVs that can be used for developing OpenDSS files
+from CSVformatter import pyCSVformatter as converter
 converter.CSVFormatter(settingtomlfile)
+
+# Convert Standard CSVs into OpenDSS files
+from CSV2DSS import DSSconverter
+DSSconverter.csv2dss(settingstomlfile)
+
+# Perform Risk Analysis
+from DSSRiskAnalyzer import pyRisk
+pyRisk.RunRiskAnalysis(settingstomlfile)
+
+# Combine monthly results into yearly
+from CombineMonthlyResults import Monthly2Yearly
+Monthly2Yearly(inputpath,outputpath,DonotReadFilesList)
+
+# Results into Dashboard
+from ResultDashboard import dashboard
+dashboard.DashApp(settingstomlfile)
 
 
 

@@ -4,11 +4,11 @@ version: 0.0.1
 """
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
-from Dashboard.DashContent import *
-from Dashboard.DistMetricPVTab import *
-from Dashboard.PVConnectionTab import *
-from Dashboard.DistMetricTabAdvancedPV import *
-from Dashboard.InitialAssessmentTab import *
+from ResultDashboard.Dashboard.DashContent import *
+from ResultDashboard.Dashboard.DistMetricPVTab import *
+from ResultDashboard.Dashboard.PVConnectionTab import *
+from ResultDashboard.Dashboard.DistMetricTabAdvancedPV import *
+from ResultDashboard.Dashboard.InitialAssessmentTab import *
 
 
 class CreateApp:
