@@ -31,7 +31,7 @@ pyRisk.RunRiskAnalysis(settingstomlfile)
 
 # Combine monthly results into yearly
 from CombineMonthlyResults import Monthly2Yearly
-Monthly2Yearly(inputpath,outputpath,DonotReadFilesList)
+Monthly2Yearly.Monthly2Yearly(inputpath,outputpath,DonotReadFilesList)
 
 # Results into Dashboard
 from ResultDashboard import dashboard

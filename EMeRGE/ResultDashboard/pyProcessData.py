@@ -1,5 +1,5 @@
 import os
-from ReadersContainer import *
+from ResultDashboard.ReadersContainer import *
 from datetime import datetime
 from pyproj import Proj, transform
 

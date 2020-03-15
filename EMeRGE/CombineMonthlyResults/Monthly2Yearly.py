@@ -25,11 +25,11 @@ class Monthly2Yearly:
             for Folder in FolderNameList:
                 assert os.path.exists(os.path.join(inputpath,Folder,PVScenario)),'{} does not exists.'.format(os.path.join(inputpath,Folder,PVScenario))
                 for files in os.listdir(os.path.join(inputpath,Folder,PVScenario)):
-                    if 'TimeSeries.csv' in files and files not in DonotReadFilesList:
+                    if 'TimeSeries.csv' in files and files not in DoNotReadFiles:
                         if files not in AllDataDict: AllDataDict[files] = []
                         AllDataDict[files].append(pd.read_csv(os.path.join(inputpath,Folder,PVScenario,files)))
 
-                    elif files not in DonotReadFilesList:
+                    elif files not in DoNotReadFiles:
 
                         if files not in AllDataDict:
                             AllDataDict[files] = pd.read_csv(os.path.join(inputpath,Folder,PVScenario,files))
