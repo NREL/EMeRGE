@@ -2,6 +2,18 @@ import pandas as pd
 import calendar
 import os
 
+class Template:
+
+    def __init__(self, FolderPath):
+        
+        # Create Folders
+        FolderName = "Monthy2YearlyFolderTemplate"
+        os.mkdir(os.path.join(FolderPath,FolderName,"MonthlyResults"))
+        print("{} created successfully".format(os.path.join(FolderPath,FolderName,"MonthlyResults")))
+
+        os.mkdir(os.path.join(FolderPath,FolderName,"YearlyResults"))
+        print("{} created successfully".format(os.path.join(FolderPath,FolderName,"MonthlyResults")))
+
 
 class Monthly2Yearly:
 

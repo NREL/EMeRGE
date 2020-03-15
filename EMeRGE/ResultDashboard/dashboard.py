@@ -9,6 +9,7 @@ import dash
 from ResultDashboard.ReadersContainer import *
 from ResultDashboard.pyProcessData import ProcessData
 from ResultDashboard.ProcessForInitialAssessment import ProcessLoadProfile
+from ResultDashboard.template import TomlDict
 
 class DashApp:
 
@@ -46,3 +47,37 @@ class DashApp:
 
         # launch App
         return self.app.run_server(debug=True, port=8060)
+    
+class Template:
+
+    def __init__(self, FolderPath, FeederName):
+        
+        # Create Folders
+        FolderName = "DashboardTemplate"
+        os.mkdir(os.path.join(FolderPath,FolderName,"Projects"))
+        print("{} created successfully".format(os.path.join(FolderPath,FolderName,"Projects")))
+
+        os.mkdir(os.path.join(FolderPath,FolderName,"Projects",FeederName))
+        print("{} created successfully".format(os.path.join(FolderPath,FolderName,"Projects",FeederName)))
+
+        Feederpath = os.path.join(FolderPath,FolderName,"Projects",FeederName)
+        FolderCategory = ['CoordinateCSVFiles','CSVDataFiles','CSVDataFilesForAdvancedPV','InitialAssessment','PVConnection']
+        for folder in FolderCategory:
+            os.mkdir(os.path.join(Feederpath,folder))
+            print("{} created successfully".format(os.path.join(Feederpath,folder)))
+        
+        os.mkdir(os.path.join(Feederpath,'PVConnection','Base'))
+        print("{} created successfully".format(os.path.join(Feederpath,'PVConnection','Base')))
+
+        os.mkdir(os.path.join(Feederpath,'PVConnection','ExtraData'))
+        print("{} created successfully".format(os.path.join(Feederpath,'PVConnection','ExtraData')))
+
+        TomlFileContent = TomlDict()
+        TomlFileContent["Project Path"] = os.path.join(FolderPath,"Projects")
+        TomlFileContent["Active Project"] = FeederName
+
+        TomlStrings = toml.dumps(TomlFileContent)
+        TextFile = open(os.path.join(Feederpath,'settings.toml'),"w")
+        TextFile.write(TomlStrings)
+        TextFile.close()
+        print("{} file created successfully".format(os.path.join(Feederpath,'settings.toml')))

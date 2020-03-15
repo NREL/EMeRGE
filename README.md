@@ -37,5 +37,9 @@ Monthly2Yearly.Monthly2Yearly(inputpath,outputpath,DonotReadFilesList)
 from ResultDashboard import dashboard
 dashboard.DashApp(settingstomlfile)
 
+# Creating template for each of above operation is now much easier
+from Result.Dashboard import dashboard
+dashboard.Template(FolderPath, FeederName)
+
 
 

@@ -3,6 +3,7 @@ import toml
 import pandas as pd
 import shutil
 import numpy as np
+from CSVformatter.template import TomlDict
 
 # Convert .toml file contents into dictionary 
 def readtoml(setting_toml_file):
@@ -306,6 +307,30 @@ class CSVFormatter:
             export_consumercsvs(list_of_csvs,settings_dict,'lt')
         if settings_dict['ht_consumer']['file_name'] in list_of_csvs:
             export_consumercsvs(list_of_csvs,settings_dict,'ht')
+
+
+
+class Template:
+
+    def __init__(self, FolderPath, FeederName):
+        
+        # Create Folders
+        FolderName = "CSVconverterTemplate"
+        os.mkdir(os.path.join(FolderPath,FolderName,"CSVfromQGIS"))
+        print("{} created successfully".format(os.path.join(FolderPath,FolderName,"CSVfromQGIS")))
+
+        os.mkdir(os.path.join(FolderPath,FolderName,"ExtraCSVs"))
+        print("{} created successfully".format(os.path.join(FolderPath,FolderName,"ExtraCSVs")))
+
+        TomlFileContent = TomlDict()
+        TomlFileContent["GIScsvsfolderpath"] = FolderPath
+        TomlFileContent["feeder_name"] = FeederName
+
+        TomlStrings = toml.dumps(TomlFileContent)
+        TextFile = open(os.path.join(FolderPath,'settings.toml'),"w")
+        TextFile.write(TomlStrings)
+        TextFile.close()
+        print("{} file created successfully".format(os.path.join(FolderPath,'settings.toml')))
 
 
 if __name__ == '__main__':

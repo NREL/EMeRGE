@@ -1,6 +1,7 @@
 
 from DSSRiskAnalyzer.SubModulesContainer.ReadersContainer import *
 from DSSRiskAnalyzer.pyRunTimeSeriesPowerFlow import OpenDSS
+from DSSRiskAnalyzer.template import TomlDict
 import os
 
 class RunRiskAnalysis:
@@ -46,6 +47,38 @@ class RunRiskAnalysis:
             del a
 
         print("Analysis complete !!!")
+
+class Template:
+
+    def __init__(self, FolderPath, FeederName):
+        
+        # Create Folders
+        FolderName = "DSSRiskAnalyzerTemplate"
+        os.mkdir(os.path.join(FolderPath,FolderName,"Projects"))
+        print("{} created successfully".format(os.path.join(FolderPath,FolderName,"Projects")))
+
+        os.mkdir(os.path.join(FolderPath,FolderName,"Projects",FeederName))
+        print("{} created successfully".format(os.path.join(FolderPath,FolderName,"Projects",FeederName)))
+
+        Feederpath = os.path.join(FolderPath,FolderName,"Projects",FeederName)
+        FolderCategory = ['AnalysisScenarios','DSSScenarios','ExtraData']
+        for folder in FolderCategory:
+            os.mkdir(os.path.join(Feederpath,folder))
+            print("{} created successfully".format(os.path.join(Feederpath,folder)))
+        
+        os.mkdir(os.path.join(Feederpath,'AnalysisScenarios','Category'))
+        print("{} created successfully".format(os.path.join(Feederpath,'AnalysisScenarios','Category')))
+
+        TomlFileContent = TomlDict()
+        TomlFileContent["Project path"] = os.path.join(FolderPath,"Projects")
+        TomlFileContent["Active_Feeder"] = FeederName
+        TomlFileContent["Active_Scenario"] = 'Category'
+
+        TomlStrings = toml.dumps(TomlFileContent)
+        TextFile = open(os.path.join(Feederpath,'AnalysisScenarios','Category','settings.toml'),"w")
+        TextFile.write(TomlStrings)
+        TextFile.close()
+        print("{} file created successfully".format(os.path.join(Feederpath,'AnalysisScenarios','Category','settings.toml')))
 
 if __name__ == "__main__":
 
