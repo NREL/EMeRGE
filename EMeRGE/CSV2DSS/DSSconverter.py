@@ -60,6 +60,7 @@ class Template:
         
         # Create Folders
         FolderName = "DSSConverterTemplate"
+        os.mkdir(os.path.join(FolderPath,FolderName))
         os.mkdir(os.path.join(FolderPath,FolderName,"ExtraCSVs"))
         print("{} created successfully".format(os.path.join(FolderPath,FolderName,"ExtraCSVs")))
 

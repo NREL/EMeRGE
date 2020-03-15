@@ -54,6 +54,7 @@ class Template:
         
         # Create Folders
         FolderName = "DashboardTemplate"
+        os.mkdir(os.path.join(FolderPath,FolderName))
         os.mkdir(os.path.join(FolderPath,FolderName,"Projects"))
         print("{} created successfully".format(os.path.join(FolderPath,FolderName,"Projects")))
 

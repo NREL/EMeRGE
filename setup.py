@@ -7,7 +7,7 @@ setup(
     name='EMeRGE',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version='v1.2-alpha',
+    version='v1.3-alpha',
     description='Emerging technologies Management and Risk evaluation on distributions Grid Evolution',
     author='Kapil Duwadi',
     author_email='kapil.duwadi@nrel.gov',

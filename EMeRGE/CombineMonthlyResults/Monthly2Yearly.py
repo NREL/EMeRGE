@@ -8,6 +8,7 @@ class Template:
         
         # Create Folders
         FolderName = "Monthy2YearlyFolderTemplate"
+        os.mkdir(os.path.join(FolderPath,FolderName))
         os.mkdir(os.path.join(FolderPath,FolderName,"MonthlyResults"))
         print("{} created successfully".format(os.path.join(FolderPath,FolderName,"MonthlyResults")))
 

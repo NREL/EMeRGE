@@ -316,6 +316,7 @@ class Template:
         
         # Create Folders
         FolderName = "CSVconverterTemplate"
+        os.mkdir(os.path.join(FolderPath,FolderName))
         os.mkdir(os.path.join(FolderPath,FolderName,"CSVfromQGIS"))
         print("{} created successfully".format(os.path.join(FolderPath,FolderName,"CSVfromQGIS")))
 
