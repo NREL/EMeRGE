@@ -3,6 +3,7 @@ from DSSRiskAnalyzer.SubModulesContainer.ReadersContainer import *
 from DSSRiskAnalyzer.pyRunTimeSeriesPowerFlow import OpenDSS
 from DSSRiskAnalyzer.template import TomlDict
 import os
+import toml
 
 class RunRiskAnalysis:
 
