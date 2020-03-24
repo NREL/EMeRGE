@@ -9,11 +9,18 @@ import dash
 from ResultDashboard.ReadersContainer import *
 from ResultDashboard.pyProcessData import ProcessData
 from ResultDashboard.ProcessForInitialAssessment import ProcessLoadProfile
-from ResultDashboard.template import TomlDict
+from ResultDashboard.template import TomlDictForDashboard
 import os
 import toml
 
 class DashApp:
+
+    """ A class for developing interactive dashboard. 
+    
+    :param SettingsTomlFilePath: A path to .toml file containg all the settings necessary for visualization
+    :type SettingsTomlFilePath: str
+    :return: html file
+    """
 
     def __init__(self,SettingsTomlFilePath):
 
@@ -47,10 +54,23 @@ class DashApp:
 
     def Launch(self):
 
+        """ A function to launch dashboard.Takes no parameters.
+
+        :return: http: address to visualize results
+        """
+
         # launch App
         return self.app.run_server(debug=True, port=8060)
     
 class Template:
+
+    """ A class which generates template for visualization process including .toml file
+    
+    :param FolderPath: A folder path where you want to create project
+    :type FolderPath: str
+    :param FeederName: A name of feeder for which you want to create a project
+    :type FeederName: str
+    """
 
     def __init__(self, FolderPath, FeederName):
         
@@ -75,7 +95,7 @@ class Template:
         os.mkdir(os.path.join(Feederpath,'PVConnection','ExtraData'))
         print("{} created successfully".format(os.path.join(Feederpath,'PVConnection','ExtraData')))
 
-        TomlFileContent = TomlDict()
+        TomlFileContent = TomlDictForDashboard().ReturnDict()
         TomlFileContent["Project Path"] = os.path.join(FolderPath,"Projects")
         TomlFileContent["Active Project"] = FeederName
 

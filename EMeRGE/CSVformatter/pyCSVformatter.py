@@ -3,10 +3,18 @@ import toml
 import pandas as pd
 import shutil
 import numpy as np
-from CSVformatter.template import TomlDict
+from CSVformatter.template import TomlDictForCSVformatter
 
 # Convert .toml file contents into dictionary 
 def readtoml(setting_toml_file):
+
+    """ A funcion to convert toml file into dictionary.
+    :param settings_toml_file: A path to .toml file 
+    :type settings_toml_file: str
+    :return: A dictionary of .toml file contents
+    :rtype: dict
+    """
+
     texts = ''
     f = open(setting_toml_file, "r")
     text = texts.join(f.readlines())
@@ -15,6 +23,14 @@ def readtoml(setting_toml_file):
 
 # Modify name if contains invalid characters 
 def ModifyName(Name):
+
+    """ A funcion to modify string if contains invalid characters [' ',',','.'] replacing with '-'
+    :param Name: A string which needs to be modified 
+    :type Name: str
+    :return: A modified string
+    :rtype: str
+    """
+
     InvalidChars = [' ', ',', '.']
     for InvChar in InvalidChars:
         if InvChar in Name:
@@ -25,6 +41,18 @@ def ModifyName(Name):
 # Exporting csvs for line elements
 
 def export_linecsvs(settings_dict,line_or_cable,ht_or_lt,unique_geometry):
+
+    """ A funcion for exporting formatted CSVs for line elements'
+    :param settings_dict: A dictionary of settings required for formatting
+    :type settings_dict: dict
+    :param line_or_cable: A string either 'line' or 'cable'
+    :type line_or_cable: str
+    :param ht_or_lt: A string either 'ht' or 'lt'
+    :type ht_or_lt: str
+    :param unique_geometry: A string defining geometry of line
+    :type unique_geometry: str
+    :return: csv file
+    """
     
     name = '{}_{}'.format(ht_or_lt,line_or_cable)
 
@@ -122,6 +150,14 @@ def export_linecsvs(settings_dict,line_or_cable,ht_or_lt,unique_geometry):
     print('Exported "{}" file successfully'.format(attributecsvname))
 
 def export_transformercsvs(settings_dict,type):
+
+    """ A funcion for exporting formatted CSVs for transformer elements'
+    :param settings_dict: A dictionary of settings required for formatting
+    :type settings_dict: dict
+    :param type: A string either 'DTs' or 'PTs'
+    :type type: str
+    :return: csv file
+    """
     
     csvname = 'distribution_transformer.csv' if type == 'DTs' else 'power_transformer.csv'
     
@@ -158,6 +194,18 @@ def export_transformercsvs(settings_dict,type):
 
 
 def extend_data(dataframe,settings_dict,tdata,load):
+
+    """ A function to extend data utilized internally by CSVformatter
+    :param dataframe: A pandas dataframe
+    :type dataframe: dataframe
+    :param settings_dict: A dictionary of settings required for formatting
+    :type settings_dict: dict
+    :param tdata: tariff data
+    :type tdata: list
+    :param load: load data
+    :type load: list
+    :return: tuple tdata,load
+    """
     
     cols = list(dataframe.columns)
     
@@ -172,6 +220,16 @@ def extend_data(dataframe,settings_dict,tdata,load):
     return tdata,load
 
 def export_consumercsvs(list_of_csvs,settings_dict,type):
+    
+    """ A function to export formatted CSV files for consumers
+    :param list_of_csvs: list of csv files in a woking directory 
+    :type list_of_csvs: list
+    :param settings_dict: A dictionary of settings required for formatting
+    :type settings_dict: dict
+    :param type: A string either 'ht' or 'lt'
+    :type type: str
+    :return: csv file
+    """
     
     name = '{}_consumer'.format(type)
     
@@ -248,6 +306,12 @@ def export_consumercsvs(list_of_csvs,settings_dict,type):
 
 
 def ClearProjectFolder(path):
+
+    """ A function for clearing a directory if exists or creating new one if does not exists
+    :param path: A file path 
+    :type path: str
+    """
+
     print('Creating / cleaning folder: ',  path)
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
     for root, dirs, files in os.walk(path):
@@ -259,6 +323,17 @@ def ClearProjectFolder(path):
 
 
 def append_geometry(settings_dict, unique_geometry,tag):
+    
+    """ A function to append geometry
+    :param settings_dict: A dictionary of settings required for formatting
+    :type settings_dict: dict
+    :param unique_geometry: A string defining geometry of line
+    :type unique_geometry: str
+    :param tag: A tag string must be present in settings dictionary as a key
+    :type tag: str
+    :return: csv file
+    """
+
     id = settings_dict[tag]['phase_conductor']+'_'+str(settings_dict[tag]['num_of_cond'])+ '_'+ settings_dict[tag]['spacing']
     if id not in list(unique_geometry["ID"]):
         unique_geometry["ID"].append(id)
@@ -267,8 +342,18 @@ def append_geometry(settings_dict, unique_geometry,tag):
     return unique_geometry
 
 class CSVFormatter:
+    
+    """ A class for formatting CSVs extracted from :class:`gis2.csv` 
+    
+    :param settings_toml_file: A path to .toml file containg all the settings necessary for conversion
+    :type settings_toml_file: str
+    :return: csv files
+    """
+
 
     def __init__(self, setting_toml_file):
+
+        """ A constructor method for :class:`CSVFormatter` """
 
         settings_dict = readtoml(setting_toml_file)
 
@@ -312,7 +397,17 @@ class CSVFormatter:
 
 class Template:
 
+    """ A class which generates template for CSVformatting process including .toml file
+    
+    :param FolderPath: A folder path where you want to create project
+    :type FolderPath: str
+    :param FeederName: A name of feeder for which you want to create a project
+    :type FeederName: str
+    """
+
     def __init__(self, FolderPath, FeederName):
+
+        """ A constructor for :class:`Template` """
         
         # Create Folders
         FolderName = "CSVconverterTemplate"
@@ -323,7 +418,7 @@ class Template:
         os.mkdir(os.path.join(FolderPath,FolderName,"ExtraCSVs"))
         print("{} created successfully".format(os.path.join(FolderPath,FolderName,"ExtraCSVs")))
 
-        TomlFileContent = TomlDict()
+        TomlFileContent = TomlDictForCSVformatter().ReturnDict()
         TomlFileContent["GIScsvsfolderpath"] = FolderPath
         TomlFileContent["feeder_name"] = FeederName
 
@@ -334,7 +429,7 @@ class Template:
         print("{} file created successfully".format(os.path.join(FolderPath,'settings.toml')))
 
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
     
-    setting_toml_file = r"C:\Users\KDUWADI\Desktop\NREL_Projects\CIFF-TANGEDCO\TANGEDCO\SoftwareTools\GIS_CSVs_to_Standard_CSVs\csvsetting.toml"
-    CSVFormatter(setting_toml_file)
+#    setting_toml_file = r"C:\Users\KDUWADI\Desktop\NREL_Projects\CIFF-TANGEDCO\TANGEDCO\SoftwareTools\GIS_CSVs_to_Standard_CSVs\csvsetting.toml"
+#    CSVFormatter(setting_toml_file)

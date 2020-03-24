@@ -36,6 +36,13 @@ def ClearProjectFolder(path):
     return
 
 class csv2dss:
+    """ A class for generating .dss files using .csv files from :class:`CSVformatter` 
+    
+    :param settings_toml_file: A path to .toml file containg all the settings necessary for conversion
+    :type settings_toml_file: str
+    :return: dss files
+    """
+
     def __init__(self, setting_toml_file):
         settings_dict = readtoml(setting_toml_file)
         scenario_dict = create_scenario_dict(settings_dict)
@@ -55,6 +62,14 @@ class csv2dss:
 
 
 class Template:
+
+    """ A class which generates template for CSV to DSS conversion process including .toml file
+    
+    :param FolderPath: A folder path where you want to create project
+    :type FolderPath: str
+    :param FeederName: A name of feeder for which you want to create a project
+    :type FeederName: str
+    """
 
     def __init__(self, FolderPath, FeederName):
         

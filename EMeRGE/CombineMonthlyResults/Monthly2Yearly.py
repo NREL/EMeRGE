@@ -4,6 +4,12 @@ import os
 
 class Template:
 
+    """ A class which generates template for combining monthly results including .toml file
+    
+    :param FolderPath: A folder path where you want to create project
+    :type FolderPath: str
+    """
+
     def __init__(self, FolderPath):
         
         # Create Folders
@@ -17,6 +23,17 @@ class Template:
 
 
 class Monthly2Yearly:
+
+    """ A class for combining monthly results.
+    
+    :param inputpath: A path where all monthly results are stored
+    :type inputpath: str
+    :param outputpath: A path where you want to store results
+    :type outputpath: str
+    :param DoNotReadFiles: list of files to avoid combining
+    :type DoNotReadFiles: list, optional
+    :return: csv files
+    """
 
     def __init__(self,inputpath, outputpath, DoNotReadFiles=[]):
 

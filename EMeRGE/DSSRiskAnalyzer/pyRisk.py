@@ -1,11 +1,18 @@
 
 from DSSRiskAnalyzer.SubModulesContainer.ReadersContainer import *
 from DSSRiskAnalyzer.pyRunTimeSeriesPowerFlow import OpenDSS
-from DSSRiskAnalyzer.template import TomlDict
+from DSSRiskAnalyzer.template import TomlDictForDSSRiskAnalyzer
 import os
 import toml
 
 class RunRiskAnalysis:
+
+    """ A class for running risk analysis. 
+    
+    :param SettingsTomlFilePath: A path to .toml file containg all the settings necessary for conversion
+    :type SettingsTomlFilePath: str
+    :return: csv files
+    """
 
     def __init__(self, SettingsTomlFilePath):
 
@@ -51,8 +58,14 @@ class RunRiskAnalysis:
 
 class Template:
 
+    """ A class which generates template for distribution system analysis process including .toml file
+    
+    :param FolderPath: A folder path where you want to create project
+    :type FolderPath: str
+    :param FeederName: A name of feeder for which you want to create a project
+    :type FeederName: str
+    """
     def __init__(self, FolderPath, FeederName):
-        
         # Create Folders
         FolderName = "DSSRiskAnalyzerTemplate"
         os.mkdir(os.path.join(FolderPath,FolderName))
@@ -71,7 +84,7 @@ class Template:
         os.mkdir(os.path.join(Feederpath,'AnalysisScenarios','Category'))
         print("{} created successfully".format(os.path.join(Feederpath,'AnalysisScenarios','Category')))
 
-        TomlFileContent = TomlDict()
+        TomlFileContent = TomlDictForDSSRiskAnalyzer().ReturnDict()
         TomlFileContent["Project path"] = os.path.join(FolderPath,"Projects")
         TomlFileContent["Active_Feeder"] = FeederName
         TomlFileContent["Active_Scenario"] = 'Category'

@@ -1,8 +1,8 @@
-class TomlDict:
+class TomlDictForDSSRiskAnalyzer:
 
     def __init__(self):
 
-        toml_dict = {
+        self.toml_dict = {
             "Project path" : "C:\\Users\\KDUWADI\\Desktop\\NREL_Projects\\CIFF-TANGEDCO\\TANGEDCO\\SoftwareTools\\Distribution_Metric_Computing_Tool\\Projects",
             "Active_Feeder" : "GWC",
             "Active_Scenario" : "Category_Apr",
@@ -27,4 +27,5 @@ class TomlDict:
             },
         }
 
-        return toml_dict
+    def ReturnDict(self):
+        return self.toml_dict

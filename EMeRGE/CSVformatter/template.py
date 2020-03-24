@@ -1,8 +1,14 @@
-class TomlDict:
+class TomlDictForCSVformatter:
+
+    """ A class for storing dictionary of settings for formatting CSV after being extracted using
+    :class:`gis2csv`. Takes no argument. 
+    """
 
     def __init__(self):
 
-        toml_dict = {
+        """ Constrcutor method for :class:TomlDictForCSVformatter"""
+
+        self.toml_dict = {
             "GIScsvsfolderpath" : "C:\\Users\\KDUWADI\\Desktop\\NREL_Projects\\CIFF-TANGEDCO\\TANGEDCO\\SoftwareTools\\GIS_CSVs_to_Standard_CSVs",
             "feeder_name" : "GWC",
             "MVA_to_KVA_conversion_for_PT"  : "yes",
@@ -138,4 +144,12 @@ class TomlDict:
             },
         }
 
-        return toml_dict
+    def ReturnDict(self):
+
+        """ Returns a dictionary which can be converted into Toml file necessary for CSV formatting
+        :return: A dictionary of settings for CSV formatting
+        :rtype: dict
+        
+        """
+
+        return self.toml_dict

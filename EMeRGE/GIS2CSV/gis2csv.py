@@ -3,7 +3,17 @@ from mmqgis import *
 
 class gis2csv:
 
+    """ A class to to convert .shp files into CSV formats using QGIS
+
+    :param Folder_path: A complete path to a folder containing .shp files
+    :type Folder_path: str
+    :param Output_Folder: A complete path to a folder where extracted CSV files will be stored
+    :type Outout_Folder: str
+
+    """
+
     def __init__(Folder_path, Output_Folder):
+        """ gis2csv Constructor method"""
 
         list_of_files = os.listdir(Folder_path)
         for file in list_of_files:

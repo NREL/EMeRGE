@@ -1,8 +1,8 @@
-class TomlDict:
+class TomlDictForDashboard:
 
     def __init__(self):
 
-        toml_dict = {
+        self.toml_dict = {
             "Project Path" : "C:\\Users\\KDUWADI\\Desktop\\VisualizingInDashboard\\Projects",
             "Active Project" : "GWC",
             'Time Step (min)' : 15,
@@ -12,4 +12,7 @@ class TomlDict:
             'AdvancedPVMWh' : 595.2,
           }
 
-        return toml_dict
+      
+      
+    def ReturnDict(self):
+      return self.toml_dict
