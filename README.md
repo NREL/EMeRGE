@@ -13,6 +13,10 @@ Run the following command to instal:
 pip install EMeRGE
 ```
 
+## Documentation
+
+Please visit https://nrel.github.io/EMeRGE/ for more elaborate documentation.
+
 ## Usage
 
 ```python
