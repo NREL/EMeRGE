@@ -22,7 +22,7 @@ copyright = '2020, Kapil Duwadi'
 author = 'Kapil Duwadi'
 
 # The full version, including alpha/beta/rc tags
-release = '1.1.3'
+release = 'v1.4-alpha'
 
 
 # -- General configuration ---------------------------------------------------

@@ -17,6 +17,7 @@ Welcome to EMeRGE's documentation!
    DSSriskanalyzer
    Monthly2Yearly
    Dashboard
+   LICENSE
 
 Indices and tables
 ==================

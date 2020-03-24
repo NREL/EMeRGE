@@ -4,7 +4,7 @@ import toml
 from CSV2DSS.pyReader import Reader
 from CSV2DSS.pyWriter import Writer
 import shutil
-from CSV2DSS.template import TomlDict
+from CSV2DSS.template import TomlDictForCSV2DSS
 
 
 def create_scenario_dict(settings_dict):
@@ -82,7 +82,7 @@ class Template:
         os.mkdir(os.path.join(FolderPath,FolderName,FeederName))
         print("{} created successfully".format(os.path.join(FolderPath,FolderName,FeederName)))
 
-        TomlFileContent = TomlDict()
+        TomlFileContent = TomlDictForCSV2DSS().ReturnDict()
         TomlFileContent["Project path"] = FolderPath
         TomlFileContent["Feeder name"] = FeederName
 

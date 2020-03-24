@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation Guide &mdash; EMeRGE v1.4-alpha documentation</title>
+  <title>LICENSE &mdash; EMeRGE v1.4-alpha documentation</title>
   
 
   
@@ -35,8 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Formatting CSVs" href="CSVformating.html" />
-    <link rel="prev" title="Introduction" href="Introduction.html" /> 
+    <link rel="prev" title="Visualizing in Dashboard" href="Dashboard.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,13 +82,13 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HowTo.html">Installation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CSVformating.html">Formatting CSVs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CSVtoDSS.html">CSV to DSS conversion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DSSriskanalyzer.html">Performing Distribution System Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Monthly2Yearly.html">Monthly to Yearly</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Dashboard.html">Visualizing in Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">LICENSE</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LICENSE</a></li>
 </ul>
 
             
@@ -135,13 +134,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Installation Guide</li>
+      <li>LICENSE</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/HowTo.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/LICENSE.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -154,26 +153,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installation-guide">
-<h1>Installation Guide<a class="headerlink" href="#installation-guide" title="Permalink to this headline">¶</a></h1>
-<p>EMeRGE can be installed via pip command:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">emerge</span>
-</pre></div>
-</div>
-<p>Alternately, you can clone git repo from <a class="reference external" href="https://github.com/nrel/emerge">https://github.com/nrel/emerge</a> , and use the following commands to build the module and install it.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">build</span>
-<span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">install</span>
-</pre></div>
-</div>
-<p>Preferred way is to create virtual environment and install EMeRGE there. If you have anaconda installed please follow these steps:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">my_env</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.7</span>
-<span class="n">conda</span> <span class="n">activate</span> <span class="n">my_env</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="n">emerge</span>
-</pre></div>
-</div>
-<p>You can select this virtual environment in your code-editor.</p>
-<p>If you are using Visual Studio: Goto View&gt;&gt;Command Palette&gt;&gt;Python: Select Interpretor, scroll down untill you see my_env environment and click it.</p>
-<p>! Awesome you have sucessfully set up EMeRGE in your machine.</p>
+  <div class="section" id="license">
+<h1>LICENSE<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
+<p>BSD 3-Clause License</p>
+<p>Copyright (c) 2020, Alliance for Sustainable Energy, LLC
+All rights reserved.</p>
+<p>Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:</p>
+<ol class="arabic simple">
+<li><p>Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.</p></li>
+<li><p>Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.</p></li>
+<li><p>Neither the name of the copyright holder nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.</p></li>
+</ol>
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 </div>
 
 
@@ -184,10 +190,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="CSVformating.html" class="btn btn-neutral float-right" title="Formatting CSVs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="Introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Dashboard.html" class="btn btn-neutral float-left" title="Visualizing in Dashboard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -1,8 +1,8 @@
-class TomlDict:
+class TomlDictForCSV2DSS:
 
     def __init__(self):
 
-        toml_dict = {
+        self.toml_dict = {
             "Project path" : "C:\\Users\\KDUWADI\\Desktop\\NREL_Projects\\CIFF-TANGEDCO\\TANGEDCO\\SoftwareTools\\Standard_CSVs_to_DSS_files",
             "Feeder name" : "GWC",
             "PV_customers_step" : 10,
@@ -50,4 +50,7 @@ class TomlDict:
 
         }
 
-        return toml_dict
+    
+    def ReturnDict(self):
+
+        return self.toml_dict
