@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 # Internal imports
-from csvformatter.constants import DEFAULT_CONFIGURATION, VALID_SETTINGS
+from csvconverter.constants import DEFAULT_CONFIGURATION, VALID_SETTINGS
 from dssglobal.validate import validate
 from dssglobal.logger import getLogger
 

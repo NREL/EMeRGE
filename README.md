@@ -23,7 +23,7 @@ pip install EMeRGE
     3. Open QGIS python shell, copy and paste the code from csvextractor/converter.py
     4. Pass input_path and output_path to `GIS2CSV` class instance
 
-## `csvformatter` package (converts CSVs exported from `csvextractor` into standard formats)
+## `csvconverter` package (converts CSVs exported from `csvextractor` into standard formats)
 
 2. Requirements
     1. Store all extracted CSV files from QGIS in a folder name 'GISCSVs'
@@ -33,7 +33,7 @@ pip install EMeRGE
 ### Creating a project skeleton for CSV formatting
 
 ```python
-    from csvformatter.formatter import Convert
+    from csvconverter.formatter import Convert
     instance = Convert()
     instance.create_skeleton(<project_path>)
 ```
@@ -43,21 +43,21 @@ pip install EMeRGE
 #### Using config.json file
 
 ```python
-    from csvformatter.formatter import Convert
+    from csvconverter.formatter import Convert
     instance = Convert('config.json')
 ```
 
 #### Using python dict
 
 ```python
-    from csvformatter.formatter import Convert
+    from csvconverter.formatter import Convert
     intance = Convert({'project_path':r'.\Project_formatter','feeder_name':'Test'})
 ```
 
 ## `dssgenerator` package (generates dss files from CSV files) 
 
 3. Requirements:
-    1. Standard CSV files generated using CSVformatter stored in a folder name same as feeder name
+    1. Standard CSV files generated using `csvconverter` stored in a folder name same as feeder name
     2. Extra CSV files containing load profile, voltage profile and solar profile data in a folder named 'ExtraCSVs'
 
 ### Creating a project skeleon for generating DSS files
@@ -160,7 +160,7 @@ pip install EMeRGE
     instance.launch(port=8060)
 ```  
 
-### JSON format of config.json file (`csvformatter` package)
+### JSON format of config.json file (`csvconverter` package)
 
 ```json
 {
