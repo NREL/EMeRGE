@@ -3,7 +3,7 @@ from mmqgis import *
 
 class GIS2CSV:
 
-    """ A class to to convert .shp files into CSV formats using QGIS
+    """ A class to to convert .shp files into CSVs using QGIS
 
     :param input_path: A complete path to a folder containing .shp files
     :type Folder_path: str
