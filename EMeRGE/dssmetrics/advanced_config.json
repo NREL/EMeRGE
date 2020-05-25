@@ -1,0 +1,30 @@
+{
+    "project_path": "C:\\Users\\KDUWADI\\Desktop\\NREL_Projects\\CIFF-TANGEDCO\\TANGEDCO\\DumpLater\\Projects",
+    "active_project":"GR_PALAYAM",
+	"active_scenario": "FullYear",
+	"dss_filename":"gr_palayam.dss",
+    "start_time":"2018-1-1 0:0:0",
+    "end_time":"2018-1-10 23:30:0",
+    "simulation_time_step (minute)": 15,
+    "parallel_simulation":false,
+    "parallel_process": 2,
+    "frequency": 50,
+    "upper_voltage": 1.1,
+    "lower_voltage":0.9,
+    "record_every": 96,
+    "export_voltages": false,
+    "export_lineloadings": false,
+    "export_transloadings":false,
+    "export_start_date": "2018-1-1 0:0:0",
+    "export_end_date": "2018-1-2 0:0:0",
+    "volt_var": {
+                "enabled": false,
+                "yarray": [0.44,0.44,0,0,-0.44,-0.44],
+                "xarray": [0.7,0.90,0.95,1.05,1.10,1.3]
+                },
+    "log_settings": {
+                    "save_in_file": false,
+                    "log_filename":"system",
+                    "clear_old_log_file": true
+                    }
+}
