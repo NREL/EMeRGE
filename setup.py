@@ -11,7 +11,7 @@ setup(
     description='Emerging technologies Management and Risk evaluation on distributions Grid Evolution',
     author='Kapil Duwadi',
     author_email='kapil.duwadi@nrel.gov',
-    packages=find_packages("emerge"),
+    packages=find_packages("EMeRGE"),
     package_data={".//dssdashboard//assets":["*.css","*.png"]},
     url="https://github.com/NREL/EMeRGE",
     keywords="Distribution System DER technologies management risk impact analysis",
@@ -27,7 +27,7 @@ setup(
                     "matplotlib==3.1.0",
                     "dash_core_components==1.8.0",
                     "networkx==2.3"],
-    package_dir={"": "emerge"},   
+    package_dir={"": "EMeRGE"},   
     classifiers=[
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python :: 3.7",

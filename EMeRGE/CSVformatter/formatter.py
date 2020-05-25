@@ -13,7 +13,7 @@ from csvformatter.constants import DEFAULT_CONFIGURATION, VALID_SETTINGS
 from dssglobal.validate import validate
 from dssglobal.logger import getLogger
 
-class CSVFormatter:
+class Convert:
     
     """ A class for formatting CSVs extracted from :class:`gis2.csv` 
     

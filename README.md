@@ -33,8 +33,8 @@ pip install EMeRGE
 ### Creating a project skeleton for CSV formatting
 
 ```python
-    from csvformatter.formatter import CSVFormatter
-    instance = CSVFormatter()
+    from csvformatter.formatter import Convert
+    instance = Convert()
     instance.create_skeleton(<project_path>)
 ```
 
@@ -43,15 +43,15 @@ pip install EMeRGE
 #### Using config.json file
 
 ```python
-    from csvformatter.formatter import CSVFormatter
-    instance = CSVFormatter('config.json')
+    from csvformatter.formatter import Convert
+    instance = Convert('config.json')
 ```
 
 #### Using python dict
 
 ```python
-    from csvformatter.formatter import CSVFormatter
-    intance = CSVFormatter({'project_path':r'.\Project_formatter','feeder_name':'Test'})
+    from csvformatter.formatter import Convert
+    intance = Convert({'project_path':r'.\Project_formatter','feeder_name':'Test'})
 ```
 
 ## `dssgenerator` package (generates dss files from CSV files) 
