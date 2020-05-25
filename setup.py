@@ -12,7 +12,7 @@ setup(
     author='Kapil Duwadi',
     author_email='kapil.duwadi@nrel.gov',
     packages=find_packages("emerge"),
-    package_data={":":["*.css","*.png"]},
+    package_data={".//dssdashboard//assets":["*.css","*.png"]},
     url="https://github.com/NREL/EMeRGE",
     keywords="Distribution System DER technologies management risk impact analysis",
     install_requires=["dash_html_components==1.0.2",

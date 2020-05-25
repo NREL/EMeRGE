@@ -1,0 +1,6 @@
+include *.txt
+recursive-include EMeRGE *.css
+recursive-include EMeRGE *.json
+recursive-include EMeRGE *.png
+recursive-include EMeRGE *.py
+recursive-include Images *.png
