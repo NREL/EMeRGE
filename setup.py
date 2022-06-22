@@ -23,7 +23,7 @@ setup(
                     "dash==1.9.0",
                     "OpenDSSDirect.py==0.3.7",
                     "pandas==0.24.2",
-                    "numpy==1.16.4",
+                    "numpy==1.22.0",
                     "matplotlib==3.1.0",
                     "dash_core_components==1.8.0",
                     "networkx==2.3"],
