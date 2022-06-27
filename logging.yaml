@@ -1,0 +1,33 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  develop:
+    format: "%(asctime)s - EMERGE - %(name)s - %(levelname)s - %(message)s"
+    datefmt: "%Y:%m:%d %H:%M:%S"
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: develop
+    stream: ext://sys.stdout
+  rotatingFile:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: develop
+    filename: C:\Users\KDUWADI\Desktop\NREL_Projects\Tunishia\emerge_latest\logs\emerge.log
+    backupCount: 30
+    maxBytes: 102400
+    delay: true
+loggers:
+  utils.utils:
+    level: DEBUG
+    handlers : [console, rotatingFile]
+    propagate: yes
+  simulator.opendss:
+    level: DEBUG
+    handlers : [console, rotatingFile]
+    propagate: yes
+  __main__:
+    level: DEBUG
+    handlers : [console, rotatingFile]
+    propagate: yes
