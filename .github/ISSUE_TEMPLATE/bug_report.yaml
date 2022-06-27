@@ -1,0 +1,38 @@
+name: Bug Report
+description: Report a bug you have found
+title: "[Bug]: "
+labels: "bug"
+body: 
+  - type: markdown
+    attributes: 
+      value: |
+        :bug: Thanks for taking the time to fill out this bug report! Appreciate it!
+  - type: input
+    id: contact
+    attributes:
+      label: Contact details
+      description: How can we get in touch with you if we need more info ?
+      placeholder: ex. example@email.com
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Tell us what you have found
+      description: Also tell us, what did you expect to happen ?
+      placeholder: Describe what you saw and what you expected
+      value: "Bug found!"
+    validations:
+      required: true
+  - type: dropdown
+    id: os-platform
+    attributes:
+      label: OS Platform
+      description: In which OS platform are you using our software?
+      options:
+        - Windows 10 and above
+        - Windows < 10
+        - Linux
+        - Mac OS
+    validations:
+      required: true

@@ -1,0 +1,29 @@
+clear
+
+new circuit.chennai basekv=33.0 basefreq=50 pu=1.0 phases=3 Z1=[0.001, 0.001] Z0=[0.001, 0.001] bus1=80_27834864364979_13_0915193376659_htnode.1.2.3 
+
+redirect dist_xfmrs.dss
+
+redirect sub_trans.dss
+
+redirect wiredata.dss
+
+redirect cabledata.dss
+
+redirect line_geometry.dss
+
+redirect lines.dss
+
+redirect loads.dss
+
+set voltagebases=[0.415, 11.0, 33.0]
+new energymeter.test transformer.80_27834864364979_13_0915193376659_transformer
+
+
+set loadmult=0.21
+
+Calcvoltagebases
+
+Buscoords buscoords.dss
+
+solve

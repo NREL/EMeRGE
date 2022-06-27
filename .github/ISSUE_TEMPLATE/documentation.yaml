@@ -1,0 +1,26 @@
+name: Documentation update
+description: Report a outdated or new documentation 
+title: "[Documentation]: "
+labels: "documentation"
+body: 
+  - type: markdown
+    attributes: 
+      value: |
+        :bookmark_tabs: Thanks for reporting issue for updating documentation! 
+  - type: input
+    id: contact
+    attributes:
+      label: Contact details
+      description: How can we get in touch with you if we need more info ?
+      placeholder: ex. example@email.com
+    validations:
+      required: false
+  - type: textarea
+    id: doc-update
+    attributes:
+      label: Tell us what you want to see in documentation
+      description: Also tell us, what problem do you see with current documentation
+      placeholder: Describe what you want to see in an updated documentation version
+      value: "Update documentation"
+    validations:
+      required: true

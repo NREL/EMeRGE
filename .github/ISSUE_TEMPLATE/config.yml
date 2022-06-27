@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: I have a question ? 
+    url: https://github.com/NREL/emerge/discussions/new
+    about: The place for questions, support and feature requests
+  - name: Contact us
+    url: https://www.nrel.gov/
+    about: Reach out to us 

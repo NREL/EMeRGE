@@ -1,0 +1,12 @@
+new wiredata.Turkey_6/1 diam=0.198 gmrac=0.0024 gmrunits=ft normamps=105 rac=0.806 runits=kft radunits=in
+
+new wiredata.Redwing_30/19 diam=1.081 gmrac=0.0372 gmrunits=ft normamps=859 rac=0.029 runits=kft radunits=in
+
+new wiredata.6_6/1_ACSR diam=0.198 gmrac=0.00394 gmrunits=ft normamps=100 rac=3.98 runits=mi radunits=in
+
+new wiredata.Waxwing_18/1 diam=0.609 gmrac=0.0197 gmrunits=ft normamps=449 rac=0.079 runits=kft radunits=in
+
+new wiredata.Joree_76/19 diam=1.88 gmrac=0.0621 gmrunits=ft normamps=1751 rac=0.009 runits=kft radunits=in
+
+new wiredata.Quail_6/1 diam=0.447 gmrac=0.0077 gmrunits=ft normamps=276 rac=0.176 runits=kft radunits=in
+

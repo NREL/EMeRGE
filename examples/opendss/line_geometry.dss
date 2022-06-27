@@ -1,0 +1,50 @@
+new linegeometry.5598c4c7-5058-4951-80f9-dfb89abcfcb1_linegeometry nconds=3 nphases=3 reduce=no
+~ cond=1 wire=Turkey_6/1 x=-0.4 h=9 units=m
+~ cond=2 wire=Turkey_6/1 x=0 h=9 units=m
+~ cond=3 wire=Turkey_6/1 x=0.4 h=9 units=m
+
+new linegeometry.bcc8bc5f-ed08-4bcc-871b-0257a8d9464e_linegeometry nconds=4 nphases=3 reduce=no
+~ cond=1 wire=Redwing_30/19 x=-0.4 h=9 units=m
+~ cond=2 wire=Redwing_30/19 x=0 h=9 units=m
+~ cond=3 wire=Redwing_30/19 x=0.4 h=9 units=m
+~ cond=4 wire=Redwing_30/19 x=0 h=9.4 units=m
+
+new linegeometry.3af4f8b3-e8e0-44ea-9aa0-a11fe444be8f_linegeometry nconds=4 nphases=3 reduce=no
+~ cond=1 wire=6_6/1_ACSR x=-0.4 h=9 units=m
+~ cond=2 wire=6_6/1_ACSR x=0 h=9 units=m
+~ cond=3 wire=6_6/1_ACSR x=0.4 h=9 units=m
+~ cond=4 wire=6_6/1_ACSR x=0 h=9.4 units=m
+
+new linegeometry.85160ca4-e201-4bcf-8cb4-5c69b8de0aa4_linegeometry nconds=4 nphases=3 reduce=no
+~ cond=1 wire=Turkey_6/1 x=-0.4 h=9 units=m
+~ cond=2 wire=Turkey_6/1 x=0 h=9 units=m
+~ cond=3 wire=Turkey_6/1 x=0.4 h=9 units=m
+~ cond=4 wire=Turkey_6/1 x=0 h=9.4 units=m
+
+new linegeometry.ca2e5fbb-d2db-4a4f-9d1e-b4b9fece01db_linegeometry nconds=4 nphases=3 reduce=no
+~ cond=1 wire=Waxwing_18/1 x=-0.4 h=9 units=m
+~ cond=2 wire=Waxwing_18/1 x=0 h=9 units=m
+~ cond=3 wire=Waxwing_18/1 x=0.4 h=9 units=m
+~ cond=4 wire=Waxwing_18/1 x=0 h=9.4 units=m
+
+new linegeometry.0b10a855-6352-48ea-901a-8b4732df98f8_linegeometry nconds=4 nphases=3 reduce=no
+~ cond=1 wire=Joree_76/19 x=-0.4 h=9 units=m
+~ cond=2 wire=Joree_76/19 x=0 h=9 units=m
+~ cond=3 wire=Joree_76/19 x=0.4 h=9 units=m
+~ cond=4 wire=Joree_76/19 x=0 h=9.4 units=m
+
+new linegeometry.bb88b6ec-7542-4113-bd24-662b00c28950_linegeometry nconds=4 nphases=3 reduce=no
+~ cond=1 wire=Quail_6/1 x=-0.4 h=9 units=m
+~ cond=2 wire=Quail_6/1 x=0 h=9 units=m
+~ cond=3 wire=Quail_6/1 x=0.4 h=9 units=m
+~ cond=4 wire=Quail_6/1 x=0 h=9.4 units=m
+
+new linegeometry.1699d4e7-aa95-4e67-8388-e33eabdac5b5_linegeometry nconds=1 nphases=1 reduce=no
+~ cond=1 cncable=1/0(19×)concentric_cable_full x=0 h=9 units=m
+
+new linegeometry.c20d878b-1c11-47c2-a2ca-f95fd34df007_linegeometry nconds=1 nphases=1 reduce=no
+~ cond=1 cncable=1(19×)concentric_cable_full x=0 h=9 units=m
+
+new linegeometry.d8bfae75-49ec-4035-b863-4f1ad0fd5fe6_linegeometry nconds=1 nphases=1 reduce=no
+~ cond=1 cncable=2(7×)concentric_cable_full x=0 h=9 units=m
+

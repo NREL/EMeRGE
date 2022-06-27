@@ -1,0 +1,38 @@
+name: Request a new feature
+description: What feature you would like to see ?
+title: "[Feature]: "
+labels: "feature_requested"
+body: 
+  - type: markdown
+    attributes: 
+      value: |
+        :rocket: Thanks for requesting a new feature.
+  - type: input
+    id: contact
+    attributes:
+      label: Contact details
+      description: How can we get in touch with you if we need more info ?
+      placeholder: ex. example@email.com
+    validations:
+      required: false
+  - type: textarea
+    id: new-feature
+    attributes:
+      label: Tell us what you would like to see 
+      description: Also tell us, your use case for using this feature
+      placeholder: Describe what feature you are requesting and use case
+      value: "New feature!"
+    validations:
+      required: true
+  - type: dropdown
+    id: os-platform
+    attributes:
+      label: Organization
+      description: Tell us how are you planning to use this feature
+      options:
+        - Academic research
+        - National lab research
+        - Commercial use
+        - Other projects
+    validations:
+      required: false

@@ -1,0 +1,40 @@
+new transformer.80_26895971202549_13_085480428674915_transformer phases=3 buses=[80_26874634357885_13_085335609729889_htnode.1.2.3, 80_26874634357885_13_085335609729889_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_26987678125033_13_082764708245302_transformer phases=3 buses=[80_2700291_13_0825038_htnode.1.2.3, 80_2700291_13_0825038_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_27584106341659_13_087887671191133_transformer phases=3 buses=[80_2760133_13_0878423_htnode.1.2.3, 80_2760133_13_0878423_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_27681783100552_13_080234998852346_transformer phases=3 buses=[80_27553951153045_13_080416858799389_htnode.1.2.3, 80_27553951153045_13_080416858799389_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[112, 112] xhl=3.29 %noloadloss=0.554 %r=1.21 leadlag=lead
+
+new transformer.80_26693685166235_13_088588472918495_transformer phases=3 buses=[80_2670455_13_0885754_htnode.1.2.3, 80_2670455_13_0885754_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_26634836214976_13_091521567042028_transformer phases=3 buses=[80_2665204_13_0917876_htnode.1.2.3, 80_2665204_13_0917876_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_26729320646088_13_081967010983371_transformer phases=3 buses=[80_26745294916927_13_081679103207922_htnode.1.2.3, 80_26745294916927_13_081679103207922_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_26348295637916_13_076275359186704_transformer phases=3 buses=[80_2641659991362_13_076569791997125_htnode.1.2.3, 80_2641659991362_13_076569791997125_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[112, 112] xhl=3.29 %noloadloss=0.554 %r=1.21 leadlag=lead
+
+new transformer.80_26278586365987_13_09173013968745_transformer phases=3 buses=[80_26292573508637_13_09131401238693_htnode.1.2.3, 80_26292573508637_13_09131401238693_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_27856970698336_13_08781261350601_transformer phases=3 buses=[80_2786636_13_0878546_htnode.1.2.3, 80_2786636_13_0878546_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_26234834925879_13_08271984356389_transformer phases=3 buses=[80_2622342_13_0825462_htnode.1.2.3, 80_2622342_13_0825462_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_27327085419088_13_07586492917907_transformer phases=3 buses=[80_2731899_13_0757384_htnode.1.2.3, 80_2731899_13_0757384_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_26242292650129_13_088514377428837_transformer phases=3 buses=[80_2620953_13_088932_htnode.1.2.3, 80_2620953_13_088932_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_26819654477512_13_076714721874332_transformer phases=3 buses=[80_2683332_13_0767684_htnode.1.2.3, 80_2683332_13_0767684_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_26999414755704_13_091133775560142_transformer phases=3 buses=[80_26955053495371_13_091351101093066_htnode.1.2.3, 80_26955053495371_13_091351101093066_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_27609055962378_13_09137852747427_transformer phases=3 buses=[80_2759719_13_0911402_htnode.1.2.3, 80_2759719_13_0911402_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_27084504567439_13_076741717345413_transformer phases=3 buses=[80_27067479445111_13_076778306146611_htnode.1.2.3, 80_27067479445111_13_076778306146611_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_2784883371513_13_091247003387045_transformer phases=3 buses=[80_2786311_13_0912658_htnode.1.2.3, 80_2786311_13_0912658_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+
+new transformer.80_2775563195865_13_08462562251777_transformer phases=3 buses=[80_2774657_13_0848361_htnode.1.2.3, 80_2774657_13_0848361_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[112, 112] xhl=3.29 %noloadloss=0.554 %r=1.21 leadlag=lead
+
+new transformer.80_26499882751618_13_084831662936363_transformer phases=3 buses=[80_2651516_13_0844824_htnode.1.2.3, 80_2651516_13_0844824_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[11.0, 0.415] kvas=[75, 75] xhl=3.24 %noloadloss=0.6 %r=1.31 leadlag=lead
+

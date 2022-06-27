@@ -1,0 +1,18 @@
+new CNData.1/0(19×)concentric_cable_full
+~ runits=mi radunits=in gmrunits=ft
+~ inslayer=0.2 diains=0.85 diacable=1.06 epsr=2.3
+~ rac=0.607 gmrac=0.01168 diam=0.37
+~ rstrand=14.8722 gmrstrand=0.00208 diastrand=0.0641 k=16 normamps=155
+
+new CNData.1(19×)concentric_cable_full
+~ runits=mi radunits=in gmrunits=ft
+~ inslayer=0.2 diains=0.81 diacable=1.02 epsr=2.3
+~ rac=0.765 gmrac=0.010425 diam=0.33
+~ rstrand=14.8722 gmrstrand=0.00208 diastrand=0.0641 k=13 normamps=135
+
+new CNData.2(7×)concentric_cable_full
+~ runits=mi radunits=in gmrunits=ft
+~ inslayer=0.226 diains=0.78 diacable=0.98 epsr=2.3
+~ rac=0.945 gmrac=0.00836 diam=0.258
+~ rstrand=14.8722 gmrstrand=0.00208 diastrand=0.0641 k=10 normamps=120
+

@@ -1,0 +1,2 @@
+new transformer.80_27834864364979_13_0915193376659_transformer phases=3 buses=[80_27834864364979_13_0915193376659_htnode.1.2.3, 80_27834864364979_13_0915193376659_ltnode.1.2.3.0] conns=[Delta, Wye] kvs=[33.0, 11.0] kvas=[800, 800] xhl=6.5 %noloadloss=0.153 %r=1.2375 leadlag=lead
+

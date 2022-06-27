@@ -1,0 +1,26 @@
+name: Conitnous integration issue
+description: Report issue associated with continous integration
+title: "[CI]: "
+labels: "ci_issue"
+body: 
+  - type: markdown
+    attributes: 
+      value: |
+        :fire: Thanks for taking your time to fill out this report.
+  - type: input
+    id: contact
+    attributes:
+      label: Contact details
+      description: How can we get in touch with you if we need more info ?
+      placeholder: ex. example@email.com
+    validations:
+      required: false
+  - type: textarea
+    id: ci-what-happened
+    attributes:
+      label: Tell us what you want to do with CI in this project
+      description: Also tell us, what your expectation is 
+      placeholder: Describe what you want to update and/or saw
+      value: "CI issue!"
+    validations:
+      required: true
