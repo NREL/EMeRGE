@@ -6,7 +6,7 @@ from matplotlib.pyplot import legend
 import plotly.graph_objects as go
 
 # internal imports
-from utils.utils import get_map_centre
+from emerge.utils.util import get_map_centre
 
 
 

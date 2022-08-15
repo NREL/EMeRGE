@@ -6,12 +6,12 @@ Higher level wrapper to compute all the metrics
 from pathlib import Path
 
 # internal imports
-from utils.utils import setup_logging
-from db.db_handler import TinyDBHandler
-from simulator.opendss import OpenDSSSimulator
-from metrics.feeder_metrics_opendss import (aggregate_asset_metrics,
+from emerge.utils.util import setup_logging
+from emerge.db.db_handler import TinyDBHandler
+from emerge.simulator.opendss import OpenDSSSimulator
+from emerge.metrics.feeder_metrics_opendss import (aggregate_asset_metrics,
     get_coordinates)
-from metrics.powerflow_metrics_opendss import (
+from emerge.metrics.powerflow_metrics_opendss import (
     get_allbus_voltage_pu,
     get_voltage_by_distance,
     get_voltage_by_lat_lon,

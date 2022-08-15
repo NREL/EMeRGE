@@ -14,7 +14,7 @@ handlers:
     class: logging.handlers.RotatingFileHandler
     level: DEBUG
     formatter: develop
-    filename: C:\Users\KDUWADI\Desktop\NREL_Projects\Tunishia\emerge_latest\logs\emerge.log
+    filename: C:\Users\KDUWADI\Desktop\NREL_Projects\Tunishia\emerge.log
     backupCount: 30
     maxBytes: 102400
     delay: true

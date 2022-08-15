@@ -7,3 +7,6 @@ tinydb
 matplotlib
 dash
 click
+uvicorn[standard]
+pytest
+fastapi

@@ -10,7 +10,7 @@ setup(
     name='emerge',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version='v2.0.0',
+    version='v2.0.0-alpha',
     description='Emerging technologies Management and Risk evaluation on distributions Grid Evolution',
     author='Kapil Duwadi',
     author_email='kapil.duwadi@nrel.gov',
@@ -19,10 +19,10 @@ setup(
     url="https://github.com/NREL/EMeRGE",
     keywords="Distribution System DER technologies management risk impact analysis",
     install_requires=requirements,
-    package_dir={"": "src"}, 
+    package_dir={"emerge": "emerge"}, 
     entry_points={
         "console_scripts": [
-            "emerge=cli.cli:cli"
+            "emerge=emerge.cli.cli:cli"
         ],
     },
     python_requires=">=3.9",  

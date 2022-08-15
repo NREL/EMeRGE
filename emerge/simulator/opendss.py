@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod
 import opendssdirect as dss
 
 # internal imports
-from utils.utils import validate_path, setup_logging
+from emerge.utils.util import validate_path, setup_logging
 
 logger = logging.getLogger(__name__)
 

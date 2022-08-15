@@ -54,6 +54,6 @@ emerge serve -db ./db.json -p 8050
 
 This will take couples of seconds to be ready and after that you can go to your browser and visit `localhost:8050`. 
 
-
+:smiley: Great Job!
 
 

@@ -13,12 +13,12 @@ import dash
 from tinydb import Query
 
 # internal-impoers
-from db.db_handler import TinyDBHandler
+from emerge.db.db_handler import TinyDBHandler
 
-import dashboard.pages
-from dashboard.pages.voltage import generate_voltage_page
-from dashboard.pages.asset_metrics import generate_asset_metrics_page
-from dashboard.pages.loads import generate_load_page
+import emerge.dashboard.pages
+from emerge.dashboard.pages.voltage import generate_voltage_page
+from emerge.dashboard.pages.asset_metrics import generate_asset_metrics_page
+from emerge.dashboard.pages.loads import generate_load_page
 
 
 def run_server(

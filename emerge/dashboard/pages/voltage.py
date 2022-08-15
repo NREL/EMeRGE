@@ -6,7 +6,7 @@ import plotly.express as px
 import pandas as pd
 
 # internal imports
-from utils.utils import get_map_centre
+from emerge.utils.util import get_map_centre
 
 
 def prepare_voltage_distribution_plot(db_instance, query):

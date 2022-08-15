@@ -9,8 +9,8 @@ from pathlib import Path
 import click
 
 # internal imports
-from metrics.compute_snapshot_metrics import compute_snapshot_metrics
-from dashboard.snapshot_dashboard import run_server
+from emerge.metrics.compute_snapshot_metrics import compute_snapshot_metrics
+from emerge.dashboard.snapshot_dashboard import run_server
 
 
 @click.command()

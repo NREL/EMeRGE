@@ -11,9 +11,9 @@ import json
 import networkx as nx
 
 # internal imports
-from utils.utils import setup_logging
-from simulator.opendss import OpenDSSSimulator
-from metrics.feeder_metrics_model import (
+from emerge.utils.util import setup_logging
+from emerge.simulator.opendss import OpenDSSSimulator
+from emerge.metrics.feeder_metrics_model import (
     AssetMetrics,
     FeederMetrics,
     LoadAssetMetrics,
@@ -22,7 +22,7 @@ from metrics.feeder_metrics_model import (
     RegulatorsAssetMetrics,
     TransformersAssetMetrics
 )
-from db.db_handler import TinyDBHandler
+from emerge.db.db_handler import TinyDBHandler
 
 def opendss_load_metrics_extractor(dss_instance):
 

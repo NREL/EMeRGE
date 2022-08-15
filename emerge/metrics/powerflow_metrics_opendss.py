@@ -12,17 +12,17 @@ import networkx as nx
 import numpy as np
 
 # internal imports
-from utils.utils import setup_logging
-from simulator.opendss import OpenDSSSimulator
-from db.db_handler import TinyDBHandler
-from metrics.feeder_metrics_opendss import networkx_from_opendss_model
+from emerge.utils.util import setup_logging
+from emerge.simulator.opendss import OpenDSSSimulator
+from emerge.db.db_handler import TinyDBHandler
+from emerge.metrics.feeder_metrics_opendss import networkx_from_opendss_model
 
 
 def get_allbus_voltage_pu(dss_instance):
     return dss_instance.Circuit.AllBusMagPu()
 
 def get_voltage_distribution(voltage_array:list, 
-    bins:list = [0.9 + i*0.01 for i in range(20)]):
+    bins:list = [0.7 + i*0.05 for i in range(12)]):
 
     # Remove zeros
     voltage_array = np.array(voltage_array)
