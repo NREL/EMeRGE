@@ -132,11 +132,6 @@ def create_feeder_geojson(
     write_file(load_geojson, output_folder / 'loads.json')
 
 
-
-    
-
-
-
 if __name__ == '__main__':
 
     # setup_logging()

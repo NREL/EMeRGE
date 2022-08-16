@@ -1,7 +1,6 @@
 """ This module manages time series simulation for computing 
 time series metrics. """
 
-from distutils.debug import DEBUG
 from typing import Union
 import datetime
 import logging
@@ -9,6 +8,7 @@ import logging
 import pandas as pd
 
 from emerge.simulator import opendss
+from emerge.metrics.time_series_metrics import observer
 
 
 logger = logging.getLogger(__name__)
@@ -66,15 +66,20 @@ class OpenDSSSimulationManager:
         export_df.to_csv(export_path)
 
 
-    def simulate(self):
+    def simulate(self, subject: Union[observer.MetricsSubject, None] = None):
         """ Loops through all the simulation timesteps """
 
         while self.current_time <= self.simulation_end_time:
             
             convergence = self.opendss_instance.solve()
             self.update_convergence_dict(self.current_time, convergence)
+
+            if subject:
+                subject.notify(self.opendss_instance.dss_instance)
+            
             self.current_time += datetime.timedelta(minutes=self.simulation_timestep_min)
             logger.info(f"Simulation finished for {self.current_time} >> {convergence}")
+
 
     
 

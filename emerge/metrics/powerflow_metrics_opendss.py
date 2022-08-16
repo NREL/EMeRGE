@@ -10,6 +10,8 @@ import json
 # third-party imports
 import networkx as nx
 import numpy as np
+import opendssdirect as dss
+import pandas as pd
 
 # internal imports
 from emerge.utils.util import setup_logging
@@ -70,6 +72,26 @@ def get_voltage_by_lat_lon(dss_instance):
         voltage_by_lat_lon['voltage (pu)'].append(voltage_pu)
     
     return voltage_by_lat_lon
+
+def get_voltage_dataframe(dss_instance: dss):
+    """ Function to retrieve voltage dataframe for all buses. 
+    
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+    """
+
+    all_bus_voltage = dss_instance.Circuit.AllBusMagPu()
+    all_bus_names = dss_instance.Circuit.AllBusNames()
+
+    voltage_df = {"busname": [], "voltage(pu)": []}
+
+    for bus, voltage_pu in zip(all_bus_names, all_bus_voltage):
+        voltage_df['busname'].append(bus)
+        voltage_df['voltage(pu)'].append(voltage_pu)
+    
+    return pd.DataFrame(voltage_df).set_index("busname")
+
+
 
 if __name__ == '__main__':
 
