@@ -6,6 +6,7 @@
 # standard imports
 import logging
 import json
+import math
 
 # third-party imports
 import networkx as nx
@@ -92,6 +93,59 @@ def get_voltage_dataframe(dss_instance: dss):
     return pd.DataFrame(voltage_df).set_index("busname")
 
 
+def get_lineloading_dataframe(dss_instance: dss):
+    """ Function to retrieve line loading dataframe for all line segments. 
+    
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+    """
+    line_loading_df = {"linename": [], "loading(pu)": []}
+
+    dss_instance.Circuit.SetActiveClass("Line")
+    flag = dss_instance.ActiveClass.First()
+
+    while flag:
+        line_name = dss_instance.CktElement.Name().lower()
+        n_phases = dss_instance.CktElement.NumPhases()
+        line_limit = dss_instance.CktElement.NormalAmps()
+        currents = dss_instance.CktElement.CurrentsMagAng()[:2 * n_phases]
+        line_current = currents[::2]
+        ldg = max(line_current) / float(line_limit)
+        line_loading_df['linename'].append(line_name)
+        line_loading_df['loading(pu)'].append(ldg)
+        flag = dss_instance.ActiveClass.Next()
+    
+    return pd.DataFrame(line_loading_df).set_index("linename")
+
+def get_transloading_dataframe(dss_instance: dss):
+    """ Function to retrieve transformer loading dataframe for all transformers. 
+    
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+    """
+    trans_loading_df = {"transformername": [], "loading(pu)": []}
+
+    dss_instance.Circuit.SetActiveClass("Transformer")
+    flag = dss_instance.ActiveClass.First()
+
+    while flag:
+        xfmr_name = dss_instance.CktElement.Name().lower()
+        n_phases = dss_instance.CktElement.NumPhases()
+        hs_kv = float(dss_instance.Properties.Value('kVs').split('[')[1].split(',')[0])
+        kva = float(dss_instance.Properties.Value('kVA'))
+        if n_phases > 1:
+            xfmr_limit = kva / (hs_kv * math.sqrt(3))
+        else:
+            xfmr_limit = kva / (hs_kv)
+        currents = dss_instance.CktElement.CurrentsMagAng()[:2 * n_phases]
+        xfmr_current = currents[::2]
+        ldg = max(xfmr_current) / float(xfmr_limit)
+        
+        trans_loading_df['transformername'].append(xfmr_name)
+        trans_loading_df['loading(pu)'].append(ldg)
+        flag = dss_instance.ActiveClass.Next()
+    
+    return pd.DataFrame(trans_loading_df).set_index("transformername")
 
 if __name__ == '__main__':
 

@@ -15,5 +15,38 @@ def test_sardi_voltage():
     subject.attach(sardi_voltage_observer)
 
     manager.simulate(subject)
-    print(sardi_voltage_observer.get_metric())
+
+def test_sardi_line():
+    """ Function to test the computation of SARDI line."""
+
+    manager = simulation_manager_setup()
+    subject = observer.MetricsSubject()
+
+    sardi_line_observer = system_metrics.SARDI_line()
+    subject.attach(sardi_line_observer)
+
+    manager.simulate(subject)
+
+def test_sardi_transformer():
+    """ Function to test the computation of SARDI transformer."""
+
+    manager = simulation_manager_setup()
+    subject = observer.MetricsSubject()
+
+    sardi_xfmr_observer = system_metrics.SARDI_transformer()
+    subject.attach(sardi_xfmr_observer)
+
+    manager.simulate(subject)
+    print(sardi_xfmr_observer.get_metric())
+
+def test_sardi_aggregated():
+    """ Function to test the computation of SARDI aggregated."""
+
+    manager = simulation_manager_setup()
+    subject = observer.MetricsSubject()
+
+    sardi_aggregated_observer = system_metrics.SARDI_aggregated()
+    subject.attach(sardi_aggregated_observer)
+
+    manager.simulate(subject)
 
