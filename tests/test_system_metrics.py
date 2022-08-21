@@ -2,7 +2,6 @@
 
 from emerge.metrics.time_series_metrics import system_metrics
 from emerge.metrics.time_series_metrics import observer
-from emerge.metrics.time_series_metrics import system_metrics
 from conftest import simulation_manager_setup
 
 def test_sardi_voltage():

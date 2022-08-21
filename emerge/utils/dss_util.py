@@ -1,8 +1,12 @@
 """ Utility functions for dss_instance. """
+import copy
 
 import opendssdirect as dss
 import pandas as pd
+import networkx as nx
+
 from emerge.metrics.exceptions import EnergyMeterNotDefined
+from emerge.metrics import feeder_metrics_opendss
 
 def get_bus_load_dataframe(dss_instance:dss):
     """ Bus to load mapping dataframe. """
@@ -47,7 +51,7 @@ def get_line_customers(dss_instance: dss):
     flag = dss_instance.ActiveClass.First()
 
     while flag:
-        line_name = dss_instance.CktElement.Name()
+        line_name = dss_instance.CktElement.Name().lower()
         n_customers = dss_instance.Lines.TotalCust()
         line_customers_df['linename'].append(line_name)
         line_customers_df['customers'].append(n_customers)
@@ -57,6 +61,45 @@ def get_line_customers(dss_instance: dss):
         raise EnergyMeterNotDefined("Define energy meter to be able to find" 
             "number of customers downward of line segment.")
     return pd.DataFrame(line_customers_df).set_index("linename")
+
+
+def get_transformer_customers(dss_instance: dss):
+    """ Function to retrieve dataframe containing number
+    of downward serving customers for all transformers. 
+    
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+    """
+    xfmr_customers_df = {"transformername": [], "customers": []}
+
+    network = feeder_metrics_opendss.networkx_from_opendss_model(dss_instance)
+    substation_bus = get_source_node(dss_instance)
+    bus_load_flag_df = get_bus_load_flag(dss_instance)
+
+    dss_instance.Circuit.SetActiveClass('Transformer')
+    flag = dss_instance.ActiveClass.First()
+
+    while flag:
+        network_copy = copy.deepcopy(network)
+        xmfr_name = dss_instance.CktElement.Name().lower()
+
+        edge_to_be_removed = []
+        for edge in network_copy.edges():
+            edge_data = network_copy.get_edge_data(*edge)
+            if edge_data and 'name' in edge_data and edge_data['name'] == xmfr_name:
+                edge_to_be_removed.append(edge)
+
+        network_copy.remove_edges_from(edge_to_be_removed)
+        connected_buses = nx.node_connected_component(network_copy, substation_bus)
+        
+        filtered_bus_df = bus_load_flag_df.loc[bus_load_flag_df.index.difference(connected_buses)]
+        
+        n_customers = filtered_bus_df.sum()['is_load']
+        xfmr_customers_df['transformername'].append(xmfr_name)
+        xfmr_customers_df['customers'].append(n_customers)
+        flag = dss_instance.ActiveClass.Next()
+    
+    return pd.DataFrame(xfmr_customers_df).set_index("transformername")
 
 def get_source_node(dss_instance: dss):
     

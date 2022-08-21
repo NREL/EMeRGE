@@ -2,7 +2,9 @@
 
 import abc
 import uuid
-from typing import Dict
+from typing import Dict, List
+
+from emerge.db import db_handler
 
 class MetricObserver(abc.ABC):
     """ Abstracte interace for metrics observers"""
@@ -16,6 +18,7 @@ class MetricObserver(abc.ABC):
     @abc.abstractmethod
     def get_metric(self)-> Dict:
         """ All metric observer subclass must implement get_metric method. """
+
 
 class MetricsSubject:
     """ Class for managing metric subscribers """
@@ -50,5 +53,14 @@ class MetricsSubject:
             obs.compute(*args, **kwargs)
 
     
-
-
+def export_tinydb_json(observers: List[MetricObserver], json_path: str ):
+    """ Function for exporting metrics. """
+    
+    db_instance = db_handler.TinyDBHandler()
+    for observer in observers:
+        db_instance.db.insert(
+            {
+                "type": "metrics", 
+                "name": observer.__class__.__name__,
+                "data": observer.get_metric()
+            })

@@ -20,6 +20,20 @@ def test_get_line_customers():
 
     assert isinstance(line_customers_df, pd.DataFrame)
 
+def test_get_transformer_customers():
+    """ Test function for `get_transformer_customers` 
+    utility function."""
+
+    root_path = Path(__file__).absolute().parents[1] 
+    master_dss_file = root_path / 'examples' / 'opendss' / 'master.dss'
+
+    simulator = opendss.OpenDSSSimulator(master_dss_file)
+    xfmr_customers_df = dss_util.get_transformer_customers(
+        simulator.dss_instance
+    )
+
+    assert isinstance(xfmr_customers_df, pd.DataFrame)
+
 def test_get_source_node():
     """ test function for getting source node. """
     root_path = Path(__file__).absolute().parents[1] 
@@ -32,6 +46,8 @@ def test_get_source_node():
     assert source_node == '80_27834864364979_13_0915193376659_htnode'
 
 def test_get_bus_load_flag():
+    """ Test function for getting mapping between bus and load flag. """
+    
     root_path = Path(__file__).absolute().parents[1] 
     master_dss_file = root_path / 'examples' / 'opendss' / 'master.dss'
 
