@@ -56,7 +56,7 @@ class MetricsSubject:
 def export_tinydb_json(observers: List[MetricObserver], json_path: str ):
     """ Function for exporting metrics. """
     
-    db_instance = db_handler.TinyDBHandler()
+    db_instance = db_handler.TinyDBHandler(json_path)
     for observer in observers:
         db_instance.db.insert(
             {

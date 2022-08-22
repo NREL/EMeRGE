@@ -10,17 +10,18 @@ from tinydb import Query
 # internal imports
 from emerge.utils.util import read_file
 from emerge.db.db_handler import TinyDBHandler
+from emerge.api import config_model
 
+config_json = Path(__file__).absolute().parents[0] / 'config.json'
+config = config_model.Config.parse_file(config_json)
 
-db_instance = TinyDBHandler(r'C:\Users\KDUWADI\Desktop\NREL_Projects\Tunishia\db.json')
+db_snapshot = TinyDBHandler(config.snapshot_metrics_db)
+db_timeseries = TinyDBHandler(config.timeseries_metrics_db)
 query = Query()
 
+# Fast API setup
 app = FastAPI()
-
-origins = [
-    "http://localhost:3001",
-]
-
+origins = [config.ui_url]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -37,7 +38,7 @@ def read_root():
 @app.get("/assets/geojsons/buses")
 def get_buses_geojson():
  
-    file_path = Path(r'C:\Users\KDUWADI\Desktop\NREL_Projects\Tunishia\output_geojson\buses.json')
+    file_path = Path(config.geojson_path) / 'buses.json'
     json_content = {
         "type": file_path.name.split('.')[0],
         "data": read_file(file_path)
@@ -48,7 +49,7 @@ def get_buses_geojson():
 @app.get("/assets/geojsons/lines")
 def get_lines_geojson():
  
-    file_path = Path(r'C:\Users\KDUWADI\Desktop\NREL_Projects\Tunishia\output_geojson\lines.json')
+    file_path = Path(config.geojson_path) / 'lines.json'
     json_content = {
         "type": file_path.name.split('.')[0],
         "data": read_file(file_path)
@@ -59,7 +60,7 @@ def get_lines_geojson():
 @app.get("/assets/geojsons/transformers")
 def get_transformer_geojson():
  
-    file_path = Path(r'C:\Users\KDUWADI\Desktop\NREL_Projects\Tunishia\output_geojson\transformers.json')
+    file_path = Path(config.geojson_path) / 'transformers.json'
     json_content = {
         "type": file_path.name.split('.')[0],
         "data": read_file(file_path)
@@ -70,7 +71,7 @@ def get_transformer_geojson():
 @app.get("/assets/geojsons/loads")
 def get_loads_geojson():
  
-    file_path = Path(r'C:\Users\KDUWADI\Desktop\NREL_Projects\Tunishia\output_geojson\loads.json')
+    file_path = Path(config.geojson_path) / 'loads.json'
     json_content = {
         "type": file_path.name.split('.')[0],
         "data": read_file(file_path)
@@ -81,7 +82,7 @@ def get_loads_geojson():
 @app.get("/assets/metrics")
 def get_asset_metrics():
     
-    asset_metrics = db_instance.db.search(query.type=='asset_metrics')[0]['metrics']
+    asset_metrics = db_snapshot.db.search(query.type=='asset_metrics')[0]['metrics']
     
     json_content = [
         {
@@ -101,9 +102,7 @@ def get_asset_metrics():
 @app.get("/snapshots/voltage")
 def get_snapshots_voltage():
     
-    voltage_for_heatmap = db_instance.db.search(query.type=='snapshot_voltage_for_heatmap')[0]['data']
-    # voltage_heatmap_figure = px.density_mapbox(voltage_for_heatmap_df, lat='latitudes', \
-    #     lon='longitudes', z='voltage (pu)', radius=10, 
+    voltage_for_heatmap = db_snapshot.db.search(query.type=='snapshot_voltage_for_heatmap')[0]['data']
     json_content = [
         {
            "coordinates": [lon, lat],
@@ -120,7 +119,7 @@ def get_snapshots_voltage():
 @app.get("/snapshots/voltage-distribution")
 def get_snapshots_voltage():
     
-    voltage_bins = db_instance.db.search(query.type=='snapshot_voltage_bins')
+    voltage_bins = db_snapshot.db.search(query.type=='snapshot_voltage_bins')
     json_content = [
         {
            "x": arr['data']['Voltage bins'],
@@ -131,7 +130,3 @@ def get_snapshots_voltage():
     ]
 
     return json_content
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}

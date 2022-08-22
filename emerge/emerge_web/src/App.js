@@ -20,6 +20,7 @@ class App extends Component {
                 <Routes>
                   <Route path='/assets' element={<AssetsPage/>} />
                   <Route path='/snapshots' element={<SnapShot />} />
+                  <Route path='/timeseries-metrics' element={<SnapShot />} />
                 </Routes>
               </div>
         </div>

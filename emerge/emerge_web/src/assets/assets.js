@@ -75,14 +75,14 @@ function AssetMetrics(props){
 
     return (
       <div>
-        <h1 class="text-xl text-orange-500 font-bold"> {props.title} </h1>
+        <h1 class="text-xl text-orange-500 font-bold mb-2"> {props.title} </h1>
 
         <div class="grid grid-cols-2">
             {
               props.data.map((d, index) => { return (
-                <div class="flex flex-col items-center mb-5 capitalize text-center px-5" key={index}>
-                  <h1 class="text-4xl"> {d.value} </h1>
-                  <p> {d.metric}</p> 
+                <div class="flex flex-col items-center mb-5 capitalize text-center px-1" key={index}>
+                  <h1 class="text-2xl 2xl:text-4xl"> {d.value} </h1>
+                  <p class="italic text-sm 2xl:text-md"> {d.metric}</p> 
                 </div>
               )
               })
@@ -178,8 +178,8 @@ class AssetsPage extends Component {
                   <Assets asset_data={this.state.asset_data}/> 
               </div>
     
-              <div class="absolute top-10 right-10 text-white w-1/5 
-                  bg-gray-800 shadow-md rounded-md opacity-95 max-h-[48rem] overflow-y-scroll">
+              <div class="absolute top-10 right-10 text-white w-1/4 2xl:w-1/5 
+                  bg-gray-800 shadow-md rounded-md opacity-95 max-h-[32rem] 2xl:max-h-[48rem] overflow-y-scroll">
                 {
                   this.state.metrics.map( (metric, index) => {
                     return (

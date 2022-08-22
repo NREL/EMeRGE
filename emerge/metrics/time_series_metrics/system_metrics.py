@@ -236,7 +236,7 @@ class SARDI_line(observer.MetricObserver):
 
             self.network_copy.remove_edges_from(edge_to_be_removed)
             connected_buses = nx.node_connected_component(self.network_copy, self.substation_bus)
-            filtered_bus_df = self.bus_load_flag_df.loc[connected_buses]
+            filtered_bus_df = self.bus_load_flag_df.loc[list(connected_buses)]
             total_load = dss_instance.Loads.Count()
             self.sardi_line += (total_load - filtered_bus_df.sum()['is_load'])*100/total_load
 
