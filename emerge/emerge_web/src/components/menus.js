@@ -4,6 +4,7 @@ import plug from '../icons/power-plug.svg';
 import asset_types from '../assets/asset_types.js';
 import assets_logo from '../icons/assets_icon.svg';
 import logo from '../icons/logo.svg';
+import { Component } from "react";
 
 
 function Header() {
@@ -127,4 +128,135 @@ function SnapshotsPageMenu(){
     )
 }
 
-export {Menu, AssetsPageMenu, Header, SnapshotsPageMenu};
+function MetricsPageMenu(props){
+
+    return (
+      <div>
+        <div class="flex border-t text-white">
+  
+            <div class="min-h-screen bg-slate-700 w-full">
+              
+              <div class="px-10 py-5">
+                <h1 class="text-xl font-bold bg-slate-900 rounded-md p-2"> Time series metrics </h1>
+              </div>
+
+              <div>
+                <div class="px-10 py-5">
+                    <div class="flex items-center pb-2">
+                      <input type="radio" name="value" value="system" defaultChecked={props.option.value==='system'} onChange={props.handleChange}/>
+                      <h1 class="pl-3 text-xl font-bold text-sky-500"> System level metrics </h1>
+                    </div>
+                    <p class="italic mb-3"> Single value time series metrics.
+                    </p>
+                </div>
+              </div>
+  
+              <div >
+                <div class="px-10 py-5">
+                    <div class="flex items-center pb-2">
+                      <input type="radio" name="value" value="nvri" defaultChecked={props.option.value==='nvri'} onChange={props.handleChange}/>
+                      <h1 class="pl-3 text-xl font-bold text-sky-500"> NVRI </h1>
+                    </div>
+                    <p class="italic mb-3 border-b"> Average depth of voltage violation for a node.
+                    </p>
+  
+                    <div class="grid grid-cols-2 2xl:grid-cols-5 gap-x-1 grid">
+                    <div class="flex items-center">
+                        <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                        <p class="pl-2 font-bold">0.04</p>
+                      </div>
+  
+                      <div class="flex items-center">
+                        <div class="w-4 h-4 bg-orange-500 rounded-full"></div>
+                        <p class="pl-2 font-bold">0.08</p>
+                      </div>
+  
+                      <div class="flex items-center">
+                        <div class="w-6 h-6 bg-orange-500 rounded-full"></div>
+                        <p class="pl-2 font-bold">0.12</p>
+                      </div>
+  
+                      <div class="flex items-center">
+                        <div class="w-8 h-8 bg-orange-500 rounded-full"></div>
+                        <p class="pl-2 font-bold">0.16</p>
+                      </div>
+  
+                      <div class="flex items-center">
+                        <div class="w-10 h-10 bg-orange-500 rounded-full"></div>
+                        <p class="pl-2 font-bold">0.2</p>
+                      </div>
+                      
+                    </div>
+                    
+                      
+                </div>
+              </div>
+  
+              <div >
+                <div class="px-10 py-5">
+                    <div class="flex items-center pb-2">
+                      <input type="radio" name="value" value="llri" defaultChecked={props.option.value==='llri'} onChange={props.handleChange}/>
+                      <h1 class="pl-3 text-xl font-bold text-sky-500"> LLRI</h1>
+                    </div>
+                    <p class="italic mb-3 border-b"> Average depth of thermal violation for a line.
+                    </p>
+
+                    <div class="flex justify-between font-bold">
+                      <h1> 0.0 </h1>
+                      <h1> {props.max_llri} </h1>
+                    </div>
+                    <div class="h-6 w-full bg-gradient-to-r from-[rgb(0,140,255)] to-[rgb(255,140,255)]"></div>
+                    
+                      
+                </div>
+              </div>
+
+              <div >
+                <div class="px-10 py-5">
+                    <div class="flex items-center pb-2">
+                      <input type="radio" name="value" value="tlri" defaultChecked={props.option.value==='tlri'} onChange={props.handleChange}/>
+                      <h1 class="pl-3 text-xl font-bold text-sky-500"> TLRI</h1>
+                    </div>
+                    <p class="italic mb-3 border-b"> Average depth of thermal violation for a transformer.
+                    </p>
+  
+                    <div class="grid grid-cols-2 2xl:grid-cols-5 gap-x-1 grid">
+                    <div class="flex items-center">
+                        <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                        <p class="pl-2 font-bold">0.04</p>
+                      </div>
+  
+                      <div class="flex items-center">
+                        <div class="w-4 h-4 bg-orange-500 rounded-full"></div>
+                        <p class="pl-2 font-bold">0.08</p>
+                      </div>
+  
+                      <div class="flex items-center">
+                        <div class="w-6 h-6 bg-orange-500 rounded-full"></div>
+                        <p class="pl-2 font-bold">0.12</p>
+                      </div>
+  
+                      <div class="flex items-center">
+                        <div class="w-8 h-8 bg-orange-500 rounded-full"></div>
+                        <p class="pl-2 font-bold">0.16</p>
+                      </div>
+  
+                      <div class="flex items-center">
+                        <div class="w-10 h-10 bg-orange-500 rounded-full"></div>
+                        <p class="pl-2 font-bold">0.2</p>
+                      </div>
+                      
+                    </div>
+                    
+                      
+                </div>
+              </div>
+
+            </div>
+  
+        </div>
+      </div>
+    )
+  }
+
+export {Menu, AssetsPageMenu, Header, SnapshotsPageMenu, MetricsPageMenu};

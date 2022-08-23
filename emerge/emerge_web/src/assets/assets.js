@@ -3,6 +3,7 @@ import DeckGL from '@deck.gl/react';
 import {GeoJsonLayer} from '@deck.gl/layers';
 import {Map} from 'react-map-gl';
 import {AssetsPageMenu} from '../components/menus';
+import config from '../config';
 
 class Assets extends Component {
   
@@ -13,12 +14,12 @@ class Assets extends Component {
     render() {
 
         // Set your mapbox access token here
-        const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoia2R1d2FkaSIsImEiOiJjbDR4bGdwMHYwMGtzM2xvMnJ3Z2w5NHJtIn0.sDUtApi8peyjZPy3ASmPWg';
+        const MAPBOX_ACCESS_TOKEN = config.mapbox_token
 
         // Viewport settings
         const INITIAL_VIEW_STATE = {
-        longitude: 80.267428,
-        latitude: 13.083537,
+        longitude: this.props.center.longitude,
+        latitude: this.props.center.latitude,
         zoom: 15,
         pitch: 0,
         bearing: 0
@@ -104,7 +105,19 @@ class AssetsPage extends Component {
     this.state = {
       "asset_data": [],
       "metrics": [],
+      "center": {"longitude": 0, "latitude": 0}
     }
+    fetch(config.base_url + '/map_center')
+        .then(response => 
+                response.json())
+        .then((data)=>{
+            this.setState({"center": data})
+
+        })
+        .catch(error=>{
+            console.log(error);
+        });
+
   }
 
   handlePageUpdate(page_name) {
@@ -120,7 +133,7 @@ class AssetsPage extends Component {
 
 
     if(event.target.checked){
-      fetch('http://localhost:8000/assets/geojsons/' + event.target.name)
+      fetch(config.base_url + '/assets/geojsons/' + event.target.name)
       .then(response => 
             response.json())
       .then((data)=>{
@@ -134,7 +147,7 @@ class AssetsPage extends Component {
           console.log(error);
       });
 
-      fetch('http://localhost:8000/assets/metrics')
+      fetch( config.base_url + '/assets/metrics')
       .then(response => 
             response.json())
       .then((data)=>{
@@ -175,7 +188,7 @@ class AssetsPage extends Component {
                 <AssetsPageMenu handleCheckbox={this.handleCheckbox.bind(this)} state={this.state}/> </div>
               
               <div class="w-3/4 relative border-l"> 
-                  <Assets asset_data={this.state.asset_data}/> 
+                  <Assets asset_data={this.state.asset_data} center={this.state.center}/> 
               </div>
     
               <div class="absolute top-10 right-10 text-white w-1/4 2xl:w-1/5 
@@ -184,7 +197,7 @@ class AssetsPage extends Component {
                   this.state.metrics.map( (metric, index) => {
                     return (
                       <div class="p-10" key={index}>
-                          <AssetMetrics title={metric.type} data={metric.data}/>
+                          <AssetMetrics title={metric.type} data={metric.data} />
                       </div>
                     )
                   })

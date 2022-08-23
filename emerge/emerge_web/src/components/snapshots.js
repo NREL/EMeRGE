@@ -2,30 +2,24 @@ import { Component } from "react";
 import {SnapshotsPageMenu} from "./menus";
 import DeckGL from '@deck.gl/react';
 import {HeatmapLayer} from '@deck.gl/aggregation-layers';
-// import {ScatterplotLayer} from '@deck.gl/layers';
-import {ScreenGridLayer} from '@deck.gl/aggregation-layers';
-import {GridCellLayer} from '@deck.gl/layers';
 import Plotly from 'plotly.js-dist';
 import {Map} from 'react-map-gl';
-
+import config from '../config';
 
 class VoltageSnapshot extends Component {
   
     constructor(props) {
         super(props)
-
     }
 
-    render() {
 
-        console.log(this.props.voltage)
+    render() {
         // Set your mapbox access token here
-        const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoia2R1d2FkaSIsImEiOiJjbDR4bGdwMHYwMGtzM2xvMnJ3Z2w5NHJtIn0.sDUtApi8peyjZPy3ASmPWg';
 
         // Viewport settings
         const INITIAL_VIEW_STATE = {
-        longitude: 80.267428,
-        latitude: 13.083537,
+        longitude: this.props.center.longitude,
+        latitude: this.props.center.latitude,
         zoom: 15,
         pitch:0,
         bearing: 0
@@ -52,7 +46,7 @@ class VoltageSnapshot extends Component {
                 layers={layers}
             >
                 <Map 
-                mapboxAccessToken={MAPBOX_ACCESS_TOKEN} 
+                mapboxAccessToken={config.mapbox_token} 
                 mapStyle="mapbox://styles/mapbox/dark-v10"
                 />
             </DeckGL>
@@ -68,10 +62,22 @@ class SnapShot extends Component {
     constructor(){
         super()
         this.state = {
-            'voltage': []
+            voltage: [],
+            center : {'longitude': 0, 'latitude': 0}
         }
 
-        fetch('http://localhost:8000/snapshots/voltage')
+        fetch(config.base_url + '/map_center')
+        .then(response => 
+                response.json())
+        .then((data)=>{
+            this.setState({"center": data})
+
+        })
+        .catch(error=>{
+            console.log(error);
+        });
+
+        fetch(config.base_url + '/snapshots/voltage')
         .then(response => 
                 response.json())
         .then((data)=>{
@@ -82,12 +88,11 @@ class SnapShot extends Component {
             console.log(error);
         });
 
-       
     }
 
     componentDidMount(){
         
-        fetch('http://localhost:8000/snapshots/voltage-distribution')
+        fetch( config.base_url + '/snapshots/voltage-distribution')
         .then(response => 
                 response.json())
         .then((data)=>{
@@ -117,7 +122,7 @@ class SnapShot extends Component {
                     <SnapshotsPageMenu />
                 </div>
                 <div class="w-3/4 relative border-l">
-                    <VoltageSnapshot voltage={this.state.voltage}/>
+                    <VoltageSnapshot voltage={this.state.voltage} center={this.state.center}/>
                 </div>
 
                 <div id="myDiv" class="absolute bottom-0 right-0 w-2/4 

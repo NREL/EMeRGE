@@ -11,9 +11,15 @@ from tinydb import Query
 from emerge.utils.util import read_file
 from emerge.db.db_handler import TinyDBHandler
 from emerge.api import config_model
+from emerge.api import utils
 
 config_json = Path(__file__).absolute().parents[0] / 'config.json'
 config = config_model.Config.parse_file(config_json)
+
+buses_to_coordinate_mapping = utils.buses_coordinate_mapping(Path(config.geojson_path) / 'buses.json')
+lines_to_coordinate_mapping = utils.lines_coordinate_mapping(Path(config.geojson_path) / 'lines.json')
+xfmr_to_coordinate_mapping = utils.lines_coordinate_mapping(Path(config.geojson_path) / 'transformers.json')
+map_center = utils.get_map_center(Path(config.geojson_path) / 'buses.json')
 
 db_snapshot = TinyDBHandler(config.snapshot_metrics_db)
 db_timeseries = TinyDBHandler(config.timeseries_metrics_db)
@@ -29,11 +35,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
 
 @app.get("/assets/geojsons/buses")
 def get_buses_geojson():
@@ -83,7 +84,7 @@ def get_loads_geojson():
 def get_asset_metrics():
     
     asset_metrics = db_snapshot.db.search(query.type=='asset_metrics')[0]['metrics']
-    
+
     json_content = [
         {
             "type": key,
@@ -130,3 +131,68 @@ def get_snapshots_voltage():
     ]
 
     return json_content
+
+@app.get("/metrics/timeseries/nvri")
+def get_timeseries_metric():
+    
+    metric_data = db_timeseries.db.search(query.type=='metrics' and query.name=='NVRI')[0]['data']
+    
+    json_content = [
+        {
+            "coordinates": buses_to_coordinate_mapping[key],
+            "name": key,
+            "data": value
+        } for key, value in metric_data.items() 
+    ]
+
+    return json_content
+
+@app.get("/metrics/timeseries/llri")
+def get_timeseries_metric():
+    
+    metric_data = db_timeseries.db.search(query.type=='metrics' and query.name=='LLRI')[0]['data']
+    
+    json_content = [
+        {
+            "coordinates": lines_to_coordinate_mapping[key.split('.')[1]],
+            "name": key,
+            "data": value
+        } for key, value in metric_data.items() 
+    ]
+
+    return json_content
+
+@app.get("/metrics/timeseries/tlri")
+def get_timeseries_metric():
+    
+    metric_data = db_timeseries.db.search(query.type=='metrics' and query.name=='TLRI')[0]['data']
+    
+    json_content = [
+        {
+            "coordinates": xfmr_to_coordinate_mapping['Transformer.' + key.split('.')[1]],
+            "name": key,
+            "data": value
+        } for key, value in metric_data.items() 
+    ]
+
+    return json_content
+
+@app.get("/metrics/system_metrics")
+def get_system_metric():
+    
+    metrics = ['SARDI_voltage', 'SARDI_line', 'SARDI_transformer', 'SARDI_aggregated']
+    
+    data = []
+
+    for metric in metrics:
+        metric_data = db_timeseries.db.search(query.type=='metrics' and query.name==metric)[0]['data']
+        data.append({
+            "name": metric.replace('_', ' '),
+            "value": metric_data[metric.lower()]
+        })
+
+    return data
+
+@app.get('/map_center')
+def get_map_center():
+    return  map_center

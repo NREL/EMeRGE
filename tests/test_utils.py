@@ -2,9 +2,11 @@
 
 from pathlib import Path
 
+import pandas as pd
+
 from emerge.utils import dss_util
 from emerge.simulator import opendss
-import pandas as pd
+from emerge.api import utils
 
 def test_get_line_customers():
     """ Test function for `get_line_customers` 
@@ -56,3 +58,32 @@ def test_get_bus_load_flag():
         simulator.dss_instance
     )
     assert is_bus_load_df.sum()['is_load'] == simulator.dss_instance.Loads.Count()
+
+
+def test_buses_coordinate_mapping():
+    """ Test function for getting  buses coordinate mapping. """
+
+    geojson_path = Path(__file__).absolute().parents[0] / 'data' / 'geojsons'
+    bus_to_coordinate_mapping = utils.buses_coordinate_mapping(geojson_path / 'buses.json')
+    assert isinstance(bus_to_coordinate_mapping, dict)
+    
+def test_lines_coordinate_mapping():
+    """ Test function for getting lines coordinate mapping. """
+
+    geojson_path = Path(__file__).absolute().parents[0] / 'data' / 'geojsons'
+    lines_to_coordinate_mapping = utils.lines_coordinate_mapping(geojson_path / 'lines.json')
+    assert isinstance(lines_to_coordinate_mapping, dict)
+
+def test_transformer_coordinate_mapping():
+    """ Test function for getting transformer coordinate mapping. """
+
+    geojson_path = Path(__file__).absolute().parents[0] / 'data' / 'geojsons'
+    xfmr_to_coordinate_mapping = utils.transformer_coordinate_mapping(geojson_path / 'transformers.json')
+    assert isinstance(xfmr_to_coordinate_mapping, dict)
+
+def test_getting_map_center():
+    """ Test function for getting map center. """
+
+    geojson_path = Path(__file__).absolute().parents[0] / 'data' / 'geojsons'
+    map_center = utils.get_map_center(geojson_path / 'buses.json')
+    assert isinstance(map_center, dict)

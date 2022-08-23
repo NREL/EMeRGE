@@ -12,7 +12,7 @@ export default [
     },
     {
         "name": "Line sections",
-        "variable": "lines",
+        "variable": "feeder",
         "bg_color": "bg-white"
     },
     {
@@ -22,7 +22,7 @@ export default [
     },
     {
         "name": "PV Systems",
-        "variable": "pvsystems",
+        "variable": "pvs",
         "bg_color": "bg-orange-500"
     },
     {

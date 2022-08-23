@@ -4,6 +4,7 @@ import { Routes, Route} from "react-router-dom";
 import {Menu, Header} from './components/menus';
 import AssetsPage from './assets/assets';
 import SnapShot from './components/snapshots';
+import MetricPage from './components/metrics';
 // import {axios} from 'axios';
 
 
@@ -20,7 +21,7 @@ class App extends Component {
                 <Routes>
                   <Route path='/assets' element={<AssetsPage/>} />
                   <Route path='/snapshots' element={<SnapShot />} />
-                  <Route path='/timeseries-metrics' element={<SnapShot />} />
+                  <Route path='/timeseries-metrics' element={<MetricPage />} />
                 </Routes>
               </div>
         </div>
