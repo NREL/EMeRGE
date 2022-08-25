@@ -253,12 +253,15 @@ def get_coordinates(dss_instance):
 
     node_data = {node[0]: node[1] for node in network.nodes.data()}
     for edge in network.edges():
-        from_node = node_data[edge[0]]['pos']
-        to_node = node_data[edge[1]]['pos']
-        coordinates['nodes']['latitudes'].extend([from_node[1], to_node[1]])
-        coordinates['nodes']['longitudes'].extend([from_node[0], to_node[0]])
-        coordinates['edges']['latitudes'].extend([from_node[1], to_node[1], None])
-        coordinates['edges']['longitudes'].extend([from_node[0], to_node[0], None])
+        try:
+            from_node = node_data[edge[0]]['pos']
+            to_node = node_data[edge[1]]['pos']
+            coordinates['nodes']['latitudes'].extend([from_node[1], to_node[1]])
+            coordinates['nodes']['longitudes'].extend([from_node[0], to_node[0]])
+            coordinates['edges']['latitudes'].extend([from_node[1], to_node[1], None])
+            coordinates['edges']['longitudes'].extend([from_node[0], to_node[0], None])
+        except Exception as e:
+            print(f"{edge} can't get coord info {network.get_edge_data(*edge)}")
         
     return coordinates
 

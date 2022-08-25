@@ -12,7 +12,7 @@ export default [
     },
     {
         "name": "Line sections",
-        "variable": "feeder",
+        "variable": "lines",
         "bg_color": "bg-white"
     },
     {

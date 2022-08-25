@@ -6,8 +6,8 @@ Create a geoJSON for a feeder model
 from pathlib import Path
 
 # internal imports
-from utils.utils import validate_path, write_file
-from simulator.opendss import OpenDSSSimulator
+from emerge.utils.util import validate_path, write_file
+from emerge.simulator.opendss import OpenDSSSimulator
 
 def create_feeder_geojson(
     dss_instance,
@@ -15,6 +15,7 @@ def create_feeder_geojson(
 ):
 
     output_folder = Path(output_folder)
+    output_folder.mkdir(exist_ok=True)
     validate_path(output_folder)
 
     # Let's get all the buses
@@ -82,7 +83,7 @@ def create_feeder_geojson(
     flag = dss_instance.Transformers.First()
     while flag:
         transformer_name = dss_instance.CktElement.Name()
-        bus1, bus2 = dss_instance.CktElement.BusNames()
+        bus1, bus2 = dss_instance.CktElement.BusNames()[:2]
         bus1, bus2 = bus1.split('.')[0], bus2.split('.')[0]
         transformer_geojson['features'].append(
             {
@@ -131,14 +132,3 @@ def create_feeder_geojson(
     
     write_file(load_geojson, output_folder / 'loads.json')
 
-
-if __name__ == '__main__':
-
-    # setup_logging()
-    # db_instance = TinyDBHandler()
-    opendss_instance = OpenDSSSimulator(r'C:\Users\KDUWADI\Desktop\NREL_Projects\ciff_track_2\exports\opendss_new\master.dss')
-    # opendss_instance = OpenDSSSimulator(r'C:\Users\KDUWADI\Desktop\staleprojects\NYSERDA\nyserda_workspace\scenario_generator\inputs\opendss_model\Master.dss')
-    # asset_metrics = aggregate_asset_metrics(opendss_instance.dss_instance).dict()
-    # print(asset_metrics)
-    # db_instance.db.insert({"type": "asset_metrics", "metrics": asset_metrics})
-    create_feeder_geojson(opendss_instance.dss_instance, r'C:\Users\KDUWADI\Desktop\NREL_Projects\Tunishia\output_geojson')
