@@ -2,5 +2,6 @@
     "snapshot_metrics_db": "C:/Users/KDUWADI/Desktop/NREL_Projects/RADS/feeder_vis_using_emerge/db.json",
     "timeseries_metrics_db": "C:/Users/KDUWADI/Desktop/NREL_Projects/RADS/feeder_vis_using_emerge/db_metric.json",
     "geojson_path": "C:/Users/KDUWADI/Desktop/NREL_Projects/RADS/feeder_vis_using_emerge/geojsons",
+    "scenario_metrics_db": "C:/Users/KDUWADI/Desktop/NREL_Projects/Tunishia/scenario_metrics",
     "ui_url": "http://localhost:3001"
 }

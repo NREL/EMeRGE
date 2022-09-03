@@ -2,11 +2,11 @@
 Command line utility for EMeRGE
 """
 
-# standard imports 
+# standard imports
 from pathlib import Path
 import datetime
 
-# third-party imports 
+# third-party imports
 import click
 
 # internal imports
@@ -18,6 +18,11 @@ from emerge.metrics.time_series_metrics import node_metrics
 from emerge.metrics.time_series_metrics import simulation_manager
 from emerge.metrics import feeder_geojson
 from emerge.simulator import opendss
+from emerge.cli.scenario import generate_pv_scenarios_for_feeder
+from emerge.cli.multiscenario_metrics import (
+    compute_multiscenario_time_series_metrics,
+)
+
 
 @click.command()
 @click.option(
@@ -32,13 +37,13 @@ from emerge.simulator import opendss
     show_default=True,
     help="Ouput directory for storing the geojsons",
 )
-def create_geojsons(
-    master_file,
-    output_folder
-):
-    """ Command line function to generate geojsons from opendss model"""
+def create_geojsons(master_file, output_folder):
+    """Command line function to generate geojsons from opendss model"""
     opendss_instance = opendss.OpenDSSSimulator(master_file)
-    feeder_geojson.create_feeder_geojson(opendss_instance.dss_instance, output_folder)
+    feeder_geojson.create_feeder_geojson(
+        opendss_instance.dss_instance, output_folder
+    )
+
 
 @click.command()
 @click.option(
@@ -103,7 +108,7 @@ def create_geojsons(
     help="Ouput directory for storing the db",
 )
 def compute_time_series_metrics(
-    master_file, 
+    master_file,
     simulation_start,
     profile_start,
     simulation_end,
@@ -111,18 +116,18 @@ def compute_time_series_metrics(
     overvoltage_threshold,
     undervoltage_threshold,
     thermal_threshold,
-    output_json
+    output_json,
 ):
-    """Reads the OpenDSS model and computes various snapshot 
+    """Reads the OpenDSS model and computes various snapshot
     metrics which can be later ingested by dashboard."""
-    
-    date_format = '%Y-%m-%d %H:%M:%S'
+
+    date_format = "%Y-%m-%d %H:%M:%S"
     manager = simulation_manager.OpenDSSSimulationManager(
         master_file,
         datetime.datetime.strptime(simulation_start, date_format),
         datetime.datetime.strptime(profile_start, date_format),
         datetime.datetime.strptime(simulation_end, date_format),
-        simulation_resolution
+        simulation_resolution,
     )
     subject = observer.MetricsSubject()
 
@@ -133,9 +138,9 @@ def compute_time_series_metrics(
     sardi_xfmr_observer = system_metrics.SARDI_transformer(thermal_threshold)
     sardi_aggregated_observer = system_metrics.SARDI_aggregated(
         loading_limit=thermal_threshold,
-        voltage_limit= {
+        voltage_limit={
             "overvoltage_threshold": overvoltage_threshold,
-            "undervoltage_threshold": undervoltage_threshold
+            "undervoltage_threshold": undervoltage_threshold,
         },
     )
     nvri_observer = node_metrics.NVRI(
@@ -143,10 +148,16 @@ def compute_time_series_metrics(
     )
     llri_observer = node_metrics.LLRI(thermal_threshold)
     tlri_observer = node_metrics.TLRI(thermal_threshold)
-    
-    observers_ = [sardi_voltage_observer, sardi_line_observer,
-        sardi_xfmr_observer, sardi_aggregated_observer, nvri_observer,
-        llri_observer, tlri_observer]
+
+    observers_ = [
+        sardi_voltage_observer,
+        sardi_line_observer,
+        sardi_xfmr_observer,
+        sardi_aggregated_observer,
+        nvri_observer,
+        llri_observer,
+        tlri_observer,
+    ]
     for observer_ in observers_:
         subject.attach(observer_)
 
@@ -167,14 +178,9 @@ def compute_time_series_metrics(
     show_default=True,
     help="Ouput directory for storing the db",
 )
-def snapshot_metrics(
-    master_file, output_json
-):
-    """ Compute snapshot metrics. """
-    compute_snapshot_metrics(
-        Path(master_file),
-        output_json
-    )
+def snapshot_metrics(master_file, output_json):
+    """Compute snapshot metrics."""
+    compute_snapshot_metrics(Path(master_file), output_json)
 
 
 @click.command()
@@ -190,7 +196,6 @@ def snapshot_metrics(
     show_default=True,
     help="Turn this on if you want debug to be true!",
 )
-
 @click.option(
     "-p",
     "--port",
@@ -198,21 +203,19 @@ def snapshot_metrics(
     show_default=True,
     help="Port where you want the server to run!",
 )
-def serve(
-    db_json,  debug, port
-):
-    """ Takes the db json and creates EMERGE dashboard """
-    run_server(
-      db_json, debug, port
-    )
-
+def serve(db_json, debug, port):
+    """Takes the db json and creates EMERGE dashboard"""
+    run_server(db_json, debug, port)
 
 
 @click.group()
 def cli():
     """Entry point"""
 
+
 cli.add_command(snapshot_metrics)
 cli.add_command(serve)
 cli.add_command(compute_time_series_metrics)
 cli.add_command(create_geojsons)
+cli.add_command(generate_pv_scenarios_for_feeder)
+cli.add_command(compute_multiscenario_time_series_metrics)

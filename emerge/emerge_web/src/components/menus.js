@@ -49,6 +49,14 @@ function Menu(){
                     <img src={assets_logo} width="40"/>
                   </Link>
               </div>
+
+              <div class="flex flex-col py-2 border-b items-center hover:cursor-pointer" >
+                  
+                  <Link to="/scenario-metrics" class="flex flex-col items-center">
+                    <h1 class="text-lg 2xl:text-xl pb-2"> Scenarios </h1>
+                    <img src={assets_logo} width="40"/>
+                  </Link>
+              </div>
   
           </div>
       </div>
@@ -126,6 +134,18 @@ function SnapshotsPageMenu(){
         </div>
       </div>
     )
+}
+
+function ScenarioPageMenu(props){
+  return (
+    <div class="flex border-t text-white">
+      <div class="min-h-screen bg-slate-700 w-full"> 
+        <div class="px-10 py-5">
+            <h1 class="text-xl font-bold bg-slate-900 rounded-md p-2"> Scenario time series metrics </h1>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function MetricsPageMenu(props){
@@ -259,4 +279,4 @@ function MetricsPageMenu(props){
     )
   }
 
-export {Menu, AssetsPageMenu, Header, SnapshotsPageMenu, MetricsPageMenu};
+export {Menu, AssetsPageMenu, Header, SnapshotsPageMenu, MetricsPageMenu, ScenarioPageMenu};
