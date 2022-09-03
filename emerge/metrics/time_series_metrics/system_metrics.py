@@ -49,7 +49,7 @@ class SARDI_aggregated(observer.MetricObserver):
         
         """ Get initial dataset for computing the metric. """
         self.network = feeder_metrics_opendss.networkx_from_opendss_model(dss_instance)
-        self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance)
+        self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")
         self.substation_bus = dss_util.get_source_node(dss_instance)
         self.bus_load_flag_df = dss_util.get_bus_load_flag(dss_instance)
 
@@ -64,12 +64,12 @@ class SARDI_aggregated(observer.MetricObserver):
         if not self.counter:
             self._get_initial_dataset(dss_instance)
 
-        v_filter = voltage_df.loc[self.load_bus_map["busname"]].drop_duplicates()
+        v_filter = voltage_df.loc[self.load_bus_map.index].drop_duplicates()
         ov_flags = v_filter['voltage(pu)']>self.voltage_limit.overvoltage_threshold
         uv_flags = v_filter['voltage(pu)']<self.voltage_limit.undervoltage_threshold
         overvoltage_v = v_filter[ov_flags]
         undervoltage_v = v_filter[uv_flags]
-        merged_load_buses = set(pd.concat([overvoltage_v, undervoltage_v]).index)
+        merged_load_buses = list(set(pd.concat([overvoltage_v, undervoltage_v]).index))
         
         self.network_copy = copy.deepcopy(self.network)
         overloaded_trans = transformer_loading_df[transformer_loading_df['loading(pu)']> self.loading_limit.threshold]
@@ -97,9 +97,11 @@ class SARDI_aggregated(observer.MetricObserver):
         else:
             total_impacted_load_buses = merged_load_buses
         
+        
         total_load = dss_instance.Loads.Count()
-        self.sardi_aggregated += len(total_impacted_load_buses)*100/total_load
-
+        affected_loads = list(set(self.load_bus_map.loc[total_impacted_load_buses]["loadname"]))
+        self.sardi_aggregated += len(affected_loads)*100/total_load
+      
         self.counter +=1
 
     def get_metric(self):
@@ -142,6 +144,7 @@ class SARDI_transformer(observer.MetricObserver):
         self.network = feeder_metrics_opendss.networkx_from_opendss_model(dss_instance)
         self.substation_bus = dss_util.get_source_node(dss_instance)
         self.bus_load_flag_df = dss_util.get_bus_load_flag(dss_instance)
+        self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")
 
     def compute(self, dss_instance:dss):
         """ Refer to base class for more details. """
@@ -166,9 +169,12 @@ class SARDI_transformer(observer.MetricObserver):
 
             self.network_copy.remove_edges_from(edge_to_be_removed)
             connected_buses = nx.node_connected_component(self.network_copy, self.substation_bus)
-            filtered_bus_df = self.bus_load_flag_df.loc[connected_buses]
+            impacted_buses = self.bus_load_flag_df.loc[self.bus_load_flag_df.index.difference(connected_buses)]
+            impacted_load_buses = impacted_buses[impacted_buses['is_load']==1].index
+            affected_loads = list(set(self.load_bus_map.loc[impacted_load_buses]["loadname"]))
+
             total_load = dss_instance.Loads.Count()
-            self.sardi_transformer += (total_load - filtered_bus_df.sum()['is_load'])*100/total_load
+            self.sardi_transformer += len(affected_loads)*100/total_load
 
         self.counter +=1
 
@@ -212,6 +218,7 @@ class SARDI_line(observer.MetricObserver):
         self.network = feeder_metrics_opendss.networkx_from_opendss_model(dss_instance)
         self.substation_bus = dss_util.get_source_node(dss_instance)
         self.bus_load_flag_df = dss_util.get_bus_load_flag(dss_instance)
+        self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")
 
     def compute(self, dss_instance:dss):
         """ Refer to base class for more details. """
@@ -236,9 +243,11 @@ class SARDI_line(observer.MetricObserver):
 
             self.network_copy.remove_edges_from(edge_to_be_removed)
             connected_buses = nx.node_connected_component(self.network_copy, self.substation_bus)
-            filtered_bus_df = self.bus_load_flag_df.loc[list(connected_buses)]
+            impacted_buses = self.bus_load_flag_df.loc[self.bus_load_flag_df.index.difference(connected_buses)]
+            impacted_load_buses = impacted_buses[impacted_buses['is_load']==1].index
+            affected_loads = set(list(self.load_bus_map.loc[impacted_load_buses]["loadname"]))
             total_load = dss_instance.Loads.Count()
-            self.sardi_line += (total_load - filtered_bus_df.sum()['is_load'])*100/total_load
+            self.sardi_line += len(affected_loads)*100/total_load
 
         self.counter +=1
 
@@ -286,15 +295,18 @@ class SARDI_voltage(observer.MetricObserver):
         voltage_df = powerflow_metrics_opendss.get_voltage_dataframe(dss_instance)
         
         if not hasattr(self, 'load_bus_map'):
-            self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance)
+            self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")
         
         # Filter voltages for load buses only 
         # and count the number of overvoltages and undervoltages
-        v_filter = voltage_df.loc[self.load_bus_map["busname"]].drop_duplicates()
-        overvoltage_count = v_filter[v_filter['voltage(pu)']>self.upper].count()['voltage(pu)']
-        undervoltage_count = v_filter[v_filter['voltage(pu)']<self.lower].count()['voltage(pu)']
+        v_filter = voltage_df.loc[self.load_bus_map.index].drop_duplicates()
+        overvoltage_df = v_filter[v_filter['voltage(pu)']>self.upper]
+        undervoltage_df = v_filter[v_filter['voltage(pu)']<self.lower]
 
-        self.sardi_voltage += (overvoltage_count + undervoltage_count)*100/len(self.load_bus_map)
+        impacted_buses = list(set(list(overvoltage_df.index) + list(undervoltage_df.index)))
+        affected_loads = list(set(self.load_bus_map.loc[impacted_buses]["loadname"]))
+
+        self.sardi_voltage += len(affected_loads)*100/len(self.load_bus_map)
         self.counter +=1
 
     def get_metric(self):

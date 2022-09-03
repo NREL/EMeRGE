@@ -1,4 +1,5 @@
 """ This module contains tests for computing system level metrics."""
+from pathlib import Path
 
 from emerge.metrics.time_series_metrics import system_metrics
 from emerge.metrics.time_series_metrics import observer
@@ -49,3 +50,31 @@ def test_sardi_aggregated():
 
     manager.simulate(subject)
 
+
+def test_sardi_metrics():
+    """ Function for testing SARDI metrics. """
+
+    manager = simulation_manager_setup()
+    pvsystem_file = Path(__file__).absolute().parents[1]/ 'examples' / 'opendss' / 'PVSystems.dss'
+    manager.opendss_instance.execute_dss_command(f"redirect {pvsystem_file}")
+    subject = observer.MetricsSubject()
+    sardi_voltage_observer = system_metrics.SARDI_voltage()
+    sardi_line_observer = system_metrics.SARDI_line()
+    sardi_aggregated_observer = system_metrics.SARDI_aggregated()
+    sardi_xfmr_observer = system_metrics.SARDI_transformer()
+    
+    subject.attach(sardi_voltage_observer)
+    subject.attach(sardi_line_observer)
+    subject.attach(sardi_xfmr_observer)
+    subject.attach(sardi_aggregated_observer)
+
+    manager.simulate(subject)
+
+    sardi_voltage = list(sardi_voltage_observer.get_metric().values())[0]
+    sardi_line = list(sardi_line_observer.get_metric().values())[0]
+    sardi_xfmr = list(sardi_xfmr_observer.get_metric().values())[0]
+    sardi_aggregated = list(sardi_aggregated_observer.get_metric().values())[0]
+
+    assert sardi_aggregated >= sardi_voltage
+    assert sardi_aggregated >= sardi_line
+    assert sardi_aggregated >= sardi_xfmr

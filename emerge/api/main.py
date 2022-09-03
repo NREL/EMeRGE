@@ -37,6 +37,7 @@ for filepath in scenario_path.iterdir():
         scenario_metrics_db[filepath.name.split(".")[0]] = TinyDBHandler(
             filepath
         )
+scenario_metrics_db['scenario_0_0'] = TinyDBHandler(config.timeseries_metrics_db)
 
 query = Query()
 
