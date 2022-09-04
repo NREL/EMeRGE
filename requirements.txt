@@ -10,3 +10,4 @@ click
 uvicorn[standard]
 pytest
 fastapi
+jinja2

@@ -29,8 +29,13 @@ class OpenDSSPVScenarioWriter:
         self.scenarios = scenarios
         self.output_path = Path(output_path)
 
-    def write(self, load_mapper_model: List[data_model.LoadMetadataModel]):
-        """Method for writing the scenarios"""
+    def write(self, load_mapper_model: List[data_model.LoadMetadataModel])-> None:
+        """Method for writing the scenarios.
+        
+        Args:
+            load_mapper_model (List[data_model.LoadMetadataModel]): List of load 
+                metadata model.
+        """
 
         for scenario in self.scenarios:
             scenario_folder = self.output_path / scenario.name

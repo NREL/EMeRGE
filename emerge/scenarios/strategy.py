@@ -1,7 +1,6 @@
 """ Module for managing deployment strategies."""
 
 import abc
-from turtle import distance
 from typing import List
 import random
 
@@ -19,8 +18,17 @@ class SelectionStrategy(abc.ABC):
     @abc.abstractmethod
     def return_selection_order(
         self, list_of_customers: List[data_model.CustomerModel]
-    ):
-        """Abstract method for returning the selection order."""
+    )-> List[data_model.CustomerModel]:
+        """Abstract method for returning the selection order.
+        
+        Args:
+            list_of_customers (List[data_model.CustomerModel]): List
+                of `CustomerModel` objects.
+
+        Returns:
+            List[data_model.CustomerModel]: List
+                of `CustomerModel` objects.
+        """
 
 
 class RandomSelectionStrategy(SelectionStrategy):
@@ -29,6 +37,7 @@ class RandomSelectionStrategy(SelectionStrategy):
     def return_selection_order(
         self, list_of_customers: List[data_model.CustomerModel]
     ):
+        """ Refer to base class for more details."""
         random.shuffle(list_of_customers)
         return list_of_customers
 
@@ -39,6 +48,7 @@ class CloseSelectionStrategy(SelectionStrategy):
     def return_selection_order(
         self, list_of_customers: List[data_model.CustomerModel]
     ):
+        """ Refer to base class for more details."""
         return sorted(list_of_customers, key=lambda d: d.distance)
 
 
@@ -48,4 +58,5 @@ class FarSelectionStrategy(SelectionStrategy):
     def return_selection_order(
         self, list_of_customers: List[data_model.CustomerModel]
     ):
+        """ Refer to base class for more details."""
         return sorted(list_of_customers, key=lambda d: d.distance, reverse=True)

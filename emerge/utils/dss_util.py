@@ -1,5 +1,7 @@
 """ Utility functions for dss_instance. """
+
 import copy
+from typing import List
 
 import opendssdirect as dss
 import pandas as pd
@@ -10,8 +12,17 @@ from emerge.metrics import feeder_metrics_opendss
 from emerge.scenarios import data_model
 
 
-def get_bus_distance_dataframe(dss_instance: dss):
-    """Get bus distance dataframe."""
+def get_bus_distance_dataframe(dss_instance: dss)-> pd.DataFrame:
+    """Get bus distance dataframe.
+    
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+
+    Returns:
+        pd.DataFrame: Dataframe containing distance from 
+            substation indexed by busname.
+    
+    """
 
     bus_distance_df = {"busname": [], "distance": []}
     for bus in dss_instance.Circuit.AllBusNames():
@@ -28,8 +39,16 @@ def get_bus_distance_dataframe(dss_instance: dss):
     return pd.DataFrame(bus_distance_df).set_index("busname")
 
 
-def get_list_of_customer_models(dss_instance: dss):
-    """Returns list of customer models from dss instance"""
+def get_list_of_customer_models(dss_instance: dss) -> List[data_model.CustomerModel]:
+    """Returns list of customer models from dss instance.
+    
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+
+    Returns:
+        List[data_model.CustomerModel]: List of customer data
+            model.
+    """
 
     flag = dss_instance.Loads.First()
     bus_distance_df = get_bus_distance_dataframe(dss_instance)
@@ -49,8 +68,16 @@ def get_list_of_customer_models(dss_instance: dss):
     return customer_model
 
 
-def get_load_mapper_objects(dss_instance: dss):
-    """Returns list of load mapper object models."""
+def get_load_mapper_objects(dss_instance: dss)-> List[data_model.LoadMetadataModel]:
+    """Returns list of load mapper object models.
+    
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+
+    Returns:
+        List[data_model.LoadMetadataModel]: List of load
+            metadata model.
+    """
 
     flag = dss_instance.Loads.First()
     mapper_model = []
@@ -69,8 +96,16 @@ def get_load_mapper_objects(dss_instance: dss):
     return mapper_model
 
 
-def get_bus_load_dataframe(dss_instance: dss):
-    """Bus to load mapping dataframe."""
+def get_bus_load_dataframe(dss_instance: dss)-> pd.DataFrame:
+    """Bus to load mapping dataframe.
+    
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+
+    Returns:
+        pd.DataFrame: Dataframe containing mapping between load
+            name and bus name
+    """
 
     flag = dss_instance.Loads.First()
     load_bus_name_dict = {"busname": [], "loadname": []}
@@ -86,8 +121,16 @@ def get_bus_load_dataframe(dss_instance: dss):
     return pd.DataFrame(load_bus_name_dict)
 
 
-def get_bus_load_flag(dss_instance: dss):
-    """Bus to load mapping dataframe."""
+def get_bus_load_flag(dss_instance: dss) -> pd.DataFrame:
+    """Bus to load mapping dataframe.
+
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+
+    Returns:
+        pd.DataFrame: Dataframe containing load flag
+            indexed by bus name.
+    """
 
     load_bus_df = get_bus_load_dataframe(dss_instance)
     buses_with_load = list(load_bus_df["busname"])
@@ -101,12 +144,16 @@ def get_bus_load_flag(dss_instance: dss):
     return pd.DataFrame(is_bus_load).set_index("busname")
 
 
-def get_line_customers(dss_instance: dss):
+def get_line_customers(dss_instance: dss) ->pd.DataFrame:
     """Function to retrieve dataframe containing number
     of downward serving customers for all line segments.
 
     Args:
         dss_instance (dss): Instance of OpenDSSDirect
+
+    Returns:
+        pd.DataFrame: Dataframe containing number of customers
+            indexed by line name.
     """
     line_customers_df = {"linename": [], "customers": []}
 
@@ -128,12 +175,16 @@ def get_line_customers(dss_instance: dss):
     return pd.DataFrame(line_customers_df).set_index("linename")
 
 
-def get_transformer_customers(dss_instance: dss):
+def get_transformer_customers(dss_instance: dss)-> pd.DataFrame:
     """Function to retrieve dataframe containing number
     of downward serving customers for all transformers.
 
     Args:
         dss_instance (dss): Instance of OpenDSSDirect
+
+    Returns:
+        pd.DataFrame: Dataframe containing number of customers
+            indexed by transformer name.
     """
     xfmr_customers_df = {"transformername": [], "customers": []}
 
@@ -175,9 +226,17 @@ def get_transformer_customers(dss_instance: dss):
     return pd.DataFrame(xfmr_customers_df).set_index("transformername")
 
 
-def get_source_node(dss_instance: dss):
+def get_source_node(dss_instance: dss) -> str:
 
-    """Function to return source node for dss model."""
+    """Function to return source node for dss model.
+    
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+
+    Returns:
+        str: Name of the source node
+    """
+
     df = dss_instance.utils.class_to_dataframe("vsource")
     source_node = df["bus1"].tolist()[0].split(".")[0]
     return source_node

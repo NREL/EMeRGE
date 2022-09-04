@@ -18,7 +18,7 @@ class PVScenarioGenerator(abc.ABC):
 
 
 class DistributedPVScenario(PVScenarioGenerator):
-    """ " Class for generating distributed PV scenarios.
+    """Class for generating distributed PV scenarios.
 
     Distributed PV are typically installed in customers premise. This class
     will take list of loads/customers and creates scenario based on different
@@ -97,6 +97,10 @@ class DistributedPVScenario(PVScenarioGenerator):
 
         Args:
             selection_strategy (strategy.SelectionStrategy): Selection strategy object
+
+        Returns:
+            List[data_model.DistPVScenarioModel]: List of `DistPVScenarioModel`
+                models.
         """
 
         scenarios = []

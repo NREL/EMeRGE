@@ -1,8 +1,7 @@
-""""
-Utility functions
-"""
+""" Basic utility functions. """
 
 # standard imports
+from typing import List, Dict, Union
 from pathlib import Path
 import logging
 import logging.config
@@ -13,15 +12,36 @@ import yaml
 
 logger = logging.getLogger(__name__)
 
-def get_map_centre(longitudes: list, latitudes: list):
+def get_map_centre(longitudes: List[float], latitudes: List[float])-> Dict:
+    """ Returns map centre by taking longitudes and latitudes. """
+
     return {'lon': sum(longitudes)/len(longitudes), \
         'lat': sum(latitudes)/len(latitudes)}
 
 def validate_path(
         path: str, 
-        check_for_dir=True, 
-        check_for_file=False, 
-        file_types=[]):
+        check_for_dir: bool =True, 
+        check_for_file: bool =False, 
+        file_types: Union[None, List[str]]=None
+    )-> None:
+    """ Check for path validation.
+    
+    Args:
+        path (str): Path for either file or folder
+        check_for_dir (bool): Set to true if need to check for directory
+        check_for_file (bool): Set to true if need to check of
+            existence of file
+        file_types (Union[None, List[str]]): List of file types against
+            which file path is to be checked.
+
+    Raises:
+        Exception: If file path does not exist or folder path does 
+            not exist or passed file type do not match what is in 
+            file_types list.
+    """
+
+    if not file_types:
+        file_types = []
 
     path = Path(path)
 
@@ -35,7 +55,8 @@ def validate_path(
         raise Exception(f"Invalid file type passed {path} , \
             valid file types are {file_types}")
 
-def read_file(file_path: str) -> dict:
+def read_file(file_path: str) -> Dict:
+    """ Reads a file and returns a python dictionary. """
 
     file_path = Path(file_path)
     logger.debug(f"Attempting to read {file_path}")
@@ -54,7 +75,8 @@ def read_file(file_path: str) -> dict:
             content = yaml.safe_load(f)
 
     else:
-        logger.error(f"Could not read the {file_path}, this feature is not yet implemented")
+        logger.error(f"""Could not read the {file_path}, this feature is not yet 
+        implemented""")
         raise Exception(f"File of type {file_path.suffix} \
             is not yet implemented for reading purpose")
 
@@ -62,7 +84,7 @@ def read_file(file_path: str) -> dict:
     return content
 
 def write_file(content:dict, file_path: str, **kwargs) -> None:
-
+    """ Takes a python dictionary and writes it into a file. """
     file_path = Path(file_path)
     validate_path(file_path.parent)
 
@@ -81,10 +103,8 @@ def write_file(content:dict, file_path: str, **kwargs) -> None:
             is not yet implemented for writing purpose")
 
 def setup_logging(filename: str = None):
-
-    """
-    Creates log directory and sets up logging via logging.yaml
-    """
+    """Creates log directory and sets up logging via logging.yaml. """
+    
     if filename is None:
         filename = Path(__file__).parents[2] / 'logging.yaml' 
 

@@ -147,6 +147,3 @@ def get_transloading_dataframe(dss_instance: dss):
     
     return pd.DataFrame(trans_loading_df).set_index("transformername")
 
-if __name__ == '__main__':
-
-    pass

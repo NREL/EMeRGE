@@ -1,5 +1,4 @@
 # standard imports
-from typing import Union
 from pathlib import Path
 
 # third-party imports
@@ -279,3 +278,5 @@ def get_system_metric():
 @app.get("/map_center")
 def get_map_center():
     return map_center
+
+

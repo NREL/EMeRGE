@@ -1,6 +1,4 @@
-"""
-OpenDSS simulator service for performing power flow
-"""
+""" OpenDSS simulator service for performing power flow."""
 
 # standard imports
 from pathlib import Path
@@ -84,11 +82,4 @@ class OpenDSSSimulator(AbstractSimulator):
         seconds = time_diff.seconds - hours*3600
         self.dss_instance.Solution.Hour(hours)
         self.dss_instance.Solution.Seconds(seconds)
-
-
-if __name__ == '__main__':
-
-    setup_logging()
-    opendss_instance = OpenDSSSimulator(r'C:\Users\KDUWADI\Desktop\NREL_Projects\ciff_track_2\exports\opendss_new\master.dss')
-
 
