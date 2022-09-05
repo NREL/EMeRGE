@@ -12,6 +12,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/NREL/emerge?style=flat-square)](https://github.com/NREL/emerge/issues)
 ![GitHub top language](https://img.shields.io/github/languages/top/nrel/emerge?style=flat-square)
 
+[Check for full documentation here.](https://nrel.github.io/EMeRGE/)
 
 ### :wave: Welcome to EMERGE Repository !
 
