@@ -12,7 +12,7 @@ from emerge.db.db_handler import TinyDBHandler
 from emerge.api import config_model
 from emerge.api import utils
 
-config_json = Path(__file__).absolute().parents[0] / "config_1.json"
+config_json = Path(__file__).absolute().parents[0] / "config.json"
 config = config_model.Config.parse_file(config_json)
 
 buses_to_coordinate_mapping = utils.buses_coordinate_mapping(

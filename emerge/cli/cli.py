@@ -11,7 +11,6 @@ import click
 
 # internal imports
 from emerge.metrics.compute_snapshot_metrics import compute_snapshot_metrics
-from emerge.dashboard.snapshot_dashboard import run_server
 from emerge.metrics.time_series_metrics import system_metrics
 from emerge.metrics.time_series_metrics import observer
 from emerge.metrics.time_series_metrics import node_metrics
@@ -183,38 +182,11 @@ def snapshot_metrics(master_file, output_json):
     compute_snapshot_metrics(Path(master_file), output_json)
 
 
-@click.command()
-@click.option(
-    "-db",
-    "--db-json",
-    help="Path to DB JSON file",
-)
-@click.option(
-    "-d",
-    "--debug",
-    default=False,
-    show_default=True,
-    help="Turn this on if you want debug to be true!",
-)
-@click.option(
-    "-p",
-    "--port",
-    default=8050,
-    show_default=True,
-    help="Port where you want the server to run!",
-)
-def serve(db_json, debug, port):
-    """Takes the db json and creates EMERGE dashboard"""
-    run_server(db_json, debug, port)
-
-
 @click.group()
 def cli():
     """Entry point"""
 
-
 cli.add_command(snapshot_metrics)
-cli.add_command(serve)
 cli.add_command(compute_time_series_metrics)
 cli.add_command(create_geojsons)
 cli.add_command(generate_pv_scenarios_for_feeder)

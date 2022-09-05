@@ -1,7 +1,0 @@
-{
-    "snapshot_metrics_db": "C:/Users/KDUWADI/Desktop/NREL_Projects/Tunishia/db.json",
-    "timeseries_metrics_db": "C:/Users/KDUWADI/Desktop/NREL_Projects/Tunishia/db_metrics.json",
-    "geojson_path": "C:/Users/KDUWADI/Desktop/NREL_Projects/Tunishia/output_geojson",
-    "scenario_metrics_db": "C:/Users/KDUWADI/Desktop/NREL_Projects/Tunishia/scenario_metrics",
-    "ui_url": "http://localhost:3001"
-}
