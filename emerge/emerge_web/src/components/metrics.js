@@ -311,7 +311,6 @@ class MetricPage extends Component {
                         </div>
 
         }
-        console.log(this.state.llri)
         return (
             
             <div class="flex">

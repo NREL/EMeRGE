@@ -141,8 +141,41 @@ function ScenarioPageMenu(props){
     <div class="flex border-t text-white">
       <div class="min-h-screen bg-slate-700 w-full"> 
         <div class="px-10 py-5">
-            <h1 class="text-xl font-bold bg-slate-900 rounded-md p-2"> Scenario time series metrics </h1>
+            <h1 class="text-xl font-bold bg-slate-900 rounded-md p-2"> 
+              Scenario time series metrics </h1>
         </div>
+
+        <div class="px-10 py-5">
+            <div class="flex items-center pb-2">
+              <input type="radio" name="value" value="system" defaultChecked={props.option.value==='system'} onChange={props.handleChange}/>
+              <h1 class="pl-3 text-xl font-bold text-sky-500"> SARDI Metrics </h1>
+            </div>
+            <p> Time series plot of SARDI metrics compared across DER scenrios.</p>
+
+            <div class="flex items-center pb-2 pt-5">
+              <input type="radio" name="value" value="nvri" defaultChecked={props.option.value==='nvri'} onChange={props.handleChange}/>
+              <h1 class="pl-3 text-xl font-bold text-sky-500"> NVRI </h1>
+            </div>
+
+            <p> Comparing Nodal Voltage Risk Index statistics across DER scenarios.</p>
+            
+            <div class="flex items-center pb-2 pt-5">
+              <input type="radio" name="value" value="llri" defaultChecked={props.option.value==='llri'} onChange={props.handleChange}/>
+              <h1 class="pl-3 text-xl font-bold text-sky-500"> LLRI </h1>
+            </div>
+
+            <p> Comparing Line Loading Risk Index statistics across DER scenarios.</p>
+
+            <div class="flex items-center pb-2 pt-5">
+              <input type="radio" name="value" value="tlri" defaultChecked={props.option.value==='tlri'} onChange={props.handleChange}/>
+              <h1 class="pl-3 text-xl font-bold text-sky-500"> TLRI </h1>
+            </div>
+
+            <p> Comparing Transformer Loading Risk Index statistics across DER scenarios.</p>
+
+
+        </div>
+
       </div>
     </div>
   )

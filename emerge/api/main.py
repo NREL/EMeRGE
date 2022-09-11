@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from tinydb import Query
+import numpy as np
 
 # internal imports
 from emerge.utils.util import read_file
@@ -51,6 +52,51 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.get("/scenarios/timeseries_asset/{metric}")
+def get_scenario_system_metrics(metric: str):
+
+    json_content = []
+    
+
+    for func in [{"name": "max", "func": np.nanmax}, 
+                {"name": "min", "func": np.nanmin},
+                {"name": "90-percentile", "func": np.percentile, "args": [90]}, 
+                {"name": "mean", "func": np.nanmean},
+                {"name": "98-percentile", "func": np.percentile, "args": [98]},
+                {"name": "99-percentile", "func": np.percentile, "args": [99]}]:
+        
+        metrics = []
+        for name, db_ in scenario_metrics_db.items():
+            
+            query_result = db_.db.search(
+                query.type == "metrics" and query.name == metric
+            )[0]["data"]
+            
+            metric_values = list(query_result.values())
+            metrics.append(
+                {"metric": func["func"](metric_values) if "args"  not in \
+                    func else func["func"](metric_values, *func['args']), 
+                "name": name.split("_")[2] + "%"}
+            )
+            
+
+        metrics = sorted(
+            metrics, key=lambda d: float(d["name"].split("%")[0])
+        )
+    
+
+        json_content.append(
+            {
+                "type": "scatter",
+                "x": [metric["name"] for metric in metrics],
+                "y": [metric["metric"] for metric in metrics],
+                "name": func["name"]
+            },
+        )
+            
+
+    return json_content
 
 @app.get("/scenarios/system_metrics")
 def get_scenario_system_metrics():
