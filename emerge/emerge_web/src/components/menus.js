@@ -146,7 +146,21 @@ function ScenarioPageMenu(props){
         </div>
 
         <div class="px-10 py-5">
+
             <div class="flex items-center pb-2">
+              <input type="radio" name="value" value="total_energy" defaultChecked={props.option.value==='total_energy'} onChange={props.handleChange}/>
+              <h1 class="pl-3 text-xl font-bold text-sky-500"> Substation Energy </h1>
+            </div>
+            <p> Time series plot of total energy compared across DER scenrios.</p>
+
+            <div class="flex items-center pb-2 pt-5">
+              <input type="radio" name="value" value="total_pv_energy" defaultChecked={props.option.value==='total_pv_energy'} onChange={props.handleChange}/>
+              <h1 class="pl-3 text-xl font-bold text-sky-500"> PV Energy </h1>
+            </div>
+            <p> Time series plot of total PV energy compared across DER scenrios.</p>
+
+          
+            <div class="flex items-center pb-2 pt-5">
               <input type="radio" name="value" value="system" defaultChecked={props.option.value==='system'} onChange={props.handleChange}/>
               <h1 class="pl-3 text-xl font-bold text-sky-500"> SARDI Metrics </h1>
             </div>

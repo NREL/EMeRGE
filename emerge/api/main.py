@@ -30,16 +30,25 @@ map_center = utils.get_map_center(Path(config.geojson_path) / "buses.json")
 db_snapshot = TinyDBHandler(config.snapshot_metrics_db)
 db_timeseries = TinyDBHandler(config.timeseries_metrics_db)
 
-scenario_metrics_db = {}
-scenario_path = Path(config.scenario_metrics_db)
-for filepath in scenario_path.iterdir():
-    if filepath.suffix == ".json":
-        scenario_metrics_db[filepath.name.split(".")[0]] = TinyDBHandler(
-            filepath
-        )
-scenario_metrics_db['scenario_0_0'] = TinyDBHandler(config.timeseries_metrics_db)
+scenario_metrics = {
+    "unity_pf": {},
+    "voltvar": {},
+    "voltvar_night_off": {}
+}
+scenario_paths = {
+    "unity_pf": Path(config.scenario_metrics_db),
+    "voltvar": Path(config.scenario_metrics_vvar),
+    "voltvar_night_off": Path(config.scenario_metrics_vvar_nighttime)
+}
+for scenario_name, scenario_path in scenario_paths.items():
+    for filepath in scenario_path.iterdir():
+        if filepath.suffix == ".json":
+            scenario_metrics[scenario_name][filepath.name.split(".")[0]] = TinyDBHandler(
+                filepath
+            )
+        
+    scenario_metrics[scenario_name]['scenario_0_0'] = TinyDBHandler(config.timeseries_metrics_db)
 
-query = Query()
 
 # Fast API setup
 app = FastAPI()
@@ -53,12 +62,11 @@ app.add_middleware(
 )
 
 
-@app.get("/scenarios/timeseries_asset/{metric}")
-def get_scenario_system_metrics(metric: str):
-
+@app.get("/scenarios/timeseries_asset/{metric_name}")
+def get_scenario_system_metrics(metric_name: str):
+    query = Query()
     json_content = []
     
-
     for func in [{"name": "max", "func": np.nanmax}, 
                 {"name": "min", "func": np.nanmin},
                 {"name": "90-percentile", "func": np.percentile, "args": [90]}, 
@@ -67,67 +75,118 @@ def get_scenario_system_metrics(metric: str):
                 {"name": "99-percentile", "func": np.percentile, "args": [99]}]:
         
         metrics = []
-        for name, db_ in scenario_metrics_db.items():
+        for name, db_ in scenario_metrics["unity_pf"].items():
             
             query_result = db_.db.search(
-                query.type == "metrics" and query.name == metric
-            )[0]["data"]
-            
-            metric_values = list(query_result.values())
-            metrics.append(
-                {"metric": func["func"](metric_values) if "args"  not in \
-                    func else func["func"](metric_values, *func['args']), 
-                "name": name.split("_")[2] + "%"}
+                query.type == "metrics" and query.name == metric_name
             )
             
+            if query_result:
+                query_result = query_result[0]["data"]
+                
+                metric_values = list(query_result.values())
+                metrics.append(
+                    {"metric": func["func"](metric_values) if "args"  not in \
+                        func else func["func"](metric_values, *func['args']), 
+                    "name": name.split("_")[2] + "%"}
+                )
+            
+        if metrics:
+            metrics = sorted(
+                metrics, key=lambda d: float(d["name"].split("%")[0])
+            )
+        
 
-        metrics = sorted(
-            metrics, key=lambda d: float(d["name"].split("%")[0])
-        )
-    
-
-        json_content.append(
-            {
-                "type": "scatter",
-                "x": [metric["name"] for metric in metrics],
-                "y": [metric["metric"] for metric in metrics],
-                "name": func["name"]
-            },
-        )
+            json_content.append(
+                {
+                    "type": "scatter",
+                    "x": [metric["name"] for metric in metrics],
+                    "y": [metric["metric"] for metric in metrics],
+                    "name": func["name"]
+                },
+            )
             
 
     return json_content
 
-@app.get("/scenarios/system_metrics")
-def get_scenario_system_metrics():
+
+@app.get("/scenarios/timeseries/{metric_name}")
+def get_scenario_system_metrics(metric_name: str):
 
     json_content = []
+    query = Query()
+    for which_power in ['active_power', 'reactive_power']:
+        for scenario_name, scenario_metrics_db in scenario_metrics.items():
+            metrics = []
+            
+            for name, db_ in scenario_metrics_db.items():
+                metric = db_.db.search(
+                    query.type == "metrics" and query.name == metric_name
+                )
+
+                if metric:
+                    metric = metric[0]["data"][which_power]
+                    metrics.append(
+                        {"metric": metric, "name": name.split("_")[2] + "%"}
+                    )
+            
+
+            if metrics:
+                metrics = sorted(
+                    metrics, key=lambda d: float(d["name"].split("%")[0])
+                )
+        
+
+                json_content.append(
+                    {
+                        "type": "scatter",
+                        "x": [metric["name"] for metric in metrics],
+                        "y": [metric["metric"] for metric in metrics],
+                        "name": scenario_name + '__' + which_power
+                    },
+                )
+                
+
+    return json_content
+
+
+@app.get("/scenarios/system_metrics")
+def get_scenario_system_metrics():
+    query = Query()
+    json_content = []
+    
     for metric_name in ['SARDI_voltage', 'SARDI_aggregated', 'SARDI_line', 'SARDI_transformer']:
-        metrics = []
-        for name, db_ in scenario_metrics_db.items():
-            
-            metric = db_.db.search(
-                query.type == "metrics" and query.name == metric_name
-            )[0]["data"][metric_name.lower()]
-            metrics.append(
-                {"metric": metric, "name": name.split("_")[2] + "%"}
-            )
-          
+        
+        for scenario_name, scenario_metrics_db in scenario_metrics.items():
+            metrics = []
+            for name, db_ in scenario_metrics_db.items():
+                
+                metric = db_.db.search(
+                    query.type == "metrics" and query.name == metric_name
+                )
 
-        metrics = sorted(
-            metrics, key=lambda d: float(d["name"].split("%")[0])
-        )
-   
+                if metric:
+                    metric = metric[0]["data"][metric_name.lower()]
 
-        json_content.append(
-            {
-                "type": "scatter",
-                "x": [metric["name"] for metric in metrics],
-                "y": [metric["metric"] for metric in metrics],
-                "name": metric_name
-            },
-        )
+                    metrics.append(
+                        {"metric": metric, "name": name.split("_")[2] + "%"}
+                    )
             
+            if metrics:
+                metrics = sorted(
+                    metrics, key=lambda d: float(d["name"].split("%")[0])
+                )
+        
+
+                json_content.append(
+                    {
+                        "type": "scatter",
+                        "x": [metric["name"] for metric in metrics],
+                        "y": [metric["metric"] for metric in metrics],
+                        "name": scenario_name + '__' + metric_name 
+                    },
+                )
+                
 
     return json_content
 
@@ -182,7 +241,7 @@ def get_loads_geojson():
 
 @app.get("/assets/metrics")
 def get_asset_metrics():
-
+    query = Query()
     asset_metrics = db_snapshot.db.search(query.type == "asset_metrics")[0][
         "metrics"
     ]
@@ -203,7 +262,7 @@ def get_asset_metrics():
 
 @app.get("/snapshots/voltage")
 def get_snapshots_voltage():
-
+    query = Query()
     voltage_for_heatmap = db_snapshot.db.search(
         query.type == "snapshot_voltage_for_heatmap"
     )[0]["data"]
@@ -221,7 +280,7 @@ def get_snapshots_voltage():
 
 @app.get("/snapshots/voltage-distribution")
 def get_snapshots_voltage():
-
+    query = Query()
     voltage_bins = db_snapshot.db.search(query.type == "snapshot_voltage_bins")
     json_content = [
         {
@@ -238,7 +297,7 @@ def get_snapshots_voltage():
 
 @app.get("/metrics/timeseries/nvri")
 def get_timeseries_metric():
-
+    query = Query()
     metric_data = db_timeseries.db.search(
         query.type == "metrics" and query.name == "NVRI"
     )[0]["data"]
@@ -257,7 +316,7 @@ def get_timeseries_metric():
 
 @app.get("/metrics/timeseries/llri")
 def get_timeseries_metric():
-
+    query = Query()
     metric_data = db_timeseries.db.search(
         query.type == "metrics" and query.name == "LLRI"
     )[0]["data"]
@@ -276,7 +335,7 @@ def get_timeseries_metric():
 
 @app.get("/metrics/timeseries/tlri")
 def get_timeseries_metric():
-
+    query = Query()
     metric_data = db_timeseries.db.search(
         query.type == "metrics" and query.name == "TLRI"
     )[0]["data"]
@@ -297,7 +356,7 @@ def get_timeseries_metric():
 
 @app.get("/metrics/system_metrics")
 def get_system_metric():
-
+    query = Query()
     metrics = [
         "SARDI_voltage",
         "SARDI_line",

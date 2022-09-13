@@ -28,6 +28,7 @@ class OpenDSSPVScenarioWriter:
 
         self.scenarios = scenarios
         self.output_path = Path(output_path)
+        self.output_path.mkdir(exist_ok=True)
 
     def write(self, load_mapper_model: List[data_model.LoadMetadataModel])-> None:
         """Method for writing the scenarios.
@@ -54,7 +55,7 @@ class OpenDSSPVScenarioWriter:
                     filter(lambda d: d.name == pv.customer, load_mapper_model)
                 )
                 pv_models.append(
-                    f"new pvsystem.{pv.name} phases={mapper.num_phase} bus1={mapper.bus} kv={mapper.kv} irradiance=1 pmpp={pv.kw} kva={pv.kw} conn=wye %cutin=0.1 %cutout=0.1 vmaxpu=1.2\n"
+                    f"new pvsystem.{pv.name.replace('.', '_')} phases={mapper.num_phase} bus1={mapper.bus} kv={mapper.kv} irradiance=1 pmpp={pv.kw} kva={pv.kw} conn=wye %cutin=0.1 %cutout=0.1 vmaxpu=1.2\n"
                 )
 
             pvsystems_path = scenario_folder / "PVSystems.dss"

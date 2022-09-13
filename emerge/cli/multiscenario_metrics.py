@@ -44,6 +44,10 @@ def _run_timeseries_sim(input):
     )
     llri_observer = node_metrics.LLRI(input["thermal_threshold"])
     tlri_observer = node_metrics.TLRI(input["thermal_threshold"])
+    total_energy_observer = system_metrics.TotalEnergy()
+    total_pv_energy_observer = system_metrics.TotalPVGeneration()
+    timeseries_total_power_observer = system_metrics.TimeseriesTotalPower()
+    timeseries_total_pv_power_observer = system_metrics.TimeseriesTotalPVPower()
 
     observers_ = [
         sardi_voltage_observer,
@@ -53,9 +57,27 @@ def _run_timeseries_sim(input):
         nvri_observer,
         llri_observer,
         tlri_observer,
+        total_energy_observer,
+        total_pv_energy_observer,
+        timeseries_total_power_observer,
+        timeseries_total_pv_power_observer 
     ]
     for observer_ in observers_:
         subject.attach(observer_)
+
+    manager.opendss_instance.execute_dss_command(f"batchedit pvsystem..* yearly={input['solar_profile']}")
+
+    if input['voltvar']:
+        num_points = len(input['voltvar_yarray'].split(','))
+        curve_command = f"new xycurve.vvar_curve npts={num_points} yarray={input['voltvar_yarray']} xarray={input['voltvar_xarray']}"
+        manager.opendss_instance.execute_dss_command(curve_command)
+        
+        inverter_command = f"new invcontrol.inv_controller_ mode=VOLTVAR voltage_curvex_ref=rated vvc_curve1=vvar_curve eventlog=yes RefReactivePower=VARMAX_VARS"
+        manager.opendss_instance.execute_dss_command(inverter_command)
+
+        manager.opendss_instance.execute_dss_command("batchedit pvsystem..* wattpriority=yes")
+        if not input['nighttime']:
+            manager.opendss_instance.execute_dss_command("batchedit pvsystem..* varfollowinverter=yes")
 
     manager.simulate(subject)
     manager.export_convergence(input["convergence_report"])
@@ -72,6 +94,11 @@ def _run_timeseries_sim(input):
     "-sf",
     "--scenario-folder",
     help="Path to a scenario folder",
+)
+@click.option(
+    "-pn",
+    "--profile-name",
+    help="Profile name for solar.",
 )
 @click.option(
     "-nc",
@@ -130,6 +157,34 @@ def _run_timeseries_sim(input):
     help="Thermal laoding threshold.",
 )
 @click.option(
+    "-vvar",
+    "--voltvar",
+    default=False,
+    show_default=True,
+    help="Voltvar smart inverter settings."
+)
+@click.option(
+    "-qx",
+    "--voltvar-xarray",
+    default="[0.7,0.92,0.967,1.033,1.07,1.3]",
+    show_default=True,
+    help="X array for voltvar curve"
+)
+@click.option(
+    "-qy",
+    "--voltvar-yarray",
+    default="[0.44,0.44,0,0,-0.44, -0.44]",
+    show_default=True,
+    help="Y array for voltvar curve"
+)
+@click.option(
+    "-nt",
+    "--nighttime",
+    default=True,
+    show_default=True,
+    help="Inverter night time volt var setting."
+)
+@click.option(
     "-o",
     "--output-folder",
     help="Path to a scenario folder",
@@ -137,6 +192,7 @@ def _run_timeseries_sim(input):
 def compute_multiscenario_time_series_metrics(
     master_file,
     scenario_folder,
+    profile_name,
     number_of_cores,
     simulation_start,
     profile_start,
@@ -145,6 +201,10 @@ def compute_multiscenario_time_series_metrics(
     overvoltage_threshold,
     undervoltage_threshold,
     thermal_threshold,
+    voltvar,
+    voltvar_xarray,
+    voltvar_yarray,
+    nighttime,
     output_folder,
 ):
     """Run multiscenario time series simulation and compute
@@ -152,6 +212,8 @@ def compute_multiscenario_time_series_metrics(
 
     scenario_folder = Path(scenario_folder)
     output_folder = Path(output_folder)
+
+    output_folder.mkdir(exist_ok=True)
 
     timeseries_input = []
 
@@ -163,6 +225,7 @@ def compute_multiscenario_time_series_metrics(
             {
                 "master_file": master_file,
                 "simulation_start": simulation_start,
+                "solar_profile": profile_name,
                 "profile_start": profile_start,
                 "simulation_end": simulation_end,
                 "simulation_resolution": simulation_resolution,
@@ -171,7 +234,11 @@ def compute_multiscenario_time_series_metrics(
                 "undervoltage_threshold": undervoltage_threshold,
                 "thermal_threshold": thermal_threshold,
                 "output_json": json_path,
-                "convergence_report": convergence_file
+                "convergence_report": convergence_file,
+                "voltvar": voltvar,
+                "nighttime": nighttime,
+                "voltvar_xarray": voltvar_xarray,
+                "voltvar_yarray": voltvar_yarray
             }
         )
 

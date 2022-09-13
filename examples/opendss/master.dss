@@ -16,6 +16,10 @@ redirect lines.dss
 
 redirect loads.dss
 
+new loadshape.loadshape_july1 npts=24 minterval=60 mult=(file=loadprofile.csv)
+new loadshape.pvshape_july1 npts=24 minterval=60 mult=(file=solarprofile.csv) 
+BatchEdit Load..* yearly=loadshape_july1
+
 set voltagebases=[0.415, 11.0, 33.0]
 new energymeter.test transformer.80_27834864364979_13_0915193376659_transformer
 

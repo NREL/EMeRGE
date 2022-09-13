@@ -45,11 +45,13 @@ class OpenDSSSimulationManager:
         self.simulation_timestep_min = simulation_timestep_min
 
         self.opendss_instance = opendss.OpenDSSSimulator(self.path_to_master_dss_file)
+        self.opendss_instance.set_mode(2)
         self.opendss_instance.set_simulation_time(
             self.simulation_start_time,
             self.profile_start_time
         )
         self.opendss_instance.set_stepsize(self.simulation_timestep_min)
+        self.opendss_instance.set_max_iteration(1000)
         self.current_time = self.simulation_start_time
         self.convergence_dict  = {"datetime": [], "convergence": []}
 

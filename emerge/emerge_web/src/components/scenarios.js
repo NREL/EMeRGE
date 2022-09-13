@@ -50,7 +50,9 @@ class ScenarioPage extends Component {
             nvri: null,
             tlri: null,
             llri: null,
-            system: null
+            system: null,
+            total_energy: null,
+            total_pv_energy: null
         }
     
     }
@@ -90,6 +92,24 @@ class ScenarioPage extends Component {
                 response.json())
         .then((data)=>{
             this.setState({"llri": data})
+        })
+        .catch(error=>{
+            console.log(error);
+        });
+        fetch( config.base_url + '/scenarios/timeseries/TotalEnergy')
+        .then(response => 
+                response.json())
+        .then((data)=>{
+            this.setState({"total_energy": data})
+        })
+        .catch(error=>{
+            console.log(error);
+        });
+        fetch( config.base_url + '/scenarios/timeseries/TotalPVGeneration')
+        .then(response => 
+                response.json())
+        .then((data)=>{
+            this.setState({"total_pv_energy": data})
         })
         .catch(error=>{
             console.log(error);
@@ -141,6 +161,24 @@ class ScenarioPage extends Component {
                             <AssetTimeseriesMetrics name="LLRI" data={this.state.llri}
                             title='Comparing time series asset risk metrics'
                             y_label="Weighted depth of violation"/>
+                        </div>;
+        }
+
+        else if (this.state.option.value === 'total_energy'){
+            
+            component = <div class="p-5 w-4/5 h-5/6">
+                            <AssetTimeseriesMetrics name="Total_Energy" data={this.state.total_energy}
+                            title='Comparing total substation energy'
+                            y_label="MWhr or Mvarhr"/>
+                        </div>;
+        }
+
+        else if (this.state.option.value === 'total_pv_energy'){
+            
+            component = <div class="p-5 w-4/5 h-5/6">
+                            <AssetTimeseriesMetrics name="Total_PV_Energy" data={this.state.total_pv_energy}
+                            title='Comparing total PV energy'
+                            y_label="MWhr or Mvarhr"/>
                         </div>;
         }
 
