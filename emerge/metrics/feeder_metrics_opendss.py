@@ -233,7 +233,7 @@ def aggregate_asset_metrics(dss_instance):
         capacitors=capacitors,
         regulators=regs,
         transformers=transformers,
-        feeder=feeder
+        lines=feeder
     )
 
 

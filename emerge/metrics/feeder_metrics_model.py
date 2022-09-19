@@ -62,7 +62,7 @@ class AssetMetrics(BaseModel):
     capacitors: CapacitorAssetMetrics
     regulators: RegulatorsAssetMetrics
     transformers: TransformersAssetMetrics
-    feeder: FeederMetrics
+    lines: FeederMetrics
     
 
 
