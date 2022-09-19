@@ -62,27 +62,27 @@ class SARDI_Metrics extends Component {
                 <div class="grid grid-cols-1 place-items-center mb-10">
                     <div id="sardi_voltage" class="">
                     </div>
-                    <p class="text-white px-3 text-center">Average percentage number of customers 
+                    <p class="text-white px-3 text-center">Average percentage number of customer hours
                     affected by voltage violation.</p>
                 </div>
                 <div class="grid grid-cols-1 place-items-center mb-10">
                     <div id="sardi_line" class="">
                     </div>
-                    <p class="text-white px-3 text-center">Average percentage number of customer affected by 
+                    <p class="text-white px-3 text-center">Average percentage number of customer hours affected by 
                     line thermal violation.</p>
                 </div>
 
                 <div class="grid grid-cols-1 place-items-center mb-10"> 
                     <div id="sardi_transformer" class="">
                     </div>
-                    <p class="text-white px-3 text-center">Average percentage number of customer 
+                    <p class="text-white px-3 text-center">Average percentage number of customer hours
                     affected by transformer thermal violation</p>
                 </div>
 
                 <div class="grid grid-cols-1 place-items-center mb-10"> 
                     <div id="sardi_aggregated" class="">
                     </div>
-                    <p class="text-white px-3 text-center">Average percentage number of customer affected by 
+                    <p class="text-white px-3 text-center">Average percentage number of customer hours affected by 
                     both voltage and thermal violation</p>
                 </div>
             </div>

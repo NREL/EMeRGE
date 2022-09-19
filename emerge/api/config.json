@@ -5,5 +5,5 @@
     "scenario_metrics_db": "input/scenario_metrics_unity_pf",
     "scenario_metrics_vvar": "input/scenario_metrics_voltvar",
     "scenario_metrics_vvar_nighttime": "input/scenario_metrics_voltvar_nightoff",
-    "ui_url": "http://localhost:3000"
+    "ui_url": "http://localhost:3001"
 }
