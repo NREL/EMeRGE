@@ -1,9 +1,9 @@
 {
-    "snapshot_metrics_db": "input/db.json",
-    "timeseries_metrics_db": "input/db_metrics.json",
-    "geojson_path": "input/output_geojson",
-    "scenario_metrics_db": "input/scenario_metrics_new",
-    "scenario_metrics_vvar": "input/scenario_metrics_vvar",
-    "scenario_metrics_vvar_nighttime": "input/scenario_metrics_nighttime_off",
-    "ui_url": "http://localhost:3001"
+    "snapshot_metrics_db": "input/snapshot.json",
+    "timeseries_metrics_db": "input/timeseries.json",
+    "geojson_path": "input/geojsons",
+    "scenario_metrics_db": "input/scenario_metrics_unity_pf",
+    "scenario_metrics_vvar": "input/scenario_metrics_voltvar",
+    "scenario_metrics_vvar_nighttime": "input/scenario_metrics_voltvar_nightoff",
+    "ui_url": "http://localhost:3000"
 }

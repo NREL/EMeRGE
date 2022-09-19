@@ -48,6 +48,8 @@ def _run_timeseries_sim(input):
     total_pv_energy_observer = system_metrics.TotalPVGeneration()
     timeseries_total_power_observer = system_metrics.TimeseriesTotalPower()
     timeseries_total_pv_power_observer = system_metrics.TimeseriesTotalPVPower()
+    total_loss_observer = system_metrics.TotalLossEnergy()
+    timeseries_loss_observer = system_metrics.TimeseriesTotalLoss()
 
     observers_ = [
         sardi_voltage_observer,
@@ -60,7 +62,9 @@ def _run_timeseries_sim(input):
         total_energy_observer,
         total_pv_energy_observer,
         timeseries_total_power_observer,
-        timeseries_total_pv_power_observer 
+        timeseries_total_pv_power_observer,
+        total_loss_observer,
+        timeseries_loss_observer
     ]
     for observer_ in observers_:
         subject.attach(observer_)

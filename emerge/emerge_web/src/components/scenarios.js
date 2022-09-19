@@ -52,7 +52,8 @@ class ScenarioPage extends Component {
             llri: null,
             system: null,
             total_energy: null,
-            total_pv_energy: null
+            total_pv_energy: null,
+            total_loss_energy: null
         }
     
     }
@@ -110,6 +111,15 @@ class ScenarioPage extends Component {
                 response.json())
         .then((data)=>{
             this.setState({"total_pv_energy": data})
+        })
+        .catch(error=>{
+            console.log(error);
+        });
+        fetch( config.base_url + '/scenarios/timeseries/TotalLossEnergy')
+        .then(response => 
+                response.json())
+        .then((data)=>{
+            this.setState({"total_loss_energy": data})
         })
         .catch(error=>{
             console.log(error);
@@ -178,6 +188,15 @@ class ScenarioPage extends Component {
             component = <div class="p-5 w-4/5 h-5/6">
                             <AssetTimeseriesMetrics name="Total_PV_Energy" data={this.state.total_pv_energy}
                             title='Comparing total PV energy'
+                            y_label="MWhr or Mvarhr"/>
+                        </div>;
+        }
+        
+        else if (this.state.option.value === 'total_loss_energy'){
+            
+            component = <div class="p-5 w-4/5 h-5/6">
+                            <AssetTimeseriesMetrics name="Total_Loss_Energy" data={this.state.total_loss_energy}
+                            title='Comparing total energy loss'
                             y_label="MWhr or Mvarhr"/>
                         </div>;
         }

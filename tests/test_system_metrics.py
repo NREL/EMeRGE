@@ -5,27 +5,51 @@ from emerge.metrics.time_series_metrics import system_metrics
 from emerge.metrics.time_series_metrics import observer
 from conftest import simulation_manager_setup
 
-def test_total_energy():
-    """ Function to test the computation of total energy."""
+# def test_total_energy():
+#     """ Function to test the computation of total energy."""
+
+#     manager = simulation_manager_setup()
+#     subject = observer.MetricsSubject()
+
+#     total_energy_observer = system_metrics.TotalEnergy()
+#     subject.attach(total_energy_observer)
+
+#     manager.simulate(subject)
+
+# def test_pv_energy():
+#     """ Function to test the computation of total PV energy."""
+
+#     manager = simulation_manager_setup()
+#     subject = observer.MetricsSubject()
+
+#     pv_observer = system_metrics.TotalPVGeneration()
+#     subject.attach(pv_observer)
+
+#     manager.simulate(subject)
+
+def test_energy_loss():
+    """ Function to test the computation of total loss."""
 
     manager = simulation_manager_setup()
     subject = observer.MetricsSubject()
 
-    total_energy_observer = system_metrics.TotalEnergy()
-    subject.attach(total_energy_observer)
+    loss_observer = system_metrics.TotalLossEnergy()
+    subject.attach(loss_observer)
 
     manager.simulate(subject)
+    print(loss_observer.get_metric())
 
-def test_pv_energy():
-    """ Function to test the computation of total PV energy."""
+def test_timeseries_powerloss():
+    """ Function to test the computation of timeseries power loss."""
 
     manager = simulation_manager_setup()
     subject = observer.MetricsSubject()
 
-    pv_observer = system_metrics.TotalPVGeneration()
-    subject.attach(pv_observer)
+    loss_observer = system_metrics.TimeseriesTotalLoss()
+    subject.attach(loss_observer)
 
     manager.simulate(subject)
+    print(loss_observer.get_metric())
 
 # def test_sardi_voltage():
 #     """ Function to test the computation of SARDI voltage."""

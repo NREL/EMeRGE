@@ -15,7 +15,9 @@ from emerge.metrics.powerflow_metrics_opendss import (
     get_allbus_voltage_pu,
     get_voltage_by_distance,
     get_voltage_by_lat_lon,
-    get_voltage_distribution
+    get_voltage_distribution,
+    get_lineloading_dataframe,
+    get_transloading_dataframe
 )
 
 def compute_snapshot_metrics(
@@ -56,6 +58,20 @@ def compute_snapshot_metrics(
             "type": "snapshot_voltage_for_heatmap", 
             "label": "peak_load", 
             "data":  voltage_by_lat_lon})
+
+    """ line loading """
+    line_loading_df = get_lineloading_dataframe(opendss_instance.dss_instance)
+    db_instance.db.insert({
+            "type": "snapshot_lineloading_for_heatmap", 
+            "label": "peak_load", 
+            "data":  line_loading_df.to_dict()['loading(pu)']})
+
+    """ transformer loading """
+    xfmr_loading_df = get_transloading_dataframe(opendss_instance.dss_instance)
+    db_instance.db.insert({
+            "type": "snapshot_xfmrloading_for_heatmap", 
+            "label": "peak_load", 
+            "data":  xfmr_loading_df.to_dict()['loading(pu)']})
 
 if __name__ == '__main__':
     

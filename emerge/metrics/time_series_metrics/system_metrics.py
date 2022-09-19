@@ -12,6 +12,34 @@ from emerge.metrics import feeder_metrics_opendss
 import pandas as pd
 
 
+class TimeseriesTotalLoss(observer.MetricObserver):
+    """ Class for computing total loss.
+    
+    Attributes:
+        active_power (float): Time series active power
+        reactive_power (float): Time series reactive power
+    """
+
+    def __init__(self):
+
+        self.active_power = []
+        self.reactive_power = []
+
+    def compute(self, dss_instance:dss):
+        """ Refer to base class for more details. """
+        timestep = dss_instance.Solution.StepSize()/(3600)
+        sub_losses = dss_instance.Circuit.Losses()
+      
+        self.active_power.append((sub_losses[0])*timestep/1000)
+        self.reactive_power.append((sub_losses[1])*timestep/1000)
+
+    def get_metric(self):
+        """ Refer to base class for more details. """
+        return {
+            "active_power": self.active_power,
+            "reactive_power": self.reactive_power
+        }
+
 class TimeseriesTotalPower(observer.MetricObserver):
     """ Class for timeseries total power.
     
@@ -70,6 +98,29 @@ class TimeseriesTotalPVPower(observer.MetricObserver):
             "active_power": self.active_power,
             "reactive_power": self.reactive_power
         }
+
+class TotalLossEnergy(observer.MetricObserver):
+    """ Class for computing total loss.
+    
+    Attributes:
+        total_loss (float): Store for total energy
+    """
+
+    def __init__(self):
+
+        self.total_loss = {"active_power": 0, "reactive_power": 0}
+
+    def compute(self, dss_instance:dss):
+        """ Refer to base class for more details. """
+        timestep = dss_instance.Solution.StepSize()/(3600)
+        sub_losses = dss_instance.Circuit.Losses()
+      
+        self.total_loss['active_power'] += (sub_losses[0])*timestep/1000000
+        self.total_loss['reactive_power'] += (sub_losses[1])*timestep/1000000
+
+    def get_metric(self):
+        """ Refer to base class for more details. """
+        return self.total_loss
 
 class TotalEnergy(observer.MetricObserver):
     """ Class for computing total energy.

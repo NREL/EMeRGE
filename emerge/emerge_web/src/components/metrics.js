@@ -292,21 +292,21 @@ class MetricPage extends Component {
         let component;
         if (this.state.option.value === 'system'){
             
-            component = <div class="w-3/4 relative border-l bg-slate-900 min-h-full">
+            component = <div class="w-3/4 relative border-l bg-slate-900 h-screen overflow-scroll">
                             <SARDI_Metrics/>
                         </div>;
         } else if(this.state.option.value === 'nvri'){
 
-            component =  <div class="w-3/4 relative border-l">
+            component =  <div class="w-3/4 relative border-l max-h-screen">
                             <NodeMap data={this.state.nvri} edge={this.state.edges} center={this.state.center}/>
                         </div>;
         } else if(this.state.option.value === 'tlri'){
 
-            component =  <div class="w-3/4 relative border-l">
+            component =  <div class="w-3/4 relative border-l max-h-screen">
                             <NodeMap data={this.state.tlri} edge={this.state.edges} center={this.state.center}/>
                         </div>;
         } else if(this.state.option.value === 'llri'){
-            component = <div class="w-3/4 relative border-l">
+            component = <div class="w-3/4 relative border-l max-h-screen">
                             <LLRIMap llri={this.state.llri} max_llri={this.state.max_llri} center={this.state.center}/>
                         </div>
 
@@ -314,15 +314,14 @@ class MetricPage extends Component {
         return (
             
             <div class="flex">
-                <div class="w-1/4">
+                <div class="w-1/4 overflow-scroll h-screen">
                     <MetricsPageMenu 
                     max_llri={this.state.max_llri}
                     option={this.state.option} 
                     handleChange={this.handleChange}/>
                 </div>
-
-                {component}
                 
+                {component}
             </div>
         )
     }
