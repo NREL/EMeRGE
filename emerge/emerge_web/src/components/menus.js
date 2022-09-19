@@ -3,6 +3,9 @@ import chevronDown from '../icons/chevron-down.svg';
 import plug from '../icons/power-plug.svg';
 import asset_types from '../assets/asset_types.js';
 import assets_logo from '../icons/assets_icon.svg';
+import scenario_logo from '../icons/solar.svg';
+import snapshot_logo from '../icons/snapshot.svg';
+import timeseries_logo from '../icons/timeseries.svg';
 import logo from '../icons/logo.svg';
 import { Component } from "react";
 
@@ -19,48 +22,68 @@ function Header() {
     )
   }
 
-function Menu(){
-    return (
-      <div class="w-32 bg-slate-700 text-white border-r min-h-screen shadow-md">
-          <div class=""> 
-            
-              <div class="flex flex-col py-2 bg-slate-800 border-b items-center hover:cursor-pointer"
-                >
-                  <Link to="/assets" class="flex flex-col items-center"> 
-                    <h1 class="text-lg 2xl:text-xl pb-2"> Assets </h1>
-                    <img src={assets_logo} width="40"/>
-                  </Link>
-                    
+class Menu extends Component {
+
+    constructor() {
+      super()
+      this.state = {
+        page: 'snapshot'
+      }
+    }
+
+    updatePage(value) {
+      this.setState({"page": value})
+    }
+
+    render() {
+
+      return (
+        <div class="w-32 bg-slate-700 text-white border-r min-h-screen shadow-md">
+            <div class=""> 
+              
+                <div className={this.state.page === 'assets' ? 'bg-slate-800' : ''}>
+                  <div class="flex flex-col py-2 border-b items-center hover:cursor-pointer" >
+                    <Link to="/assets" class="flex flex-col items-center" onClick={()=> this.updatePage('assets')}> 
+                      <h1 class="text-lg 2xl:text-xl pb-2"> Assets </h1>
+                      <img src={assets_logo} width="40"/>
+                    </Link>
+                  </div>  
+                </div>
+
+                <div className={this.state.page === 'snapshot' ? 'bg-slate-800' : ''}>
+                  <div class="flex flex-col py-2 border-b items-center hover:cursor-pointer">
+
+                      <Link to="/snapshots" class="flex flex-col items-center" onClick={()=> this.updatePage('snapshot')}>
+                        <h1 class="text-lg 2xl:text-xl pb-2"> Snapshot </h1>
+                        <img src={snapshot_logo} width="40"/>
+                      </Link>
+                    </div>
+                  </div>
                 
-              </div>
-  
-              <div class="flex flex-col py-2 border-b items-center hover:cursor-pointer" >
-                  
-                  <Link to="/snapshots" class="flex flex-col items-center">
-                    <h1 class="text-lg 2xl:text-xl pb-2"> Snapshot </h1>
-                    <img src={assets_logo} width="40"/>
-                  </Link>
-              </div>
+                <div className={this.state.page === 'metrics' ? 'bg-slate-800' : ''}>
+                  <div class="flex flex-col py-2 border-b items-center hover:cursor-pointer" >
+                      <Link to="/timeseries-metrics" class="flex flex-col items-center" onClick={()=> this.updatePage('metrics')}>
+                        <h1 class="text-lg 2xl:text-xl pb-2 text-center"> Timeseries <br/> Metrics</h1>
+                        <img src={timeseries_logo} width="60"/>
+                      </Link>
+                  </div>
+                </div>
 
-              <div class="flex flex-col py-2 border-b items-center hover:cursor-pointer" >
-                  
-                  <Link to="/timeseries-metrics" class="flex flex-col items-center">
-                    <h1 class="text-lg 2xl:text-xl pb-2"> Metrics </h1>
-                    <img src={assets_logo} width="40"/>
-                  </Link>
-              </div>
+                <div className={this.state.page === 'scenarios' ? 'bg-slate-800' : ''}>
+                  <div class="flex flex-col py-2 border-b items-center hover:cursor-pointer" >
+                      <Link to="/scenario-metrics" class="flex flex-col items-center" onClick={()=> this.updatePage('scenarios')}>
+                        <h1 class="text-lg 2xl:text-xl pb-2"> PV Scenarios </h1>
+                        <img src={scenario_logo} width="60"/>
+                      </Link>
+                  </div>
+                  </div>
+    
+            </div>
+        </div>
+      )
 
-              <div class="flex flex-col py-2 border-b items-center hover:cursor-pointer" >
-                  
-                  <Link to="/scenario-metrics" class="flex flex-col items-center">
-                    <h1 class="text-lg 2xl:text-xl pb-2"> Scenarios </h1>
-                    <img src={assets_logo} width="40"/>
-                  </Link>
-              </div>
-  
-          </div>
-      </div>
-    )
+    }
+
   }
   
 function AssetsPageMenu(props){
@@ -107,27 +130,66 @@ function AssetsPageMenu(props){
       )
 }
 
-function SnapshotsPageMenu(){
+function SnapshotsPageMenu(props){
   
     return (
       <div>
         <div class="flex border-t text-white">
 
             <div class="min-h-screen bg-slate-700 w-full">
-              <div >
-                <div class="bg-slate-900 px-5 h-16 flex items-center justify-between 
-                  hover:border-2 hover:border-indigo-600 hover:cursor-pointer">
-                    <div class="flex">
-                      <img src={plug} width="30" class="mr-5"/>
-                      <h1 class="text-xl 2xl:text-2xl"> Voltage Heatmap </h1>
-                    </div>
-                    <img src={chevronDown} width="30"/>
-                </div>
-  
-                <div class="px-10 py-5">
+              <div class="px-10 py-5">
 
-                      
-                </div>
+                  <div class="flex items-center pb-2">
+                    <input type="radio" name="value" value="voltage_heatmap" defaultChecked={props.option.value==='voltage_heatmap'} onChange={props.handleChange}/>
+                    <h1 class="pl-3 text-xl font-bold text-sky-500"> Voltage Heatmap </h1>
+                  </div>
+                  <p> Heatmap plot for voltage on top of network. </p>
+
+                  <div class="flex justify-between font-bold">
+                      <h1> {props.min_pu} pu </h1>
+                      <h1> {props.max_pu} pu </h1>
+                  </div>
+                  <div class="h-6 w-full bg-gradient-to-r from-[rgb(255,255,255)] to-[rgb(255,0,0)]"></div>
+
+                  <div class="flex items-center pb-2 pt-5">
+                    <input type="radio" name="value" value="voltage_by_distance" defaultChecked={props.option.value==='voltage_by_distance'} onChange={props.handleChange}/>
+                    <h1 class="pl-3 text-xl font-bold text-sky-500"> Voltage by distance </h1>
+                  </div>
+                  <p> Voltage plot by distance. </p>
+
+                  <div class="flex items-center pb-2 pt-5">
+                    <input type="radio" name="value" value="voltage_distribution" defaultChecked={props.option.value==='voltage_distribution'} onChange={props.handleChange}/>
+                    <h1 class="pl-3 text-xl font-bold text-sky-500"> Voltage distribution </h1>
+                  </div>
+                  <p> Distribution of pu voltages </p>
+
+                  <div class="flex items-center pb-2 pt-5">
+                    <input type="radio" name="value" value="line_loading_heatmap" defaultChecked={props.option.value==='line_loading_heatmap'} onChange={props.handleChange}/>
+                    <h1 class="pl-3 text-xl font-bold text-sky-500"> Line loading heatmap </h1>
+                  </div>
+                  <p> Heatmap plot for line loading on top of network. </p>
+
+                  <div class="flex justify-between font-bold">
+                      <h1> 0.0 </h1>
+                      <h1> 1.0 </h1>
+                    </div>
+                  <div class="h-6 w-full bg-gradient-to-r from-[rgb(255,0,255)] to-[rgb(255,255,255)]"></div>
+
+                  <div class="flex items-center pb-2 pt-5">
+                    <input type="radio" name="value" value="xfmr_loading_heatmap" defaultChecked={props.option.value==='xfmr_loading_heatmap'} onChange={props.handleChange}/>
+                    <h1 class="pl-3 text-xl font-bold text-sky-500"> Transformer loading heatmap </h1>
+                  </div>
+                  <p> Heatmap plot for transformer loading on top of network. </p>
+                  
+
+                  <div class="flex justify-between font-bold">
+                      <h1> {props.min_xmfr_loading} </h1>
+                      <h1> {props.max_xmfr_loading} </h1>
+                  </div>
+                  <div class="h-6 w-full bg-gradient-to-r from-[rgb(255,255,255)] to-[rgb(255,0,0)]"></div>
+
+                  
+               
               </div>
             </div>
   
@@ -146,7 +208,27 @@ function ScenarioPageMenu(props){
         </div>
 
         <div class="px-10 py-5">
+
             <div class="flex items-center pb-2">
+              <input type="radio" name="value" value="total_energy" defaultChecked={props.option.value==='total_energy'} onChange={props.handleChange}/>
+              <h1 class="pl-3 text-xl font-bold text-sky-500"> Substation Energy </h1>
+            </div>
+            <p> Time series plot of total energy compared across DER scenrios.</p>
+
+            <div class="flex items-center pb-2 pt-5">
+              <input type="radio" name="value" value="total_loss_energy" defaultChecked={props.option.value==='total_loss_energy'} onChange={props.handleChange}/>
+              <h1 class="pl-3 text-xl font-bold text-sky-500"> Energy loss </h1>
+            </div>
+            <p> Time series plot of total energy loss compared across DER scenrios.</p>
+
+            <div class="flex items-center pb-2 pt-5">
+              <input type="radio" name="value" value="total_pv_energy" defaultChecked={props.option.value==='total_pv_energy'} onChange={props.handleChange}/>
+              <h1 class="pl-3 text-xl font-bold text-sky-500"> PV Energy </h1>
+            </div>
+            <p> Time series plot of total PV energy compared across DER scenrios.</p>
+
+          
+            <div class="flex items-center pb-2 pt-5">
               <input type="radio" name="value" value="system" defaultChecked={props.option.value==='system'} onChange={props.handleChange}/>
               <h1 class="pl-3 text-xl font-bold text-sky-500"> SARDI Metrics </h1>
             </div>

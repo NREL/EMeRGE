@@ -11,6 +11,164 @@ from emerge.metrics import data_model
 from emerge.metrics import feeder_metrics_opendss
 import pandas as pd
 
+
+class TimeseriesTotalLoss(observer.MetricObserver):
+    """ Class for computing total loss.
+    
+    Attributes:
+        active_power (float): Time series active power
+        reactive_power (float): Time series reactive power
+    """
+
+    def __init__(self):
+
+        self.active_power = []
+        self.reactive_power = []
+
+    def compute(self, dss_instance:dss):
+        """ Refer to base class for more details. """
+        timestep = dss_instance.Solution.StepSize()/(3600)
+        sub_losses = dss_instance.Circuit.Losses()
+      
+        self.active_power.append((sub_losses[0])*timestep/1000)
+        self.reactive_power.append((sub_losses[1])*timestep/1000)
+
+    def get_metric(self):
+        """ Refer to base class for more details. """
+        return {
+            "active_power": self.active_power,
+            "reactive_power": self.reactive_power
+        }
+
+class TimeseriesTotalPower(observer.MetricObserver):
+    """ Class for timeseries total power.
+    
+    Attributes:
+        active_power (float): Time series active power
+        reactive_power (float): Time series reactive power
+    """
+
+    def __init__(self):
+
+        self.active_power = []
+        self.reactive_power = []
+
+    def compute(self, dss_instance:dss):
+        """ Refer to base class for more details. """
+        timestep = dss_instance.Solution.StepSize()/(3600)
+        sub_power = dss_instance.Circuit.TotalPower()
+      
+        self.active_power.append((-sub_power[0])*timestep/1000)
+        self.reactive_power.append((-sub_power[1])*timestep/1000)
+
+    def get_metric(self):
+        """ Refer to base class for more details. """
+        return {
+            "active_power": self.active_power,
+            "reactive_power": self.reactive_power
+        }
+
+class TimeseriesTotalPVPower(observer.MetricObserver):
+    """ Class for computing time series total pv power.
+    
+    Attributes:
+        active_power (float): Time series active power
+        reactive_power (float): Time series reactive power
+    """
+
+    def __init__(self):
+
+        self.active_power = []
+        self.reactive_power = []
+
+    def compute(self, dss_instance:dss):
+        """ Refer to base class for more details. """
+        timestep = dss_instance.Solution.StepSize()/(3600)
+        pv_df = powerflow_metrics_opendss.get_pv_power_dataframe(dss_instance)
+        if not pv_df.empty:
+            pv_power = pv_df.sum().to_dict()
+            self.active_power.append(pv_power['active_power']*timestep/1000)
+            self.reactive_power.append(pv_power['reactive_power']*timestep/1000)
+        else:
+            self.active_power.append(0)
+            self.reactive_power.append(0)
+    def get_metric(self):
+        """ Refer to base class for more details. """
+        return {
+            "active_power": self.active_power,
+            "reactive_power": self.reactive_power
+        }
+
+class TotalLossEnergy(observer.MetricObserver):
+    """ Class for computing total loss.
+    
+    Attributes:
+        total_loss (float): Store for total energy
+    """
+
+    def __init__(self):
+
+        self.total_loss = {"active_power": 0, "reactive_power": 0}
+
+    def compute(self, dss_instance:dss):
+        """ Refer to base class for more details. """
+        timestep = dss_instance.Solution.StepSize()/(3600)
+        sub_losses = dss_instance.Circuit.Losses()
+      
+        self.total_loss['active_power'] += (sub_losses[0])*timestep/1000000
+        self.total_loss['reactive_power'] += (sub_losses[1])*timestep/1000000
+
+    def get_metric(self):
+        """ Refer to base class for more details. """
+        return self.total_loss
+
+class TotalEnergy(observer.MetricObserver):
+    """ Class for computing total energy.
+    
+    Attributes:
+        total_energy (float): Store for total energy
+    """
+
+    def __init__(self):
+
+        self.total_energy = {"active_power": 0, "reactive_power": 0}
+
+    def compute(self, dss_instance:dss):
+        """ Refer to base class for more details. """
+        timestep = dss_instance.Solution.StepSize()/(3600)
+        sub_power = dss_instance.Circuit.TotalPower()
+      
+        self.total_energy['active_power'] += (-sub_power[0])*timestep/1000
+        self.total_energy['reactive_power'] += (-sub_power[1])*timestep/1000
+
+    def get_metric(self):
+        """ Refer to base class for more details. """
+        return self.total_energy
+
+class TotalPVGeneration(observer.MetricObserver):
+    """ Class for computing total energy in MWh.
+    
+    Attributes:
+        pv_energy (float): Store for total energy
+    """
+
+    def __init__(self):
+
+        self.pv_energy = {"active_power": 0, "reactive_power": 0}
+
+    def compute(self, dss_instance:dss):
+        """ Refer to base class for more details. """
+        timestep = dss_instance.Solution.StepSize()/(3600)
+        pv_df = powerflow_metrics_opendss.get_pv_power_dataframe(dss_instance)
+        if not pv_df.empty:
+            pv_power = pv_df.sum().to_dict()
+            self.pv_energy['active_power'] += pv_power['active_power']*timestep/1000
+            self.pv_energy['reactive_power'] += pv_power['reactive_power']*timestep/1000
+
+    def get_metric(self):
+        """ Refer to base class for more details. """
+        return self.pv_energy
+
 class SARDI_aggregated(observer.MetricObserver):
     """ Class for computing SARDI aggregated metric.
     

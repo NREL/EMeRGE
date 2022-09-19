@@ -70,6 +70,13 @@ from emerge.simulator import opendss
     show_default=True,
     help="Selection strategy",
 )
+@click.option(
+    "-lm",
+    "--load-multiplier",
+    default=1.0,
+    show_default=True,
+    help="Multiplier to be used to reduce load",
+)
 def generate_pv_scenarios_for_feeder(
     master_file,
     output_folder,
@@ -80,6 +87,7 @@ def generate_pv_scenarios_for_feeder(
     load_factor,
     capacity_factor,
     strategy_name,
+    load_multiplier
 ):
     """Function to create PV deloyment scenarios."""
 
@@ -100,7 +108,7 @@ def generate_pv_scenarios_for_feeder(
 
     simulator = opendss.OpenDSSSimulator(master_file)
     list_of_customers = dss_util.get_list_of_customer_models(
-        simulator.dss_instance
+        simulator.dss_instance, load_multiplier
     )
     mapper_object = dss_util.get_load_mapper_objects(simulator.dss_instance)
 

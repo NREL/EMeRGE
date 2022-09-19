@@ -39,7 +39,7 @@ def get_bus_distance_dataframe(dss_instance: dss)-> pd.DataFrame:
     return pd.DataFrame(bus_distance_df).set_index("busname")
 
 
-def get_list_of_customer_models(dss_instance: dss) -> List[data_model.CustomerModel]:
+def get_list_of_customer_models(dss_instance: dss, load_multiplier=1.0) -> List[data_model.CustomerModel]:
     """Returns list of customer models from dss instance.
     
     Args:
@@ -49,7 +49,6 @@ def get_list_of_customer_models(dss_instance: dss) -> List[data_model.CustomerMo
         List[data_model.CustomerModel]: List of customer data
             model.
     """
-
     flag = dss_instance.Loads.First()
     bus_distance_df = get_bus_distance_dataframe(dss_instance)
     customer_model = []
@@ -58,7 +57,7 @@ def get_list_of_customer_models(dss_instance: dss) -> List[data_model.CustomerMo
         customer_model.append(
             data_model.CustomerModel(
                 name=dss_instance.CktElement.Name(),
-                kw=dss_instance.Loads.kW(),
+                kw=dss_instance.Loads.kW()*load_multiplier,
                 distance=bus_distance_df.loc[busname]['distance'],
             )
         )

@@ -20,7 +20,7 @@ class PVScenarioConfig(BaseModel):
     max_num_of_samples: conint(ge=1) = 1
     capacity_factor: confloat(gt=0, le=1) = 0.3
     load_factor: confloat(gt=0, le=1) = 0.33
-    max_pct_production: confloat(gt=0, le=100) = 100
+    max_pct_production: confloat(gt=0, le=500) = 100
 
 
 class PVModel(BaseModel):

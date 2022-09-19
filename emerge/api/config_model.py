@@ -8,4 +8,6 @@ class Config(BaseModel):
     timeseries_metrics_db: str
     geojson_path: str
     scenario_metrics_db: str
+    scenario_metrics_vvar: str
+    scenario_metrics_vvar_nighttime: str
     ui_url: str

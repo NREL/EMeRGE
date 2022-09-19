@@ -1,7 +1,9 @@
 {
-    "snapshot_metrics_db": "C:/Users/KDUWADI/Desktop/NREL_Projects/Tunishia/db.json",
-    "timeseries_metrics_db": "C:/Users/KDUWADI/Desktop/NREL_Projects/Tunishia/db_metrics.json",
-    "geojson_path": "C:/Users/KDUWADI/Desktop/NREL_Projects/Tunishia/output_geojson",
-    "scenario_metrics_db": "C:/Users/KDUWADI/Desktop/NREL_Projects/Tunishia/scenario_metrics",
-    "ui_url": "http://localhost:3001"
+    "snapshot_metrics_db": "input/snapshot.json",
+    "timeseries_metrics_db": "input/timeseries.json",
+    "geojson_path": "input/geojsons",
+    "scenario_metrics_db": "input/scenario_metrics_unity_pf",
+    "scenario_metrics_vvar": "input/scenario_metrics_voltvar",
+    "scenario_metrics_vvar_nighttime": "input/scenario_metrics_voltvar_nightoff",
+    "ui_url": "http://localhost:3000"
 }

@@ -117,6 +117,31 @@ def get_lineloading_dataframe(dss_instance: dss):
     
     return pd.DataFrame(line_loading_df).set_index("linename")
 
+def get_pv_power_dataframe(dss_instance: dss):
+    """ Function to retrieve pv power dataframe.
+    
+    Args:
+        dss_instance (dss): Instance of OpenDSSDirect
+    """
+    pv_power_df = {"pvname": [], "active_power": [], "reactive_power": []}
+
+    flag = dss_instance.PVsystems.First()
+    while flag>0:
+        pv_name = dss_instance.PVsystems.Name().lower()
+        pv_powers = dss_instance.CktElement.Powers()
+        
+        active_power = -sum(pv_powers[::2]) 
+        reactive_power = -sum(pv_powers[1::2]) 
+        pv_power_df['pvname'].append(pv_name)
+        pv_power_df['active_power'].append(active_power)
+        pv_power_df['reactive_power'].append(reactive_power)
+        
+        flag = dss_instance.PVsystems.Next()
+    
+    return pd.DataFrame(pv_power_df).set_index("pvname")
+
+
+
 def get_transloading_dataframe(dss_instance: dss):
     """ Function to retrieve transformer loading dataframe for all transformers. 
     
