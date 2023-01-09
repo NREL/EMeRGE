@@ -341,8 +341,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-6-creating-tie-series-metrics" class="md-nav__link">
-     Step 6: Creating tie series metrics 
+  <a href="#step-6-creating-time-series-metrics" class="md-nav__link">
+     Step 6: Creating time series metrics 
   </a>
   
 </li>
@@ -355,22 +355,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-8-computing-time-series-metrics-for-all-scenarios" class="md-nav__link">
-     Step 8: Computing time series metrics for all scenarios. 
+  <a href="#step-8-computing-time-series-metrics-for-all-scenarios-with-unity-power-factor-settings" class="md-nav__link">
+     Step 8: Computing time series metrics for all scenarios with Unity Power Factor Settings 
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-9-updating-the-configjson" class="md-nav__link">
-     Step 9: Updating the config.json 
+  <a href="#step-9-computing-time-series-metrics-for-all-scenarios-with-voltvar-settings" class="md-nav__link">
+     Step 9: Computing time series metrics for all scenarios with VoltVar Settings 
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-10-run-the-python-server" class="md-nav__link">
-     Step 10: Run the python server 
+  <a href="#step-10-computing-time-series-metrics-for-all-scenarios-with-night-time-off-voltvar-settings" class="md-nav__link">
+     Step 10: Computing time series metrics for all scenarios with Night time off VoltVar Settings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-11-updating-the-configjson" class="md-nav__link">
+     Step 11: Updating the config.json 
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-12-run-the-python-server" class="md-nav__link">
+     Step 12: Run the python server 
   </a>
   
 </li>
@@ -509,8 +523,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-6-creating-tie-series-metrics" class="md-nav__link">
-     Step 6: Creating tie series metrics 
+  <a href="#step-6-creating-time-series-metrics" class="md-nav__link">
+     Step 6: Creating time series metrics 
   </a>
   
 </li>
@@ -523,22 +537,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-8-computing-time-series-metrics-for-all-scenarios" class="md-nav__link">
-     Step 8: Computing time series metrics for all scenarios. 
+  <a href="#step-8-computing-time-series-metrics-for-all-scenarios-with-unity-power-factor-settings" class="md-nav__link">
+     Step 8: Computing time series metrics for all scenarios with Unity Power Factor Settings 
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-9-updating-the-configjson" class="md-nav__link">
-     Step 9: Updating the config.json 
+  <a href="#step-9-computing-time-series-metrics-for-all-scenarios-with-voltvar-settings" class="md-nav__link">
+     Step 9: Computing time series metrics for all scenarios with VoltVar Settings 
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-10-run-the-python-server" class="md-nav__link">
-     Step 10: Run the python server 
+  <a href="#step-10-computing-time-series-metrics-for-all-scenarios-with-night-time-off-voltvar-settings" class="md-nav__link">
+     Step 10: Computing time series metrics for all scenarios with Night time off VoltVar Settings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-11-updating-the-configjson" class="md-nav__link">
+     Step 11: Updating the config.json 
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-12-run-the-python-server" class="md-nav__link">
+     Step 12: Run the python server 
   </a>
   
 </li>
@@ -580,11 +608,11 @@
 <h3 id="step-1-installation"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 1: Installation</p></h3>
 <p>In order to start using EMERGE make sure you have installed all the softwares and dependencies as pointed out in the <code>Welcome</code> page.</p>
 <h3 id="step-2-distribution-model"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 2: Distribution Model </p></h3>
-<p>For this tutorial we are going to use the distribution model already present in the <code>emerge</code> repository. You will find the model in <code>examples/opendss</code> directory.</p>
+<p>For this tutorial we are going to use the distribution model already present in the <code>emerge</code> repository. You will find the model in <code>examples/opendss</code> directory. However if you have your own OpenDSS distribution system model feel free to use that.</p>
 <h3 id="step-3-folder-for-storing-emerge-output-data"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 3: Folder for storing emerge output data </p></h3>
-<p>Let's create an empty directory to store all the data emerge will generate in the upcoming steps. Let's call this folder <code>emerge_test_data</code>. Once you have created the folder let's open up a terminal and activate the python environment where emerge is installed. You will need to visit the folder that you created during the installation process which should contain <code>env</code> folder (if you have not changed the environment name) and run the command <code>env/Scripts/activate.bat</code> if you using windows command prompt or <code>source env/bin/activat</code> if you are using Mac or Linux terminal.</p>
+<p>Let's create an empty directory to store all the data emerge will generate in the upcoming steps. Let's call this folder <code>emerge_test_data</code>. You can create this folder anywhere you want. Once you have created the folder let's open up a terminal and activate the python environment where emerge is installed. You will need to visit the folder that you created during the installation process which should contain <code>env</code> folder (if you have not changed the environment name) and run the command <code>env/Scripts/activate.bat</code> if you are using windows command prompt or <code>source env/bin/activat</code> if you are using Mac or Linux terminal.</p>
 <h3 id="step-4-creating-geojsons"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 4: Creating geojsons </p></h3>
-<p>In this step we will use <code>create-geojsons</code> command. To see the full list of commands available you can execute the command <code>emerge --help</code>. Make sure you have activated the environment. </p>
+<p>In this step we will use <code>create-geojsons</code> command. To see the full list of commands available you can execute the command <code>emerge --help</code>. Make sure you have activated the environment before running the command.</p>
 <p><code>create-geojsons</code> command will create single json file for each asset type and this will be used to visualize different asset layers in the dashboard later on. Before running the command, let's create another folder insider <code>emerge_test_data</code> folder called <code>geojsons</code>. Now let's run the following the command. Make sure to update full path of <code>master.dss</code> file.</p>
 <div class="highlight"><pre><span></span><code>emerge create-geojsons -m &lt;&gt;/emerge/opendss/master.dss -o geojsons
 </code></pre></div>
@@ -597,8 +625,8 @@
         └── transformer.json
 </code></pre></div>
 <h3 id="step-5-creating-snapshot-metrics"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 5: Creating snapshot metrics </p></h3>
-<p>In this step we will use <code>snapshot-metrics</code> command. This command will run a snapshot powerflow and extract basic technical parameters such as voltages, loadings which will be later displayed in the dashboard.</p>
-<p>Execute following command to generate snapshot metrics. Make sure you are <code>emerge_test_folder</code> directory before you run this command and update full path of <code>master.dss</code> file.</p>
+<p>In this step we will use <code>snapshot-metrics</code> command. This command will run a snapshot powerflow and extract basic technical parameters such as voltages, thermal loadings which will be later displayed in the dashboard.</p>
+<p>Execute following command to generate snapshot metrics. Make sure you are cd'ed in  <code>emerge_test_folder</code> directory before you run this command and update full path of <code>master.dss</code> file.</p>
 <div class="highlight"><pre><span></span><code>emerge snapshot-metrics -m &lt;&gt;/emerge/opendss/master.dss -o snapshot.json
 </code></pre></div>
 <p>The folder structure now sould look like this.</p>
@@ -610,7 +638,7 @@
     |   └── transformer.json
     └── snapshot.json
 </code></pre></div>
-<h3 id="step-6-creating-tie-series-metrics"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 6: Creating tie series metrics </p></h3>
+<h3 id="step-6-creating-time-series-metrics"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 6: Creating time series metrics </p></h3>
 <p>In this step we will use <code>compute-time-series-metrics</code> command. This command will run a time series powerflow and compute various risk metrics which will be later displayed in the dashboard.</p>
 <p>Execute following command to generate risk metrics following time series powerflow simulation. Make sure you are in <code>emerge_test_folder</code> directory before you run this command and update full path of <code>master.dss</code> file. By default simulation will run for a day in 60 minute resolution. To learn more about the options run the command <code>emerge compute-time-series-metrics --help</code>.</p>
 <div class="highlight"><pre><span></span><code>emerge compute-time-series-metrics -m &lt;&gt;/emerge/opendss/master.dss -o timeseries.json
@@ -627,7 +655,7 @@
 </code></pre></div>
 <h3 id="step-7-creating-pv-deployment-scenarios"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 7: Creating PV deployment scenarios </p></h3>
 <p>In this step we will use <code>generate-pv-scenarios-for-feeder</code> command. This command will create PV deployment scenarios on top of base distribution system model. Create folder named <code>pvscenarios</code> inside <code>emerge_test_data</code> folder.</p>
-<p>Execute following command create PV deployment scenarios. Make sure you are in <code>emerge_test_folder</code> directory before you run this command and update full path of <code>master.dss</code> file. By default it will create 10 PV scenarios in the step of 10%. To learn more about the options run the command <code>emerge generate-pv-scenarios-for-feeder --help</code>.</p>
+<p>Execute following command to create PV deployment scenarios. Make sure you are in <code>emerge_test_folder</code> directory before you run this command and update full path of <code>master.dss</code> file. By default it will create 10 PV scenarios in the step of 10%. To learn more about the options run the command <code>emerge generate-pv-scenarios-for-feeder --help</code>.</p>
 <div class="highlight"><pre><span></span><code>emerge generate-pv-scenarios-for-feeder -m &lt;&gt;/emerge/opendss/master.dss -o scenarios
 </code></pre></div>
 <p>The folder structure now sould look like this.</p>
@@ -661,10 +689,10 @@
     ├── snapshot.json
     └── timeseries.json
 </code></pre></div>
-<h3 id="step-8-computing-time-series-metrics-for-all-scenarios"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 8: Computing time series metrics for all scenarios. </p></h3>
-<p>In this step we will use <code>compute-multiscenario-time-series-metrics</code> command. This command run time series power flow simulation for all PV deployment scenarios in parallel. Create folder named <code>scenario_metrics</code> inside <code>emerge_test_data</code> folder.</p>
-<p>Execute following to create metrics for all deployment scenarios. Make sure you are in <code>emerge_test_folder</code> directory before you run this command and update full path of <code>master.dss</code> file. By default it will run simulation for a day in hour resolution. To learn more about the options run the command <code>emerge compute-multiscenario-time-series-metrics --help</code>. Note in this we are using 4 cores in parallel. If your computer does not have 4 cores please reduce the number of cores used in parallel simulation.</p>
-<div class="highlight"><pre><span></span><code>emerge compute-multiscenario-time-series-metrics -m &lt;&gt;/emerge/opendss/master.dss -sf pvscenarios -o scenario_metrics -nc 4
+<h3 id="step-8-computing-time-series-metrics-for-all-scenarios-with-unity-power-factor-settings"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 8: Computing time series metrics for all scenarios with Unity Power Factor Settings </p></h3>
+<p>In this step we will use <code>compute-multiscenario-time-series-metrics</code> command. This command will run time series power flow simulation for all PV deployment scenarios in parallel.</p>
+<p>Execute following to create metrics for all deployment scenarios. Make sure you are in <code>emerge_test_folder</code> directory before you run this command and update full path of <code>master.dss</code> file. By default it will run simulation for a day in hour resolution. To learn more about the options run the command <code>emerge compute-multiscenario-time-series-metrics --help</code>. Note in this command we are using 4 cores in parallel. If your computer does not have 4 cores please reduce the number of cores used in parallel simulation. Make sure to update PV profile name after -pn flag.</p>
+<div class="highlight"><pre><span></span><code>emerge compute-multiscenario-time-series-metrics -m &lt;&gt;/emerge/opendss/master.dss -sf pvscenarios -o scenario_metrics_unity_pf -nc 4 -pn &lt;pvshape_july1&gt;
 </code></pre></div>
 <p>The folder structure now sould look like this.</p>
 <div class="highlight"><pre><span></span><code>└── emerge_test_data
@@ -694,7 +722,7 @@
     |   |   └── PVsystems.dss
     |   └── scenario_0_100
     |       └── PVsystems.dss
-    ├── scenario_metrics
+    ├── scenario_metrics_unity_pf
     |   ├── scenario_0_10.json
     |   ├── scenario_0_10_convergence.csv
     |   ├── scenario_0_20.json
@@ -718,7 +746,185 @@
     ├── snapshot.json
     └── timeseries.json
 </code></pre></div>
-<h3 id="step-9-updating-the-configjson"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 9: Updating the config.json </p></h3>
+<h3 id="step-9-computing-time-series-metrics-for-all-scenarios-with-voltvar-settings"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 9: Computing time series metrics for all scenarios with VoltVar Settings </p></h3>
+<p>In this step we will use same <code>compute-multiscenario-time-series-metrics</code> command but update inverter settings to use VoltVar and run simulation
+for all deployment scenarios. This command will run time series power flow simulation for all PV deployment scenarios in parallel. </p>
+<p>Execute following to create metrics for all deployment scenarios. Make sure you are in <code>emerge_test_folder</code> directory before you run this command and update full path of <code>master.dss</code> file. By default it will run simulation for a day in hour resolution. To learn more about the options run the command <code>emerge compute-multiscenario-time-series-metrics --help</code>. Note in this command we are using 4 cores in parallel. If your computer does not have 4 cores please reduce the number of cores used in parallel simulation. Make sure to update PV profile name after -pn flag.</p>
+<div class="highlight"><pre><span></span><code>emerge compute-multiscenario-time-series-metrics -m models/master.dss -sf pvscenarios -o scenario_metrics_voltvar -nc 4 -vvar True -pn &lt;pvshape_july1&gt;
+</code></pre></div>
+<p>The folder structure now sould look like this.</p>
+<div class="highlight"><pre><span></span><code>└── emerge_test_data
+    ├── geojsons
+    |   ├── buses.json
+    |   ├── lines.json
+    |   ├── loads.json
+    |   └── transformer.json
+    ├── scenarios
+    |   ├── scenario_0_10
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_20
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_30
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_40
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_50
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_60
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_70
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_80
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_90
+    |   |   └── PVsystems.dss
+    |   └── scenario_0_100
+    |       └── PVsystems.dss
+    ├── scenario_metrics_voltvar
+    |   ├── scenario_0_10.json
+    |   ├── scenario_0_10_convergence.csv
+    |   ├── scenario_0_20.json
+    |   ├── scenario_0_20_convergence.csv
+    |   ├── scenario_0_30.json
+    |   ├── scenario_0_30_convergence.csv
+    |   ├── scenario_0_40.json
+    |   ├── scenario_0_40_convergence.csv
+    |   ├── scenario_0_50.json
+    |   ├── scenario_0_50_convergence.csv
+    |   ├── scenario_0_60.json
+    |   ├── scenario_0_60_convergence.csv
+    |   ├── scenario_0_70.json
+    |   ├── scenario_0_70_convergence.csv
+    |   ├── scenario_0_80.json
+    |   ├── scenario_0_80_convergence.csv
+    |   ├── scenario_0_90.json
+    |   ├── scenario_0_90_convergence.csv
+    |   ├── scenario_0_100.json
+    |   └── scenario_0_100_convergence.csv
+    ├── scenario_metrics_unity_pf
+    |   ├── scenario_0_10.json
+    |   ├── scenario_0_10_convergence.csv
+    |   ├── scenario_0_20.json
+    |   ├── scenario_0_20_convergence.csv
+    |   ├── scenario_0_30.json
+    |   ├── scenario_0_30_convergence.csv
+    |   ├── scenario_0_40.json
+    |   ├── scenario_0_40_convergence.csv
+    |   ├── scenario_0_50.json
+    |   ├── scenario_0_50_convergence.csv
+    |   ├── scenario_0_60.json
+    |   ├── scenario_0_60_convergence.csv
+    |   ├── scenario_0_70.json
+    |   ├── scenario_0_70_convergence.csv
+    |   ├── scenario_0_80.json
+    |   ├── scenario_0_80_convergence.csv
+    |   ├── scenario_0_90.json
+    |   ├── scenario_0_90_convergence.csv
+    |   ├── scenario_0_100.json
+    |   └── scenario_0_100_convergence.csv
+    ├── snapshot.json
+    └── timeseries.json
+</code></pre></div>
+<h3 id="step-10-computing-time-series-metrics-for-all-scenarios-with-night-time-off-voltvar-settings"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 10: Computing time series metrics for all scenarios with Night time off VoltVar Settings</p></h3>
+<p>In this step we will use same <code>compute-multiscenario-time-series-metrics</code> command but update inverter settings to use VoltVar with night time off and compute metrics for all scenarios again. The command will run time series power flow simulation for all PV deployment scenarios in parallel. </p>
+<p>Execute following to create metrics for all deployment scenarios. Make sure you are in <code>emerge_test_folder</code> directory before you run this command and update full path of <code>master.dss</code> file. By default it will run simulation for a day in hour resolution. To learn more about the options run the command <code>emerge compute-multiscenario-time-series-metrics --help</code>. Note in this command we are using 4 cores in parallel. If your computer does not have 4 cores please reduce the number of cores used in parallel simulation. Make sure to update PV profile name after -pn flag.</p>
+<div class="highlight"><pre><span></span><code>emerge compute-multiscenario-time-series-metrics -m models/master.dss -sf pvscenarios -o scenario_metrics_voltvar_nightoff -nc 4 -vvar True -nt False -pn &lt;pvshape_july1&gt;
+</code></pre></div>
+<p>The folder structure now sould look like this.</p>
+<div class="highlight"><pre><span></span><code>└── emerge_test_data
+    ├── geojsons
+    |   ├── buses.json
+    |   ├── lines.json
+    |   ├── loads.json
+    |   └── transformer.json
+    ├── scenarios
+    |   ├── scenario_0_10
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_20
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_30
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_40
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_50
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_60
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_70
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_80
+    |   |   └── PVsystems.dss
+    |   ├── scenario_0_90
+    |   |   └── PVsystems.dss
+    |   └── scenario_0_100
+    |       └── PVsystems.dss
+    ├── scenario_metrics_voltvar
+    |   ├── scenario_0_10.json
+    |   ├── scenario_0_10_convergence.csv
+    |   ├── scenario_0_20.json
+    |   ├── scenario_0_20_convergence.csv
+    |   ├── scenario_0_30.json
+    |   ├── scenario_0_30_convergence.csv
+    |   ├── scenario_0_40.json
+    |   ├── scenario_0_40_convergence.csv
+    |   ├── scenario_0_50.json
+    |   ├── scenario_0_50_convergence.csv
+    |   ├── scenario_0_60.json
+    |   ├── scenario_0_60_convergence.csv
+    |   ├── scenario_0_70.json
+    |   ├── scenario_0_70_convergence.csv
+    |   ├── scenario_0_80.json
+    |   ├── scenario_0_80_convergence.csv
+    |   ├── scenario_0_90.json
+    |   ├── scenario_0_90_convergence.csv
+    |   ├── scenario_0_100.json
+    |   └── scenario_0_100_convergence.csv
+    ├── scenario_metrics_unity_pf
+    |   ├── scenario_0_10.json
+    |   ├── scenario_0_10_convergence.csv
+    |   ├── scenario_0_20.json
+    |   ├── scenario_0_20_convergence.csv
+    |   ├── scenario_0_30.json
+    |   ├── scenario_0_30_convergence.csv
+    |   ├── scenario_0_40.json
+    |   ├── scenario_0_40_convergence.csv
+    |   ├── scenario_0_50.json
+    |   ├── scenario_0_50_convergence.csv
+    |   ├── scenario_0_60.json
+    |   ├── scenario_0_60_convergence.csv
+    |   ├── scenario_0_70.json
+    |   ├── scenario_0_70_convergence.csv
+    |   ├── scenario_0_80.json
+    |   ├── scenario_0_80_convergence.csv
+    |   ├── scenario_0_90.json
+    |   ├── scenario_0_90_convergence.csv
+    |   ├── scenario_0_100.json
+    |   └── scenario_0_100_convergence.csv
+    ├── scenario_metrics_voltvar_nightoff
+    |   ├── scenario_0_10.json
+    |   ├── scenario_0_10_convergence.csv
+    |   ├── scenario_0_20.json
+    |   ├── scenario_0_20_convergence.csv
+    |   ├── scenario_0_30.json
+    |   ├── scenario_0_30_convergence.csv
+    |   ├── scenario_0_40.json
+    |   ├── scenario_0_40_convergence.csv
+    |   ├── scenario_0_50.json
+    |   ├── scenario_0_50_convergence.csv
+    |   ├── scenario_0_60.json
+    |   ├── scenario_0_60_convergence.csv
+    |   ├── scenario_0_70.json
+    |   ├── scenario_0_70_convergence.csv
+    |   ├── scenario_0_80.json
+    |   ├── scenario_0_80_convergence.csv
+    |   ├── scenario_0_90.json
+    |   ├── scenario_0_90_convergence.csv
+    |   ├── scenario_0_100.json
+    |   └── scenario_0_100_convergence.csv
+    ├── snapshot.json
+    └── timeseries.json
+</code></pre></div>
+<h3 id="step-11-updating-the-configjson"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 11: Updating the config.json </p></h3>
 <p>Navigate to the <code>emerge/emerge/api</code> directory and update the content of config.json file.
 The content of json file should look like this. Make sure to include the full path here and update the port of front end application if it is running in different port. By default should run in 3000 port.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
@@ -726,10 +932,12 @@ The content of json file should look like this. Make sure to include the full pa
 <span class="w">    </span><span class="nt">&quot;timeseries_metrics_db&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;&gt;/emerge_test_data/timeseries.json&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;geojson_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;&gt;/emerge_test_data/geojsons&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;scenario_metrics_db&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;&gt;/emerge_test_data/scenario_metrics&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;scenario_metrics_vvar&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;&gt;/emerge_test_data/scenario_metrics_voltvar&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;scenario_metrics_vvar_nighttime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;&gt;/emerge_test_data/scenario_metrics_voltvar_nightoff&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;ui_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:3000&quot;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
-<h3 id="step-10-run-the-python-server"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 10: Run the python server </p></h3>
+<h3 id="step-12-run-the-python-server"><p style="color:teal;font-size:18px;font-weight:bold;width:max-content;border-bottom:2px solid blue;"> Step 12: Run the python server </p></h3>
 <p>You will need to cd into <code>emerge/emerge/api</code> directory and run the following command.</p>
 <div class="highlight"><pre><span></span><code>uvicorn main:app --reload
 </code></pre></div>
