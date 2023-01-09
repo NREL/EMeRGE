@@ -29,7 +29,7 @@ In order to use EMERGE you would need to install two softwares [python (>3.9)](h
 
     ``` cmd
     mkdir emerge_test
-    cd mkdir_test
+    cd emerge_test
     python3 -m venv env
     env\Scripts\activate.bat
     git clone https://github.com/NREL/emerge.git
@@ -37,7 +37,7 @@ In order to use EMERGE you would need to install two softwares [python (>3.9)](h
     pip install -e.
     ```
 
-=== "Vue front end"
+=== "React front end"
 
     <p style="font-size:15px;"> Assuming your current directory points to root of cloned emerge repositoty you can run the following commands to install npm dependencies. </p>
 
