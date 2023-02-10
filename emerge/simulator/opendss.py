@@ -78,8 +78,9 @@ class OpenDSSSimulator(AbstractSimulator):
     def set_simulation_time(self, sim_time, profile_start_time):
 
         time_diff = sim_time - profile_start_time
-        hours = int(time_diff.seconds/3600)
-        seconds = time_diff.seconds - hours*3600
+        total_seconds = time_diff.total_seconds()
+        hours = int(total_seconds/3600)
+        seconds = total_seconds - hours*3600
         self.dss_instance.Solution.Hour(hours)
         self.dss_instance.Solution.Seconds(seconds)
 

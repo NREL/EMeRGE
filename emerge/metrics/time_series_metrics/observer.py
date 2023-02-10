@@ -3,6 +3,7 @@
 import abc
 import uuid
 from typing import Dict, List
+import polars
 
 from emerge.db import db_handler
 
@@ -64,3 +65,9 @@ def export_tinydb_json(observers: List[MetricObserver], json_path: str ):
                 "name": observer.__class__.__name__,
                 "data": observer.get_metric()
             })
+
+def export_csv(observers: List[MetricObserver], export_path):
+    
+    for observer in observers:
+        df = polars.from_dict(observer.get_metric())
+        df.write_csv(export_path / (str(observer.__class__.__name__) + '.csv'))

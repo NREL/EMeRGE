@@ -25,7 +25,7 @@ setup(
             "emerge=emerge.cli.cli:cli"
         ],
     },
-    python_requires=">=3.9",  
+    python_requires=">=3.8",  
     classifiers=[
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python :: 3.9",

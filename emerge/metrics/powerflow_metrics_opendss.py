@@ -110,7 +110,7 @@ def get_lineloading_dataframe(dss_instance: dss):
         line_limit = dss_instance.CktElement.NormalAmps()
         currents = dss_instance.CktElement.CurrentsMagAng()[:2 * n_phases]
         line_current = currents[::2]
-        ldg = max(line_current) / float(line_limit)
+        ldg = max(line_current) / max(float(line_limit), 1)
         line_loading_df['linename'].append(line_name)
         line_loading_df['loading(pu)'].append(ldg)
         flag = dss_instance.ActiveClass.Next()
