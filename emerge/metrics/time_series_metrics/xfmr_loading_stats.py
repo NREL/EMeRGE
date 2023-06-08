@@ -6,6 +6,7 @@ from typing import Dict, List
 # third-party imports
 import polars
 import opendssdirect as dss
+import numpy as np
 
 # internal imports
 from emerge.metrics.time_series_metrics import observer
@@ -16,6 +17,32 @@ def get_xfmr_loading_df(dss_instance:dss):
             powerflow_metrics_opendss.get_transloading_dataframe(
             dss_instance
         ))
+
+class OverloadedTransformers(observer.MetricObserver):
+    """Class for computing time series loading metrics for transformers."""
+
+    def __init__(self):
+        self.metrics = {}
+
+    def compute(self, dss_instance: dss) -> None:
+
+        df = powerflow_metrics_opendss.get_transloading_dataframe(dss_instance)
+        loading_dict = dict(zip(df.index, df["loading(pu)"]))
+        if len(self.metrics) == 0:
+            self.metrics = {key: [] for key in loading_dict}
+
+        for xfmr, metric in loading_dict.items():
+            self.metrics[xfmr].append(metric)
+
+    def get_metric(self) -> Dict:
+
+        overloaded_xfmrs = {}
+        for xfmr, loading_arr in self.metrics.items():
+            loading_arr_np = np.array(loading_arr)
+            if len(loading_arr_np[loading_arr_np > 1.0]):
+                overloaded_xfmrs[xfmr] = loading_arr
+
+        return overloaded_xfmrs
 
 
 class XfmrLoadingBins(observer.MetricObserver):

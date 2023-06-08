@@ -4,6 +4,10 @@ end_time: "2018-01-01 13:00:00"
 profile_start: "2018-01-01 00:00:00"
 export_path: './metrics'
 resolution_min: 60
+multi_scenario: 
+  scenario_folder: ./scenarios/hp006
+  num_core: 2
+  pv_profile_shape: 'pvshape'
 metrics:
   node_voltage_stats:
     export_type: 'csv'

@@ -2,6 +2,7 @@
 
 # standard imports
 from typing import Dict, List
+import numpy as np
 
 # third-party imports
 import polars
@@ -16,6 +17,32 @@ def get_line_loading_df(dss_instance:dss):
             powerflow_metrics_opendss.get_lineloading_dataframe(
             dss_instance
         ))
+
+class OverloadedLines(observer.MetricObserver):
+    """Class for computing time series loading metrics for lines."""
+
+    def __init__(self):
+        self.metrics = {}
+
+    def compute(self, dss_instance: dss) -> None:
+
+        df = powerflow_metrics_opendss.get_lineloading_dataframe(dss_instance)
+        loading_dict = dict(zip(df.index, df["loading(pu)"]))
+        if len(self.metrics) == 0:
+            self.metrics = {key: [] for key in loading_dict}
+
+        for line, metric in loading_dict.items():
+            self.metrics[line].append(metric)
+
+    def get_metric(self) -> Dict:
+
+        overloaded_lines = {}
+        for line, loading_arr in self.metrics.items():
+            loading_arr_np = np.array(loading_arr)
+            if len(loading_arr_np[loading_arr_np > 1.0]):
+                overloaded_lines[line] = loading_arr
+
+        return overloaded_lines
 
 
 class LineLoadingBins(observer.MetricObserver):
