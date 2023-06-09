@@ -13,7 +13,7 @@ from emerge.metrics.time_series_metrics import node_voltage_stats
 from emerge.metrics.time_series_metrics import line_loading_stats
 from emerge.metrics.time_series_metrics import xfmr_loading_stats
 
-def _compute_custom_metrics(config, pvsystem_folder_path=None):
+def _compute_custom_metrics(config, pvsystem_folder_path=None, subfolder=None):
     date_format = "%Y-%m-%d %H:%M:%S"
     manager = simulation_manager.OpenDSSSimulationManager(
         config["master"],
@@ -23,7 +23,7 @@ def _compute_custom_metrics(config, pvsystem_folder_path=None):
         config["resolution_min"],
     )
     manager.opendss_instance.set_max_iteration(200)
-    subject = observer.MetricsSubject()
+    subject = observer.MetricsSubject() 
 
     if pvsystem_folder_path:
         pvsystem_file_path = pvsystem_folder_path / 'PVSystems.dss'
@@ -34,6 +34,9 @@ def _compute_custom_metrics(config, pvsystem_folder_path=None):
     observers = {}
     if 'substation_power' in config['metrics']:
         observers['substation_power'] = system_metrics.TimeseriesTotalPower()
+
+    if 'total_pvpower' in config['metrics']:
+        observers['total_pvpower'] = system_metrics.TimeseriesTotalPVPower()
     
     if 'total_powerloss' in config['metrics']:
         observers['total_powerloss'] = system_metrics.TimeseriesTotalLoss()
@@ -88,13 +91,18 @@ def _compute_custom_metrics(config, pvsystem_folder_path=None):
             },
         )
 
+
     for _, observer_ in observers.items():
         subject.attach(observer_)
 
     manager.simulate(subject)
 
-    export_base_path = Path(config['export_path']) if not pvsystem_folder_path else \
-        Path(config['export_path']) / pvsystem_file_path.parent.name
+    export_base_path = Path(config['export_path']) 
+    if subfolder:
+        export_base_path = export_base_path / subfolder
+    
+    if pvsystem_folder_path:
+        export_base_path = export_base_path / pvsystem_file_path.parent.name
     
     if not export_base_path.exists():
         export_base_path.mkdir(parents=True)
@@ -119,14 +127,16 @@ def compute_custom_metrics(
 
 
     if config.get('multi_scenario', None):
+
         scen_folder = Path(config['multi_scenario']['scenario_folder'])
-        if config['multi_scenario']['num_core'] > 1:
-            all_paths = list(scen_folder.iterdir())
-            with multiprocessing.Pool(config['multi_scenario']['num_core']) as p:
-                p.starmap(_compute_custom_metrics, list(zip([config]*len(all_paths), all_paths)))
-        else:
-            for path in scen_folder.iterdir():
-                _compute_custom_metrics(config, path)
+        for folder_ in scen_folder.iterdir():
+            if config['multi_scenario']['num_core'] > 1:
+                all_paths = list(folder_.iterdir())
+                with multiprocessing.Pool(config['multi_scenario']['num_core']) as p:
+                    p.starmap(_compute_custom_metrics, list(zip([config]*len(all_paths), all_paths, folder_)))
+            else:
+                for path in scen_folder.iterdir():
+                    _compute_custom_metrics(config, path, folder_)
     else:
         _compute_custom_metrics(config)
 
