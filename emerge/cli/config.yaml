@@ -1,12 +1,27 @@
-master: ../../examples/opendss/master.dss
-start_time: "2018-01-01 06:00:00"
-end_time: "2018-01-01 13:00:00"
-profile_start: "2018-01-01 00:00:00"
+master: ''
+start_time: "" #"2021-07-01 00:00:00"
+end_time: "" #"2021-07-08 00:00:00"
+use_multi_time: true
+multi_time: 
+  summer:
+    start_time: "2021-07-01 00:00:00" #"2021-07-01 00:00:00"
+    end_time: "2021-07-08 00:00:00" #"2021-07-08 00:00:00"
+  winter:
+    start_time: "2021-12-01 00:00:00" #"2021-07-01 00:00:00"
+    end_time: "2021-12-08 00:00:00" #"2021-07-08 00:00:00"
+profile_start: "2021-01-01 00:00:00"
 export_path: './metrics'
 resolution_min: 60
 multi_scenario: 
-  scenario_folder: ./scenarios
-  num_core: 2
+  scenario_base_path: ./scenarios
+  scenario_folder: 
+    hp006_ppr20_pae50: ./Base_DSS_models/006_updated_6_7_23/Master.dss
+    hp006_ppr20_pae100: ./Base_DSS_models/006_updated_6_7_23/Master.dss
+    hp013_ppr20_pae50: ./Base_DSS_models/013_updated_6_7_23/Master.dss
+    hp013_ppr20_pae100: ./Base_DSS_models/013_updated_6_7_23/Master.dss
+    hp021_ppr20_pae50: ./Base_DSS_models/021_updated_6_7_23/Master.dss
+    hp021_ppr20_pae100: ./Base_DSS_models/021_updated_6_7_23/Master.dss
+  num_core: 14
   pv_profile_shape: 'pvshape'
 metrics:
   node_voltage_stats:
@@ -15,10 +30,13 @@ metrics:
   node_voltage_bins:
     export_type: 'csv'
     file_name: 'node_voltage_bins.csv'
-    args: [[0.95, 0.98, 1.02, 1.05]]
+    args: [[0.95, 0.96, 0.97, 0.98, 0.99, 1.0, 1.01, 1.02, 1.03, 1.04, 1.05]]
   substation_power:
     export_type: 'csv'
     file_name: 'substation_power_timeseries.csv'
+  total_pvpower:
+    export_type: 'csv'
+    file_name: 'total_pvpower_timeseries.csv'
   total_powerloss:
     export_path: 'csv'
     file_name: 'total_loss.csv'
@@ -28,14 +46,29 @@ metrics:
   line_loading_bins:
     export_type: 'csv'
     file_name: 'line_loading_bins.csv'
-    args: [[0.5, 1.0, 1.2]]
+    args: [[0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 2]]
   xfmr_loading_stats:
     export_type: 'csv'
     file_name: 'xfmr_loading_stats.csv'
   xfmr_loading_bins:
     export_type: 'csv'
     file_name: 'xfmr_loading_bins.csv'
-    loading_bins: [0.5, 1.0, 1.2]
-
+    args: [[0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 2]]
+  sardi_voltage:
+    args: [1.05, 0.95]
+    file_name: 'sardi_voltage.csv'
+  sardi_line:
+    args: [1]
+    file_name: 'sardi_line.csv'
+  sardi_xfmr:
+    thermal_threshold: 1
+    file_name: 'sardi_xfmr.csv'
+  sardi_aggregated:
+    args: [1, {'overvoltage_threshold': 1.05, 'undervoltage_threshold': 0.95}]
+    file_name: 'sardi_xfmr.csv'
+  overloaded_lines:
+    file_name: 'overloaded_lines.csv'
+  overloaded_transformers:
+    file_name: 'overloaded_xfmrs.csv'
 
 
