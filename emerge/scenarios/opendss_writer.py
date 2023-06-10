@@ -28,7 +28,7 @@ class OpenDSSPVScenarioWriter:
 
         self.scenarios = scenarios
         self.output_path = Path(output_path)
-        self.output_path.mkdir(exist_ok=True)
+        self.output_path.mkdir(exist_ok=True, parents=True)
 
     def write(self, load_mapper_model: List[data_model.LoadMetadataModel])-> None:
         """Method for writing the scenarios.
