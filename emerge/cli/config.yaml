@@ -15,7 +15,7 @@ metrics:
   node_voltage_bins:
     export_type: 'csv'
     file_name: 'node_voltage_bins.csv'
-    voltage_bins: [0.95, 0.98, 1.02, 1.05]
+    args: [[0.95, 0.98, 1.02, 1.05]]
   substation_power:
     export_type: 'csv'
     file_name: 'substation_power_timeseries.csv'
@@ -28,7 +28,7 @@ metrics:
   line_loading_bins:
     export_type: 'csv'
     file_name: 'line_loading_bins.csv'
-    loading_bins: [0.5, 1.0, 1.2]
+    args: [[0.5, 1.0, 1.2]]
   xfmr_loading_stats:
     export_type: 'csv'
     file_name: 'xfmr_loading_stats.csv'

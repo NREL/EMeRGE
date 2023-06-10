@@ -41,7 +41,7 @@ def _get_observers(metrics: Dict):
             if 'args' not in subdict:
                 observers[key] = class_mapper[key]()
             else:
-                observers[key] = class_mapper[key](**subdict['args'])
+                observers[key] = class_mapper[key](*subdict['args'])
     return observers
 
 def _run_timeseries_sim(
@@ -51,6 +51,7 @@ def _run_timeseries_sim(
         profile_start_time: str,
         resolution_min: float,
         export_path: str,
+        metrics,
         pvshape = None,
         pvsystem_folder_path = None,
         time_group = None,
@@ -72,7 +73,7 @@ def _run_timeseries_sim(
         manager.opendss_instance.execute_dss_command(f"Redirect {pvsystem_file_path}")
         manager.opendss_instance.execute_dss_command(f"batchedit pvsystem..* yearly={pvshape}")
 
-    observers = _get_observers()
+    observers = _get_observers(metrics)
     for _, observer_ in observers.items():
         subject.attach(observer_)
 
@@ -93,35 +94,40 @@ def _run_timeseries_sim(
     manager.export_convergence(export_base_path / 'convergence_report.csv')
     observer.export_csv(list(observers.values()), export_base_path)
 
-def _compute_custom_metrics(config, pvsystem_folder_path=None, scenario_folder=None):
+def _compute_custom_metrics(config, pvsystem_folder_path=None, 
+                            scenario=None):
     
-
+    if scenario:
+        scenario_folder, master_file = scenario
+    
     if config['multi_time']:
         for time_group, time_dict in config['multi_time'].items():
             _run_timeseries_sim(
-                config["master"],
+                config["master"] if not scenario else master_file,
                 time_dict['start_time'],
                 time_dict['end_time'],
                 config["profile_start"],
                 config["resolution_min"],
                 config["export_path"],
+                config['metrics'],
                 config['multi_scenario']['pv_profile_shape'],
                 pvsystem_folder_path,
                 time_group,
-                scenario_folder
+                None if not scenario else scenario_folder
             )
     else:
         _run_timeseries_sim(
-                config["master"],
+                config["master"] if not scenario else master_file,
                 config['start_time'],
                 config['end_time'],
                 config["profile_start"],
                 config["resolution_min"],
                 config["export_path"],
+                config['metrics'],
                 config['multi_scenario']['pv_profile_shape'],
                 pvsystem_folder_path,
                 None,
-                scenario_folder
+                None if not scenario else scenario_folder
             )
             
 
@@ -142,15 +148,16 @@ def compute_custom_metrics(
 
     if config.get('multi_scenario', None):
 
-        scen_folder = Path(config['multi_scenario']['scenario_folder'])
-        for folder_ in scen_folder.iterdir():
+        for folder_, master_file in config['multi_scenario']['scenario_folder'].items():
+            scen_folder = Path(config['multi_scenario']['scenario_base_path']) / folder_
             if config['multi_scenario']['num_core'] > 1:
-                all_paths = list(folder_.iterdir())
+                all_paths = list(scen_folder.iterdir())
                 with multiprocessing.Pool(config['multi_scenario']['num_core']) as p:
-                    p.starmap(_compute_custom_metrics, list(zip([config]*len(all_paths), all_paths, folder_)))
+                    p.starmap(_compute_custom_metrics, list(zip([config]*len(all_paths), all_paths, 
+                                    [[folder_,master_file]]*len(all_paths)) ))
             else:
                 for path in scen_folder.iterdir():
-                    _compute_custom_metrics(config, path, folder_)
+                    _compute_custom_metrics(config, path, [folder_, master_file])
     else:
         _compute_custom_metrics(config)
 
