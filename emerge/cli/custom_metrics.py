@@ -51,11 +51,12 @@ def _run_timeseries_sim(
         profile_start_time: str,
         resolution_min: float,
         export_path: str,
+        time_group: str,
         metrics,
+        scenario_base_folder: str,
         pvshape = None,
-        pvsystem_folder_path = None,
-        time_group = None,
-        scenario_folder = None
+        technologies = [],
+        scenario_folder_path = None,
 ):
     date_format = "%Y-%m-%d %H:%M:%S"
     manager = simulation_manager.OpenDSSSimulationManager(
@@ -68,10 +69,12 @@ def _run_timeseries_sim(
     manager.opendss_instance.set_max_iteration(200)
     subject = observer.MetricsSubject() 
 
-    if pvsystem_folder_path:
-        pvsystem_file_path = pvsystem_folder_path / 'PVSystems.dss'
-        manager.opendss_instance.execute_dss_command(f"Redirect {pvsystem_file_path}")
-        manager.opendss_instance.execute_dss_command(f"batchedit pvsystem..* yearly={pvshape}")
+    if scenario_folder_path:
+
+        if 'pvsystem' in technologies:
+            pvsystem_file_path = scenario_folder_path / 'PVSystems.dss'
+            manager.opendss_instance.execute_dss_command(f"Redirect {pvsystem_file_path}")
+            manager.opendss_instance.execute_dss_command(f"batchedit pvsystem..* yearly={pvshape}")
 
     observers = _get_observers(metrics)
     for _, observer_ in observers.items():
@@ -79,14 +82,9 @@ def _run_timeseries_sim(
 
     manager.simulate(subject)
 
-    export_base_path = Path(export_path) 
-    if scenario_folder:
-        if time_group:
-            scenario_folder = f"{scenario_folder}_{time_group}"
-        export_base_path = export_base_path / scenario_folder 
-    
-    if pvsystem_folder_path:
-        export_base_path = export_base_path / pvsystem_file_path.parent.name
+    export_base_path = Path(export_path) / f"{scenario_base_folder}_{time_group}"
+    if scenario_folder_path:
+        export_base_path = export_base_path / scenario_folder_path.stem
     
     if not export_base_path.exists():
         export_base_path.mkdir(parents=True)
@@ -94,42 +92,33 @@ def _run_timeseries_sim(
     manager.export_convergence(export_base_path / 'convergence_report.csv')
     observer.export_csv(list(observers.values()), export_base_path)
 
-def _compute_custom_metrics(config, pvsystem_folder_path=None, scenario=None):
+def _compute_scenario_custom_metrics(
+    config, 
+    technologies,
+    master_dss_file,
+    scenario_base_folder,
+    scenario_folder_path=None, 
+    pvshape=None,
+):
     
-    if scenario:
-        scenario_folder, master_file = scenario
 
-    if config['multi_time']:
-        for time_group, time_dict in config['multi_time'].items():
-            _run_timeseries_sim(
-                config["master"] if not scenario else master_file,
-                time_dict['start_time'],
-                time_dict['end_time'],
-                config["profile_start"],
-                config["resolution_min"],
-                config["export_path"],
-                config["metrics"],
-                config['multi_scenario']['pv_profile_shape'],
-                pvsystem_folder_path,
-                time_group,
-                None if not scenario else scenario_folder
-            )
-    else:
+    for time_group, time_dict in config['time_group'].items():
         _run_timeseries_sim(
-                config["master"] if not scenario else master_file,
-                config['start_time'],
-                config['end_time'],
-                config["profile_start"],
-                config["resolution_min"],
-                config["export_path"],
-                config["metrics"],
-                config['multi_scenario']['pv_profile_shape'],
-                pvsystem_folder_path,
-                None,
-                None if not scenario else scenario_folder
-            )
-            
-
+            master_dss_file,
+            time_dict['start_time'],
+            time_dict['end_time'],
+            config["profile_start"],
+            config["resolution_min"],
+            config["export_path"],
+            time_group,
+            config["metrics"],
+            scenario_base_folder,
+            pvshape,
+            technologies,
+            scenario_folder_path,
+        )
+        
+        
 @click.command()
 @click.option(
     "-c",
@@ -145,20 +134,57 @@ def compute_custom_metrics(
         config = yaml.safe_load(fp)
 
 
-    if config.get('multi_scenario', None):
+    if config.get('pv_scenarios', None):
        
-        for folder_, master_file in config['multi_scenario']['scenario_folder'].items():
-            scen_folder = Path(config['multi_scenario']['scenario_base_path']) / folder_
-            if config['multi_scenario']['num_core'] > 1:
+        for folder_, master_file in config['pv_scenarios']['scenario_folder'].items():
+            scen_folder = Path(config['pv_scenarios']['scenario_base_path']) / folder_
+            if config['pv_scenarios']['num_core'] > 1:
+                
                 all_paths = list(scen_folder.iterdir())
-                with multiprocessing.Pool(config['multi_scenario']['num_core']) as p:
-                    p.starmap(_compute_custom_metrics, list(zip([config]*len(all_paths), all_paths, \
-                    [[folder_, master_file]]*len(all_paths)) ))
+
+                sim_inputs = list(zip(
+                    [config]*len(all_paths),
+                    [['pvsystem']]*len(all_paths),
+                    [master_file]*len(all_paths),
+                    [folder_]*len(all_paths),
+                    all_paths,
+                    [config['pv_scenarios']['pv_profile_shape']]*len(all_paths)
+                ))
+
+                with multiprocessing.Pool(config['pv_scenarios']['num_core']) as p:
+                    p.starmap(_compute_scenario_custom_metrics, sim_inputs )
             else:
                 for path in scen_folder.iterdir():
-                    _compute_custom_metrics(config, path, [folder_, master_file])
-    else:
-        _compute_custom_metrics(config)
+                    _compute_scenario_custom_metrics(
+                        config,
+                        ['pvsystem'],
+                        master_dss_file,
+                        folder_,
+                        path,
+                        config['pv_scenarios']['pv_profile_shape']  
+                    )
+    
+    if config.get('base_scenarios', None):
+        
+        if config['base_scenarios']['num_core'] > 1:
+            
+            all_master_files = list(config['base_scenarios']['scenario_folder'].values())
+            sim_inputs =  list(zip(
+                    [config]*len(all_master_files),
+                    [[]]*len(all_master_files),
+                    all_master_files,
+                    list(config['base_scenarios']['scenario_folder'].keys()),
+                    [None]*len(all_master_files),
+                    [None]*len(all_master_files)
+                ))
+
+            with multiprocessing.Pool(config['base_scenarios']['num_core']) as p:
+                p.starmap(_compute_scenario_custom_metrics, sim_inputs)
+        else:
+            for key, path in config['base_scenarios']['scenario_folder'].items():
+                _compute_scenario_custom_metrics(config, [], path, key, None, None )
+
+
 
     
 
