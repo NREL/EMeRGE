@@ -1,0 +1,13 @@
+master_file: "Master.dss"
+output_folder: "."
+basic_config: 
+  pct_resolution: 20
+  num_of_penetration: 4
+  max_num_of_samples: 1
+select_strategy: "random_allocation"
+sizing_strategy: "peakmultiplier"
+peakmult_sizing_input: 
+  commercial: 
+    multiplier: 2.68
+  residential: 
+    multiplier: 0.574

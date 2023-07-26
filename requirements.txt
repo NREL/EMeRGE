@@ -1,6 +1,6 @@
 OpenDSSDirect.py
 pyyaml
-pydantic
+pydantic==1.10.12
 networkx
 pandas
 tinydb

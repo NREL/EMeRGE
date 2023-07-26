@@ -54,9 +54,19 @@ class OpenDSSPVScenarioWriter:
                 mapper = next(
                     filter(lambda d: d.name == pv.customer, load_mapper_model)
                 )
-                pv_models.append(
-                    f"new pvsystem.{pv.name.replace('.', '_')} phases={mapper.num_phase} bus1={mapper.bus} kv={mapper.kv} irradiance=1 pmpp={pv.kw} kva={pv.kw} conn=wye %cutin=0.1 %cutout=0.1 vmaxpu=1.2\n"
-                )
+
+                if mapper.yearly:
+                    pv_models.append(
+                        f"new pvsystem.{pv.name.replace('.', '_')} phases={mapper.num_phase}"
+                        f" bus1={mapper.bus} kv={mapper.kv} irradiance=1 pmpp={pv.kw} kva={pv.kw}"
+                        f" conn=wye %cutin=0.1 %cutout=0.1 vmaxpu=1.2 yearly={mapper.yearly}_pv\n" 
+                    )
+                else:
+                    pv_models.append(
+                        f"new pvsystem.{pv.name.replace('.', '_')} phases={mapper.num_phase}"
+                        f" bus1={mapper.bus} kv={mapper.kv} irradiance=1 pmpp={pv.kw} kva={pv.kw}"
+                        f" conn=wye %cutin=0.1 %cutout=0.1 vmaxpu=1.2\n" 
+                    )
 
             pvsystems_path = scenario_folder / "PVSystems.dss"
             with open(pvsystems_path, "w") as f:

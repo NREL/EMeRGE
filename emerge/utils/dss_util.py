@@ -59,6 +59,7 @@ def get_list_of_customer_models(dss_instance: dss, load_multiplier=1.0) -> List[
                 name=dss_instance.CktElement.Name(),
                 kw=dss_instance.Loads.kW()*load_multiplier,
                 distance=bus_distance_df.loc[busname]['distance'],
+                cust_type=dss_instance.Loads.Yearly()
             )
         )
 
@@ -87,6 +88,7 @@ def get_load_mapper_objects(dss_instance: dss)-> List[data_model.LoadMetadataMod
                 bus=dss_instance.CktElement.BusNames()[0],
                 num_phase=dss_instance.Loads.Phases(),
                 kv=dss_instance.Loads.kV(),
+                yearly=dss_instance.Loads.Yearly()
             )
         )
 

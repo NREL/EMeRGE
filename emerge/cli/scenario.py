@@ -1,122 +1,61 @@
 """ This module contains function for exposing scenarios generation as CLI."""
 
 import click
+import yaml
 
-from emerge.scenarios import data_model, pv_scenario, strategy, opendss_writer
+import pydantic
+
+from emerge.scenarios import (
+    data_model,
+    pv_scenario,
+    sizing_strategy,
+    selection_strategy,
+    opendss_writer,
+)
 from emerge.utils import dss_util
 from emerge.simulator import opendss
+from emerge.cli.interface import PVSceanarioCliInputModel
 
 
 @click.command()
 @click.option(
-    "-m",
-    "--master-file",
-    help="Path to master dss file",
+    "-c",
+    "--config",
+    help="Path to config file for generating scenarios",
 )
-@click.option(
-    "-o",
-    "--output-folder",
-    default="./scenarios",
-    show_default=True,
-    help="Ouput directory for storing the scenarios",
-)
-@click.option(
-    "-ppr",
-    "--pct-penetration-resolution",
-    default=10,
-    show_default=True,
-    help="Percentage penetration resolution",
-)
-@click.option(
-    "-np",
-    "--number-of-penetrations",
-    default=10,
-    show_default=True,
-    help="Number of penetrations",
-)
-@click.option(
-    "-ms",
-    "--maximum-samples",
-    default=1,
-    show_default=True,
-    help="Maximum number of samples",
-)
-@click.option(
-    "-pae",
-    "--percentage-annual-energy",
-    default=100,
-    show_default=True,
-    help="Percentage annual energy consumption expected to be supplied by pv",
-)
-@click.option(
-    "-lf",
-    "--load-factor",
-    default=0.33,
-    show_default=True,
-    help="Annual load factor",
-)
-@click.option(
-    "-cf",
-    "--capacity-factor",
-    default=0.33,
-    show_default=True,
-    help="Annual solar capacity factor",
-)
-@click.option(
-    "-s",
-    "--strategy-name",
-    type=click.Choice(["random", "far", "close"]),
-    default="random",
-    show_default=True,
-    help="Selection strategy",
-)
-@click.option(
-    "-lm",
-    "--load-multiplier",
-    default=1.0,
-    show_default=True,
-    help="Multiplier to be used to reduce load",
-)
-def generate_pv_scenarios_for_feeder(
-    master_file,
-    output_folder,
-    pct_penetration_resolution,
-    number_of_penetrations,
-    maximum_samples,
-    percentage_annual_energy,
-    load_factor,
-    capacity_factor,
-    strategy_name,
-    load_multiplier
-):
+def generate_pv_scenarios_for_feeder(config):
     """Function to create PV deloyment scenarios."""
+    # pylint: disable=no-member
+    with open(config, "r", encoding="utf-8") as file:
+        config_dict = yaml.safe_load(file)
+    config_data = pydantic.parse_obj_as(
+        PVSceanarioCliInputModel, config_dict)
 
-    config = data_model.PVScenarioConfig(
-        pct_resolution=pct_penetration_resolution,
-        num_of_penetration=number_of_penetrations,
-        max_num_of_samples=maximum_samples,
-        capacity_factor=capacity_factor,
-        load_factor=load_factor,
-        max_pct_production=percentage_annual_energy,
-    )
+    select_strategy_ = {
+        data_model.SelectionStrategyEnum.random_allocation: selection_strategy.RandomSelectionStrategy(),
+        data_model.SelectionStrategyEnum.far_allocation: selection_strategy.FarSelectionStrategy(),
+        data_model.SelectionStrategyEnum.near_allocation: selection_strategy.CloseSelectionStrategy(),
+    }[config_data.select_strategy]
 
-    strategy_ = {
-        "random": strategy.RandomSelectionStrategy(),
-        "far": strategy.FarSelectionStrategy(),
-        "close": strategy.CloseSelectionStrategy(),
-    }[strategy_name]
+    size_strategy_func_ = {
+        data_model.CapacityStrategyEnum.default: sizing_strategy.DefaultSizingStrategy,
+        data_model.CapacityStrategyEnum.peakmultiplier: sizing_strategy.PeakMultiplierSizingStrategy,
+    }[config_data.sizing_strategy]
 
-    simulator = opendss.OpenDSSSimulator(master_file)
-    list_of_customers = dss_util.get_list_of_customer_models(
-        simulator.dss_instance, load_multiplier
-    )
+    size_strategy_input_ = {
+        data_model.CapacityStrategyEnum.default: config_data.default_sizing_input,
+        data_model.CapacityStrategyEnum.peakmultiplier: config_data.peakmult_sizing_input,
+    }[config_data.sizing_strategy]
+    size_strategy_ = size_strategy_func_(size_strategy_input_)
+    
+    simulator = opendss.OpenDSSSimulator(config_data.master_file)
+    list_of_customers = dss_util.get_list_of_customer_models(simulator.dss_instance, 1)
     mapper_object = dss_util.get_load_mapper_objects(simulator.dss_instance)
 
-    scenario_instance = pv_scenario.DistributedPVScenario(
-        list_of_customers, config
+    pvscenarios = pv_scenario.create_pv_scenarios(
+        list_of_customers, select_strategy_, size_strategy_, config_data.basic_config
     )
-    pvscenarios = scenario_instance.create_pv_scenarios_for_feeder(strategy_)
     writer_object = opendss_writer.OpenDSSPVScenarioWriter(
-        pvscenarios, output_folder
+        pvscenarios, config_data.output_folder
     )
     writer_object.write(mapper_object)
