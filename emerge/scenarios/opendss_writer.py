@@ -1,10 +1,9 @@
 """ Module for managing export of scenarions in opendss format. """
 
-from typing import List
+from typing import List, Dict, Optional
 from pathlib import Path
 
 from emerge.scenarios import data_model
-
 
 class OpenDSSPVScenarioWriter:
     """Writer class for exporting scenario in opendss format.
@@ -16,7 +15,8 @@ class OpenDSSPVScenarioWriter:
     """
 
     def __init__(
-        self, scenarios: List[data_model.DistPVScenarioModel], output_path: str
+        self, scenarios: List[data_model.DistDERScenarioModel], 
+        output_path: str
     ):
         """Constructor for `OpenDSSPVScenarioWriter` class.
 
@@ -30,44 +30,54 @@ class OpenDSSPVScenarioWriter:
         self.output_path = Path(output_path)
         self.output_path.mkdir(exist_ok=True, parents=True)
 
-    def write(self, load_mapper_model: List[data_model.LoadMetadataModel])-> None:
+    def write(self, load_mapper_model: List[data_model.LoadMetadataModel],
+               file_name: str, tag_name: str, )-> None:
         """Method for writing the scenarios.
         
         Args:
             load_mapper_model (List[data_model.LoadMetadataModel]): List of load 
                 metadata model.
+            file_name (str): OpenDSS file name: e.g new_pvs.dss
         """
-
         for scenario in self.scenarios:
+            
             scenario_folder = self.output_path / scenario.name
-            scenario_folder.mkdir()
 
-            pv_models = []
-            pv_models.append(
-                f"! PV Scenario for {scenario.pv_penetration} kW total size, Sample {scenario.sample_id} \n"
+            if not scenario_folder.exists():
+                scenario_folder.mkdir(parents=True, exist_ok=True)
+
+            der_models = []
+            der_models.append(
+                f"! DER Scenario for {scenario.penetration} kW total size, Sample {scenario.sample_id} \n"
             )
-            pv_models.append(
-                f"==============================================PV SCENARIO FILE====================================\n\n"
+            der_models.append(
+                f"==============================================DER SCENARIO FILE====================================\n\n"
             )
 
-            for pv in scenario.pvs:
+            for der in scenario.ders:
                 mapper = next(
-                    filter(lambda d: d.name == pv.customer, load_mapper_model)
+                    filter(lambda d: d.name == der.customer.name, load_mapper_model)
                 )
 
-                if mapper.yearly:
-                    pv_models.append(
-                        f"new pvsystem.{pv.name.replace('.', '_')} phases={mapper.num_phase}"
-                        f" bus1={mapper.bus} kv={mapper.kv} irradiance=1 pmpp={pv.kw} kva={pv.kw}"
-                        f" conn=wye %cutin=0.1 %cutout=0.1 vmaxpu=1.2 yearly={mapper.yearly}_pv\n" 
+                
+                yearly_text = f"yearly={mapper.yearly}_{tag_name}" if mapper.yearly else ''
+
+                if der.der_type == data_model.DERType.solar:
+                    der_models.append(
+                        f"new pvsystem.{der.name.replace('.', '_')} phases={mapper.num_phase}"
+                        f" bus1={mapper.bus} kv={mapper.kv} irradiance=1 pmpp={der.kw} kva={der.kw}"
+                        f" conn=wye %cutin=0.1 %cutout=0.1 vmaxpu=1.2 {yearly_text}\n" 
+                    )
+                elif der.der_type == data_model.DERType.load:
+                    der_models.append(
+                        f"new load.{der.name.replace('.', '_')} phases={mapper.num_phase}"
+                        f" bus1={mapper.bus} kv={mapper.kv} kvar={0} kva={der.kw}"
+                        f" {yearly_text}\n" 
                     )
                 else:
-                    pv_models.append(
-                        f"new pvsystem.{pv.name.replace('.', '_')} phases={mapper.num_phase}"
-                        f" bus1={mapper.bus} kv={mapper.kv} irradiance=1 pmpp={pv.kw} kva={pv.kw}"
-                        f" conn=wye %cutin=0.1 %cutout=0.1 vmaxpu=1.2\n" 
-                    )
+                    raise NotImplementedError(f"{der.der_type} has not been implementes.")
+                
 
-            pvsystems_path = scenario_folder / "PVSystems.dss"
-            with open(pvsystems_path, "w") as f:
-                f.writelines(pv_models)
+            der_path = scenario_folder / file_name
+            with open(der_path, "w", encoding='utf-8') as file:
+                file.writelines(der_models)

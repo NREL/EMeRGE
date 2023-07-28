@@ -7,6 +7,8 @@ import random
 from emerge.scenarios import data_model
 
 
+
+
 class SelectionStrategy(abc.ABC):
     """Abstract class for selection strategy.
 
@@ -60,3 +62,10 @@ class FarSelectionStrategy(SelectionStrategy):
     ):
         """ Refer to base class for more details."""
         return sorted(list_of_customers, key=lambda d: d.distance, reverse=True)
+
+
+SELECTION_STRATEGY_MAPPER = {
+    data_model.SelectionStrategyEnum.random_allocation: RandomSelectionStrategy,
+    data_model.SelectionStrategyEnum.far_allocation: FarSelectionStrategy,
+    data_model.SelectionStrategyEnum.near_allocation: CloseSelectionStrategy,
+}

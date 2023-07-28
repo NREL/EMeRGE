@@ -1,7 +1,7 @@
 """ Module for handling data model used in scenario generation. """
 
 
-from typing import List, Optional
+from typing import List, Optional, Dict
 from enum import Enum
 
 # pylint: disable=no-name-in-module
@@ -18,13 +18,19 @@ class CustomerModel(BaseModel):
     distance: float
     cust_type: Optional[str]
 
+class DERType(str, Enum):
+    """Available der enum types."""
+    # pylint: disable=invalid-name
+    load = 'load'
+    solar = 'solar'
 
 class CapacityStrategyEnum(str, Enum):
     """Available strategies for sizing solar systems."""
 
     # pylint: disable=invalid-name
-    default = "default"
-    peakmultiplier = "peakmultiplier"
+    solar_energy_based = "solar_energy_based"
+    peak_multiplier = "peak_multiplier"
+    fixed_sizing = "fixed_sizing"
 
 
 class SelectionStrategyEnum(str, Enum):
@@ -36,7 +42,7 @@ class SelectionStrategyEnum(str, Enum):
     near_allocation = "near_allocation"
 
 
-class DefaultCapacityStrategyInput(BaseModel):
+class EnergyBasedSolarSizingStrategyInput(BaseModel):
     """Input model for default solar sizing strategy."""
 
     capacity_factor: confloat(gt=0, le=1) = 0.3
@@ -44,14 +50,8 @@ class DefaultCapacityStrategyInput(BaseModel):
     max_pct_production: confloat(gt=0, le=500) = 100
 
 
-class PeakMultiplierCapacityStrategyInput(BaseModel):
-    """Input model for peak multiplier capacity sizing strategy."""
-
-    multiplier: float = 1
-
-
-class PVScenarioConfig(BaseModel):
-    """Basic input model for generating solar scenarios."""
+class ScenarioConfig(BaseModel):
+    """Basic input model for generating der scenarios."""
 
     pct_resolution: confloat(gt=0, le=100) = Field(
         description="Percentage resolution or step resolution"
@@ -60,21 +60,35 @@ class PVScenarioConfig(BaseModel):
     max_num_of_samples: conint(ge=1) = 1
 
 
-class PVModel(BaseModel):
-    """Basic solar model used in solar scenario development."""
+class _DERScenarioInput(BaseModel):
+    """ Base input model for der scenarios. """
+    sizing_strategy: CapacityStrategyEnum
+    der_type: DERType
+    energy_sizing_input:  Dict[str,EnergyBasedSolarSizingStrategyInput] | EnergyBasedSolarSizingStrategyInput | None = None
+    peakmult_sizing_input: Dict[str,float] | float | None = None
+    fixed_sizing_input: Dict[str, float] | float | None
+
+class DERScenarioInput(_DERScenarioInput):
+    """ Input model for der scenarios. """
+    selection_strategy: SelectionStrategyEnum
+    other_ders: List[_DERScenarioInput]
+
+
+class BasicDERModel(BaseModel):
+    """Basic DER model used in solar scenario development."""
 
     name: str
     kw: confloat(ge=0)
-    customer: str
+    customer: CustomerModel
+    der_type: DERType
 
-
-class DistPVScenarioModel(BaseModel):
+class DistDERScenarioModel(BaseModel):
     """Model for storing solars in a given scenario."""
 
     name: str
     sample_id: int
-    pv_penetration: float
-    pvs: List[PVModel]
+    penetration: float
+    ders: List[BasicDERModel]
 
 
 class LoadMetadataModel(BaseModel):
