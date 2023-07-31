@@ -54,8 +54,6 @@ def _run_timeseries_sim(
         time_group: str,
         metrics,
         scenario_base_folder: str,
-        pvshape = None,
-        technologies = [],
         scenario_folder_path = None,
 ):
     date_format = "%Y-%m-%d %H:%M:%S"
@@ -71,10 +69,9 @@ def _run_timeseries_sim(
 
     if scenario_folder_path:
 
-        if 'pvsystem' in technologies:
-            pvsystem_file_path = scenario_folder_path / 'PVSystems.dss'
-            manager.opendss_instance.execute_dss_command(f"Redirect {pvsystem_file_path}")
-            manager.opendss_instance.execute_dss_command(f"batchedit pvsystem..* yearly={pvshape}")
+        for file_path in scenario_folder_path.iterdir():
+            manager.opendss_instance.execute_dss_command(f"Redirect {file_path}")
+
 
     observers = _get_observers(metrics)
     for _, observer_ in observers.items():
@@ -83,8 +80,9 @@ def _run_timeseries_sim(
     manager.simulate(subject)
 
     export_base_path = Path(export_path) / f"{scenario_base_folder}_{time_group}"
+    
     if scenario_folder_path:
-        export_base_path = export_base_path / scenario_folder_path.stem
+        export_base_path = export_base_path / scenario_folder_path.name
     
     if not export_base_path.exists():
         export_base_path.mkdir(parents=True)
@@ -94,11 +92,9 @@ def _run_timeseries_sim(
 
 def _compute_scenario_custom_metrics(
     config, 
-    technologies,
     master_dss_file,
     scenario_base_folder,
     scenario_folder_path=None, 
-    pvshape=None,
 ):
     
 
@@ -113,8 +109,6 @@ def _compute_scenario_custom_metrics(
             time_group,
             config["metrics"],
             scenario_base_folder,
-            pvshape,
-            technologies,
             scenario_folder_path,
         )
         
@@ -144,11 +138,9 @@ def compute_custom_metrics(
 
                 sim_inputs = list(zip(
                     [config]*len(all_paths),
-                    [['pvsystem']]*len(all_paths),
                     [master_file]*len(all_paths),
                     [folder_]*len(all_paths),
-                    all_paths,
-                    [config['pv_scenarios']['pv_profile_shape']]*len(all_paths)
+                    all_paths
                 ))
 
                 with multiprocessing.Pool(config['pv_scenarios']['num_core']) as p:
@@ -157,11 +149,9 @@ def compute_custom_metrics(
                 for path in scen_folder.iterdir():
                     _compute_scenario_custom_metrics(
                         config,
-                        ['pvsystem'],
-                        master_dss_file,
+                        master_file,
                         folder_,
-                        path,
-                        config['pv_scenarios']['pv_profile_shape']  
+                        path  
                     )
     
     if config.get('base_scenarios', None):
@@ -171,11 +161,9 @@ def compute_custom_metrics(
             all_master_files = list(config['base_scenarios']['scenario_folder'].values())
             sim_inputs =  list(zip(
                     [config]*len(all_master_files),
-                    [[]]*len(all_master_files),
                     all_master_files,
                     list(config['base_scenarios']['scenario_folder'].keys()),
                     [None]*len(all_master_files),
-                    [None]*len(all_master_files)
                 ))
 
             with multiprocessing.Pool(config['base_scenarios']['num_core']) as p:
