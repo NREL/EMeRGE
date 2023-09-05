@@ -23,7 +23,14 @@ from emerge.cli.interface import PVSceanarioCliInputModel
     "--config",
     help="Path to config file for generating scenarios",
 )
-def generate_pv_scenarios_for_feeder(config):
+@click.option(
+    "-ct",
+    "--customer-type",
+    default="class",
+    show_default=True,
+    help="OpenDSS attribute used for extracting customer type.",
+)
+def generate_pv_scenarios_for_feeder(config, customer_type):
     """Function to create PV deloyment scenarios."""
     # pylint: disable=no-member
     with open(config, "r", encoding="utf-8") as file:
@@ -34,7 +41,7 @@ def generate_pv_scenarios_for_feeder(config):
     for der_scen in config_data.der_scenario:
 
         simulator = opendss.OpenDSSSimulator(config_data.master_file)
-        list_of_customers = dss_util.get_list_of_customer_models(simulator.dss_instance, 1)
+        list_of_customers = dss_util.get_list_of_customer_models(simulator.dss_instance, 1, cust_type=customer_type)
         mapper_object = dss_util.get_load_mapper_objects(simulator.dss_instance)
 
         derscenarios = scenario.create_der_scenarios(
