@@ -6,6 +6,7 @@ import yaml
 from pathlib import Path
 import multiprocessing
 from typing import Dict
+import concurrent.futures
 
 from emerge.metrics.time_series_metrics import system_metrics
 from emerge.metrics.time_series_metrics import observer
@@ -90,6 +91,10 @@ def _run_timeseries_sim(
     manager.export_convergence(export_base_path / 'convergence_report.csv')
     observer.export_csv(list(observers.values()), export_base_path)
 
+
+def _compute_scenario_custom_metrics_wrapper(input):
+    _compute_scenario_custom_metrics(*input)
+
 def _compute_scenario_custom_metrics(
     config, 
     master_dss_file,
@@ -142,9 +147,14 @@ def compute_custom_metrics(
                     [folder_]*len(all_paths),
                     all_paths
                 ))
-
-                with multiprocessing.Pool(config['pv_scenarios']['num_core']) as p:
-                    p.starmap(_compute_scenario_custom_metrics, sim_inputs )
+                with concurrent.futures.ProcessPoolExecutor(
+                    max_workers=config['pv_scenarios']['num_core']) as executor:
+                    for input, _ in zip(sim_inputs, 
+                                        executor.map(_compute_scenario_custom_metrics_wrapper, 
+                                        sim_inputs)):
+                        print(f'{input} completed ...')
+                # with multiprocessing.Pool(config['pv_scenarios']['num_core']) as p:
+                #     _ = p.starmap(_compute_scenario_custom_metrics, sim_inputs )
             else:
                 for path in scen_folder.iterdir():
                     _compute_scenario_custom_metrics(
@@ -165,9 +175,16 @@ def compute_custom_metrics(
                     list(config['base_scenarios']['scenario_folder'].keys()),
                     [None]*len(all_master_files),
                 ))
+            
+            with concurrent.futures.ProcessPoolExecutor(
+                max_workers=config['base_scenarios']['num_core']) as executor:
+                for input, _ in zip(sim_inputs, executor.map(
+                        _compute_scenario_custom_metrics_wrapper, 
+                        sim_inputs)):
+                    print(f'{input} completed ...')
 
-            with multiprocessing.Pool(config['base_scenarios']['num_core']) as p:
-                p.starmap(_compute_scenario_custom_metrics, sim_inputs)
+            # with multiprocessing.Pool(config['base_scenarios']['num_core']) as p:
+            #     _ = p.starmap(_compute_scenario_custom_metrics, sim_inputs)
         else:
             for key, path in config['base_scenarios']['scenario_folder'].items():
                 _compute_scenario_custom_metrics(config, [], path, key, None, None )

@@ -224,7 +224,7 @@ class SARDI_aggregated(observer.MetricObserver):
 
         v_filter = voltage_df.loc[self.load_bus_map.index].drop_duplicates()
         ov_flags = v_filter['voltage(pu)']>self.voltage_limit.overvoltage_threshold
-        uv_flags = v_filter['voltage(pu)']<self.voltage_limit.undervoltage_threshold
+        uv_flags = (v_filter['voltage(pu)']<self.voltage_limit.undervoltage_threshold)&(v_filter['voltage(pu)']>0)
         overvoltage_v = v_filter[ov_flags]
         undervoltage_v = v_filter[uv_flags]
         merged_load_buses = list(set(pd.concat([overvoltage_v, undervoltage_v]).index))
@@ -459,7 +459,7 @@ class SARDI_voltage(observer.MetricObserver):
         # and count the number of overvoltages and undervoltages
         v_filter = voltage_df.loc[self.load_bus_map.index].drop_duplicates()
         overvoltage_df = v_filter[v_filter['voltage(pu)']>self.upper]
-        undervoltage_df = v_filter[v_filter['voltage(pu)']<self.lower]
+        undervoltage_df = v_filter[(v_filter['voltage(pu)']<self.lower)&(v_filter['voltage(pu)']>0)]
 
         impacted_buses = list(set(list(overvoltage_df.index) + list(undervoltage_df.index)))
         affected_loads = list(set(self.load_bus_map.loc[impacted_buses]["loadname"]))

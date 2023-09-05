@@ -60,7 +60,7 @@ class OpenDSSPVScenarioWriter:
                 )
 
                 
-                yearly_text = f"yearly={mapper.yearly}_{tag_name}" if mapper.yearly else ''
+                yearly_text = f"yearly={mapper.yearly}_{str(der.der_tag)}" if mapper.yearly else ''
 
                 if der.der_type == data_model.DERType.solar:
                     der_models.append(

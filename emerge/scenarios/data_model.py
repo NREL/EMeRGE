@@ -64,6 +64,7 @@ class _DERScenarioInput(BaseModel):
     """ Base input model for der scenarios. """
     sizing_strategy: CapacityStrategyEnum
     der_type: DERType
+    der_tag: str = ''
     energy_sizing_input:  Dict[str,EnergyBasedSolarSizingStrategyInput] | EnergyBasedSolarSizingStrategyInput | None = None
     peakmult_sizing_input: Dict[str,float] | float | None = None
     fixed_sizing_input: Dict[str, float] | float | None
@@ -81,6 +82,7 @@ class BasicDERModel(BaseModel):
     kw: confloat(ge=0)
     customer: CustomerModel
     der_type: DERType
+    der_tag: str = ''
 
 class DistDERScenarioModel(BaseModel):
     """Model for storing solars in a given scenario."""

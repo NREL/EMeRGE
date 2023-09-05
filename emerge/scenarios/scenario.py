@@ -23,7 +23,8 @@ def _get_sizing_func_input(item: data_model._DERScenarioInput):
 def _add_other_ders(
     ders_list: List[data_model.BasicDERModel],
     strategy: sizing_strategy.SizingStrategy,
-    der_type: data_model.DERType 
+    der_type: data_model.DERType,
+    der_tag: str = ''
 )-> List[data_model.BasicDERModel]:
     """Add other ders on top of existing der for a customer.
 
@@ -45,7 +46,8 @@ def _add_other_ders(
                     name=der.name + f'_{der_type}',
                     kw=strategy.return_size_in_kw(der.customer),
                     customer=der.customer,
-                    der_type=der_type
+                    der_type=der_type,
+                    der_tag=der_tag
                 )
         )
     return der_models
@@ -55,7 +57,8 @@ def _get_ders(
     customers: List[data_model.CustomerModel],
     target_kw: float,
     strategy: sizing_strategy.SizingStrategy,
-    der_type: data_model.DERType
+    der_type: data_model.DERType,
+    der_tag: str = ''
 ) -> List[data_model.BasicDERModel]:
     """Creates a list of der systems for a target kw.
 
@@ -85,7 +88,8 @@ def _get_ders(
                     name=customer.name + "_der",
                     kw=der_capacity,
                     customer=customer,
-                    der_type=der_type
+                    der_type=der_type,
+                    der_tag=der_tag
                 )
             )
 
@@ -148,7 +152,7 @@ def create_der_scenarios(
 
 
             main_der_models = _get_ders(loads, der_capacity - past_capacity, 
-                                   sizing_strategy_object, der_config.der_type)
+                                   sizing_strategy_object, der_config.der_type, der_config.der_tag)
             
             other_der_models = []
             for other_der in der_config.other_ders:
@@ -156,7 +160,7 @@ def create_der_scenarios(
                     other_der.sizing_strategy
                 )(_get_sizing_func_input(other_der))
                 other_der_models += _add_other_ders(main_der_models, 
-                                   sizing_strategy_object, other_der.der_type)
+                                   sizing_strategy_object, other_der.der_type, other_der.der_tag)
             
             scenario = data_model.DistDERScenarioModel(
                 name=f"scenario_{sample_id}_"
@@ -166,7 +170,7 @@ def create_der_scenarios(
                 ders=past_ders + main_der_models + other_der_models,
             )
 
-            past_capacity += der_capacity
+            past_capacity = der_capacity
             past_ders = past_ders + main_der_models + other_der_models
 
             scenarios.append(scenario)
