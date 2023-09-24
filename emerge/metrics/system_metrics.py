@@ -4,11 +4,11 @@ import copy
 import opendssdirect as dss
 import networkx as nx
 
-from emerge.metrics.time_series_metrics import observer
-from emerge.metrics import powerflow_metrics_opendss
+from emerge.metrics import observer
+from emerge.simulator import powerflow_results
 from emerge.utils import dss_util
 from emerge.metrics import data_model
-from emerge.metrics import feeder_metrics_opendss
+from emerge.network import asset_metrics
 import pandas as pd
 
 
@@ -84,7 +84,7 @@ class TimeseriesTotalPVPower(observer.MetricObserver):
     def compute(self, dss_instance:dss):
         """ Refer to base class for more details. """
         timestep = dss_instance.Solution.StepSize()/(3600)
-        pv_df = powerflow_metrics_opendss.get_pv_power_dataframe(dss_instance)
+        pv_df = powerflow_results.get_pv_power_dataframe(dss_instance)
         if not pv_df.empty:
             pv_power = pv_df.sum().to_dict()
             self.active_power.append(pv_power['active_power']*timestep/1000)
@@ -159,7 +159,7 @@ class TotalPVGeneration(observer.MetricObserver):
     def compute(self, dss_instance:dss):
         """ Refer to base class for more details. """
         timestep = dss_instance.Solution.StepSize()/(3600)
-        pv_df = powerflow_metrics_opendss.get_pv_power_dataframe(dss_instance)
+        pv_df = powerflow_results.get_pv_power_dataframe(dss_instance)
         if not pv_df.empty:
             pv_power = pv_df.sum().to_dict()
             self.pv_energy['active_power'] += pv_power['active_power']*timestep/1000
@@ -206,7 +206,7 @@ class SARDI_aggregated(observer.MetricObserver):
     def _get_initial_dataset(self, dss_instance: dss):
         
         """ Get initial dataset for computing the metric. """
-        self.network = feeder_metrics_opendss.networkx_from_opendss_model(dss_instance)
+        self.network = asset_metrics.networkx_from_opendss_model(dss_instance)
         self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")
         self.substation_bus = dss_util.get_source_node(dss_instance)
         self.bus_load_flag_df = dss_util.get_bus_load_flag(dss_instance)
@@ -215,9 +215,9 @@ class SARDI_aggregated(observer.MetricObserver):
         """ Refer to base class for more details. """
 
         # Get line loading dataframe
-        transformer_loading_df = powerflow_metrics_opendss.get_transloading_dataframe(dss_instance)
-        line_loading_df = powerflow_metrics_opendss.get_lineloading_dataframe(dss_instance)
-        voltage_df = powerflow_metrics_opendss.get_voltage_dataframe(dss_instance)
+        transformer_loading_df = powerflow_results.get_transloading_dataframe(dss_instance)
+        line_loading_df = powerflow_results.get_lineloading_dataframe(dss_instance)
+        voltage_df = powerflow_results.get_voltage_dataframe(dss_instance)
         
         if not self.counter:
             self._get_initial_dataset(dss_instance)
@@ -299,7 +299,7 @@ class SARDI_transformer(observer.MetricObserver):
     def _get_initial_dataset(self, dss_instance: dss):
         
         """ Get initial dataset for computing the metric. """
-        self.network = feeder_metrics_opendss.networkx_from_opendss_model(dss_instance)
+        self.network = asset_metrics.networkx_from_opendss_model(dss_instance)
         self.substation_bus = dss_util.get_source_node(dss_instance)
         self.bus_load_flag_df = dss_util.get_bus_load_flag(dss_instance)
         self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")
@@ -308,7 +308,7 @@ class SARDI_transformer(observer.MetricObserver):
         """ Refer to base class for more details. """
 
         # Get line loading dataframe
-        transformer_loading_df = powerflow_metrics_opendss.get_transloading_dataframe(dss_instance)
+        transformer_loading_df = powerflow_results.get_transloading_dataframe(dss_instance)
         
         if not self.counter:
             self._get_initial_dataset(dss_instance)
@@ -373,7 +373,7 @@ class SARDI_line(observer.MetricObserver):
     def _get_initial_dataset(self, dss_instance: dss):
         
         """ Get initial dataset for computing the metric. """
-        self.network = feeder_metrics_opendss.networkx_from_opendss_model(dss_instance)
+        self.network = asset_metrics.networkx_from_opendss_model(dss_instance)
         self.substation_bus = dss_util.get_source_node(dss_instance)
         self.bus_load_flag_df = dss_util.get_bus_load_flag(dss_instance)
         self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")
@@ -382,7 +382,7 @@ class SARDI_line(observer.MetricObserver):
         """ Refer to base class for more details. """
 
         # Get line loading dataframe
-        line_loading_df = powerflow_metrics_opendss.get_lineloading_dataframe(dss_instance)
+        line_loading_df = powerflow_results.get_lineloading_dataframe(dss_instance)
         
         if not self.counter:
             self._get_initial_dataset(dss_instance)
@@ -450,7 +450,7 @@ class SARDI_voltage(observer.MetricObserver):
         """ Refer to base class for more details. """
 
         # Get voltage dataframe and load bus mapper
-        voltage_df = powerflow_metrics_opendss.get_voltage_dataframe(dss_instance)
+        voltage_df = powerflow_results.get_voltage_dataframe(dss_instance)
         
         if not hasattr(self, 'load_bus_map'):
             self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")

@@ -1,9 +1,9 @@
 """ Modules containing test for exporting metrics. """
 
 
-from emerge.metrics.time_series_metrics import system_metrics
-from emerge.metrics.time_series_metrics import observer
-from emerge.metrics.time_series_metrics import node_metrics
+from emerge.metrics import system_metrics
+from emerge.metrics import observer
+from emerge.metrics import node_metrics
 from conftest import simulation_manager_setup
 
 def test_export_metrics():

@@ -8,7 +8,7 @@ import pandas as pd
 import networkx as nx
 
 from emerge.metrics.exceptions import EnergyMeterNotDefined
-from emerge.metrics import feeder_metrics_opendss
+from emerge.network import asset_metrics
 from emerge.scenarios import data_model
 
 
@@ -198,7 +198,7 @@ def get_transformer_customers(dss_instance: dss)-> pd.DataFrame:
     """
     xfmr_customers_df = {"transformername": [], "customers": []}
 
-    network = feeder_metrics_opendss.networkx_from_opendss_model(dss_instance)
+    network = asset_metrics.networkx_from_opendss_model(dss_instance)
     substation_bus = get_source_node(dss_instance)
     bus_load_flag_df = get_bus_load_flag(dss_instance)
 

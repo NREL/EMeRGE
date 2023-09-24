@@ -9,7 +9,7 @@
 import networkx as nx
 
 # internal imports
-from emerge.metrics.feeder_metrics_model import (
+from emerge.network.data_model import (
     AssetMetrics,
     FeederMetrics,
     LoadAssetMetrics,

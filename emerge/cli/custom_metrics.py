@@ -1,19 +1,22 @@
 """ Module for computing time series metrics for multi scenario simulation."""
 
-import click
+# standard imports
 import datetime
-import yaml
 from pathlib import Path
-import multiprocessing
 from typing import Dict
 import concurrent.futures
 
-from emerge.metrics.time_series_metrics import system_metrics
-from emerge.metrics.time_series_metrics import observer
-from emerge.metrics.time_series_metrics import simulation_manager
-from emerge.metrics.time_series_metrics import node_voltage_stats
-from emerge.metrics.time_series_metrics import line_loading_stats
-from emerge.metrics.time_series_metrics import xfmr_loading_stats
+# third-party imports
+import click
+import yaml
+
+# internal imports
+from emerge.metrics import system_metrics
+from emerge.metrics import observer
+from emerge.simulator import simulation_manager
+from emerge.metrics import node_voltage_stats
+from emerge.metrics import line_loading_stats
+from emerge.metrics import xfmr_loading_stats
 
 
 def _get_observers(metrics: Dict):

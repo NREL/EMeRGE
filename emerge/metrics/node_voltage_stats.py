@@ -8,13 +8,13 @@ import opendssdirect as dss
 import polars 
 
 # internal imports
-from emerge.metrics.time_series_metrics import observer
-from emerge.metrics import powerflow_metrics_opendss
+from emerge.metrics import observer
+from emerge.simulator import powerflow_results
 
 
 def get_voltage_df(dss_instance:dss):
     return polars.from_pandas(
-            powerflow_metrics_opendss.get_voltage_dataframe(
+            powerflow_results.get_voltage_dataframe(
             dss_instance
         ))
 

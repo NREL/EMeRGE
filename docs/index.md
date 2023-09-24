@@ -18,7 +18,7 @@
 
 In order to use EMERGE you would need to install two softwares [python (>3.9)](https://www.python.org/) and latest stable version of [Node](https://nodejs.org/en/). Assuming both of them are already installed. You can follow following steps. 
 
-=== "Python backend"
+=== "Core Package"
 
     <p style="font-size:15px;">The commands below should work if you are using windows command prompt. However
     if you are using mac or linux you would need to slightly adjust the 
@@ -37,7 +37,7 @@ In order to use EMERGE you would need to install two softwares [python (>3.9)](h
     pip install -e.
     ```
 
-=== "React front end"
+=== "User Interface (Under Development)"
 
     <p style="font-size:15px;"> Assuming your current directory points to root of cloned emerge repositoty you can run the following commands to install npm dependencies. </p>
 

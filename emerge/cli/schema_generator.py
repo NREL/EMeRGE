@@ -63,7 +63,7 @@ class SchemaManager:
             if not updated_in_place:
                 settings[vscode_key].append({
                     "fileMatch": ["*.json"],
-                    "url": str(vscode_settings_file)
+                    "url": str(schema_file)
                 })
 
         util.write_file(settings, vscode_settings_file)

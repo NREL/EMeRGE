@@ -8,7 +8,7 @@ import logging
 import pandas as pd
 
 from emerge.simulator import opendss
-from emerge.metrics.time_series_metrics import observer
+from emerge.metrics import observer
 
 
 logger = logging.getLogger(__name__)

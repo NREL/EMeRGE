@@ -1,11 +1,16 @@
 """ Module for managing pydantic data models."""
-
+# pylint: disable=no-name-in-module
 from pydantic import Field, BaseModel
 from typing_extensions import Annotated
 
 
 class ThermalLoadingLimit(BaseModel):
-    """ Model representing thermal loading limit. """
+    """ Model representing thermal loading limit. 
+    Example:
+
+        >>> from emerge.metrics.data_model import ThermalLoadingLimit
+        >>> ThermalLoadingLimit(threshold=1.0)
+    """
 
     threshold: Annotated[float, Field(ge = 0.0, le=2.0)] = 1.0
 

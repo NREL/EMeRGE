@@ -12,7 +12,7 @@ import opendssdirect as dss
 import pandas as pd
 
 # internal imports
-from emerge.metrics.feeder_metrics_opendss import networkx_from_opendss_model
+from emerge.network.asset_metrics import networkx_from_opendss_model
 
 
 def get_allbus_voltage_pu(dss_instance):

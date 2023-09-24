@@ -1,51 +1,51 @@
-""" Module for computing timeseries transformer loading stats. """
+""" Module for computing timeseries line loading stats. """
 
 # standard imports
 from typing import Dict, List
+import numpy as np
 
 # third-party imports
 import polars
 import opendssdirect as dss
-import numpy as np
 
 # internal imports
-from emerge.metrics.time_series_metrics import observer
-from emerge.metrics import powerflow_metrics_opendss
+from emerge.metrics import observer
+from emerge.simulator import powerflow_results
 
-def get_xfmr_loading_df(dss_instance:dss):
+def get_line_loading_df(dss_instance:dss):
     return polars.from_pandas(
-            powerflow_metrics_opendss.get_transloading_dataframe(
+            powerflow_results.get_lineloading_dataframe(
             dss_instance
         ))
 
-class OverloadedTransformers(observer.MetricObserver):
-    """Class for computing time series loading metrics for transformers."""
+class OverloadedLines(observer.MetricObserver):
+    """Class for computing time series loading metrics for lines."""
 
     def __init__(self):
         self.metrics = {}
 
     def compute(self, dss_instance: dss) -> None:
 
-        df = powerflow_metrics_opendss.get_transloading_dataframe(dss_instance)
+        df = powerflow_results.get_lineloading_dataframe(dss_instance)
         loading_dict = dict(zip(df.index, df["loading(pu)"]))
         if len(self.metrics) == 0:
             self.metrics = {key: [] for key in loading_dict}
 
-        for xfmr, metric in loading_dict.items():
-            self.metrics[xfmr].append(metric)
+        for line, metric in loading_dict.items():
+            self.metrics[line].append(metric)
 
     def get_metric(self) -> Dict:
 
-        overloaded_xfmrs = {}
-        for xfmr, loading_arr in self.metrics.items():
+        overloaded_lines = {}
+        for line, loading_arr in self.metrics.items():
             loading_arr_np = np.array(loading_arr)
             if len(loading_arr_np[loading_arr_np > 1.0]):
-                overloaded_xfmrs[xfmr] = loading_arr
+                overloaded_lines[line] = loading_arr
 
-        return overloaded_xfmrs
+        return overloaded_lines
 
 
-class XfmrLoadingBins(observer.MetricObserver):
+class LineLoadingBins(observer.MetricObserver):
     """ Class for computing line loading distribution bins. """
 
     def __init__(self, bins: List[float]):
@@ -64,7 +64,7 @@ class XfmrLoadingBins(observer.MetricObserver):
 
 
     def compute(self, dss_instance:dss) -> None:
-        df = get_xfmr_loading_df(dss_instance)
+        df = get_line_loading_df(dss_instance)
         timestep = dss_instance.Solution.StepSize()/(3600)
         
         for metric in self.metrics:
@@ -91,8 +91,8 @@ class XfmrLoadingBins(observer.MetricObserver):
         return self.metrics
 
 
-class XfmrLoadingStats(observer.MetricObserver):
-    """ Class for computing transformer loading statistics. """
+class LineLoadingStats(observer.MetricObserver):
+    """ Class for computing line loading statistics. """
 
     def __init__(self):
         
@@ -104,7 +104,7 @@ class XfmrLoadingStats(observer.MetricObserver):
         }
 
     def compute(self, dss_instance:dss) -> None:
-        df = get_xfmr_loading_df(dss_instance)
+        df = get_line_loading_df(dss_instance)
         for metric in self.metrics:
             
             if '_' not in metric:

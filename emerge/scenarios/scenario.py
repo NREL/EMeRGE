@@ -1,9 +1,8 @@
-""" Module for generating PV deployment scenarios.
+""" Module for generating DER deployment scenarios.
 
-A PV deployment scenario is a hypothetical scenario defined on top
+A distributed energy resource (DER) deployment scenario is a hypothetical scenario defined on top
 of base distribution system model that uses some rules/forecast/expertise
-to come up with number, size and location of solar units to be installed.
-This is then can be used in various analysis. 
+to come up with number, size and location of der units to be installed.
 """
 # standard imports
 from typing import List
@@ -188,6 +187,12 @@ def create_der_scenarios(
     return scenarios
 
 def generate_scenarios(config_data: data_model.DERScenarioConfigModel )-> None:
+    """ Generate scenarios by taking high level configuration and writes opendss files.
+    
+    Args:
+        list_of_loads (data_model.DERScenarioConfigModel): Configuration model for defining
+            how to generate DER scenarios.
+    """
 
     for der_scen in config_data.der_scenario:
 

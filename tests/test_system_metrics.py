@@ -1,8 +1,8 @@
 """ This module contains tests for computing system level metrics."""
 from pathlib import Path
 
-from emerge.metrics.time_series_metrics import system_metrics
-from emerge.metrics.time_series_metrics import observer
+from emerge.emerge.metrics import system_metrics
+from emerge.emerge.metrics import observer
 from conftest import simulation_manager_setup
 
 # def test_total_energy():

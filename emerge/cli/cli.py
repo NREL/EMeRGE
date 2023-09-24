@@ -10,14 +10,14 @@ import datetime
 import click
 
 # internal imports
-from emerge.metrics.compute_snapshot_metrics import compute_snapshot_metrics
-from emerge.metrics.time_series_metrics import system_metrics
-from emerge.metrics.time_series_metrics import observer
-from emerge.metrics.time_series_metrics import node_metrics
-from emerge.metrics.time_series_metrics import simulation_manager
-from emerge.metrics import feeder_geojson
+from emerge.metrics.snapshot_metrics import compute_snapshot_metrics
+from emerge.metrics import system_metrics
+from emerge.metrics import observer
+from emerge.metrics import node_metrics
+from emerge.simulator import simulation_manager
+from emerge.network import feeder_geojson
 from emerge.simulator import opendss
-from emerge.cli.scenario import generate_pv_scenarios_for_feeder
+from emerge.cli.scenario import generate_scenarios
 from emerge.cli.multiscenario_metrics import (
     compute_multiscenario_time_series_metrics,
 )
@@ -192,7 +192,7 @@ def cli():
 cli.add_command(snapshot_metrics)
 cli.add_command(compute_time_series_metrics)
 cli.add_command(create_geojsons)
-cli.add_command(generate_pv_scenarios_for_feeder)
+cli.add_command(generate_scenarios)
 cli.add_command(compute_multiscenario_time_series_metrics)
 cli.add_command(compute_custom_metrics)
 cli.add_command(create_schemas)
