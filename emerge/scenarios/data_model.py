@@ -5,10 +5,11 @@ from typing import List, Optional, Dict
 from enum import Enum
 
 # pylint: disable=no-name-in-module
-from pydantic import BaseModel, confloat, conint, Field
+from pydantic import BaseModel, Field, model_validator
+from pydantic_core import PydanticCustomError
+from typing_extensions import Annotated, Literal
 
 # pylint: disable=too-few-public-methods
-
 
 class CustomerModel(BaseModel):
     """Interface for representing customer used in pv scenario development."""
@@ -16,7 +17,7 @@ class CustomerModel(BaseModel):
     name: str
     kw: float
     distance: float
-    cust_type: Optional[str]
+    cust_type: Optional[str] = None
 
 class DERType(str, Enum):
     """Available der enum types."""
@@ -45,20 +46,35 @@ class SelectionStrategyEnum(str, Enum):
 class EnergyBasedSolarSizingStrategyInput(BaseModel):
     """Input model for default solar sizing strategy."""
 
-    capacity_factor: confloat(gt=0, le=1) = 0.3
-    load_factor: confloat(gt=0, le=1) = 0.33
-    max_pct_production: confloat(gt=0, le=500) = 100
+    capacity_factor: Annotated[float, Field(gt=0, le=1)] = 0.3
+    load_factor: Annotated[float, Field(gt=0, le=1)] = 0.33
+    max_pct_production: Annotated[float, Field(gt=0, le=500)] = 100
+    profile: str
 
 
-class ScenarioConfig(BaseModel):
-    """Basic input model for generating der scenarios."""
+class SizeWithProbabilityModel(BaseModel):
+    """ Use this model if you want to pick sizes with probabilities. """
 
-    pct_resolution: confloat(gt=0, le=100) = Field(
-        description="Percentage resolution or step resolution"
-    )
-    num_of_penetration: conint(gt=0)
-    max_num_of_samples: conint(ge=1) = 1
+    sizes: List[float] | float
+    probabilites: List[Annotated[float, Field(ge=0, le=1)]] | float
+    profile: List[str] | str
+    
 
+    @model_validator(mode="after")
+    def validate_lengths_are_same(self) -> 'SizeWithProbabilityModel':
+        if isinstance(self.sizes, list) or isinstance(self.probabilites, list) \
+            or isinstance(self.profile, list):
+            
+            try:
+                if len(self.sizes) == len(self.probabilites) == len(self.profile):
+                    return self 
+                raise ValueError("Length must match for sizes,  probabilities and profile names. ")
+            except Exception as error:
+                raise PydanticCustomError(
+                    'mixed_type',
+                    f"Error validating fields : {error}"
+                )
+        return self
 
 class _DERScenarioInput(BaseModel):
     """ Base input model for der scenarios. """
@@ -66,8 +82,9 @@ class _DERScenarioInput(BaseModel):
     der_type: DERType
     der_tag: str = ''
     energy_sizing_input:  Dict[str,EnergyBasedSolarSizingStrategyInput] | EnergyBasedSolarSizingStrategyInput | None = None
-    peakmult_sizing_input: Dict[str,float] | float | None = None
-    fixed_sizing_input: Dict[str, float] | float | None
+    peakmult_sizing_input: Dict[str,SizeWithProbabilityModel] | SizeWithProbabilityModel | None = None
+    fixed_sizing_input: Dict[str, SizeWithProbabilityModel] | SizeWithProbabilityModel | None = None
+
 
 class DERScenarioInput(_DERScenarioInput):
     """ Input model for der scenarios. """
@@ -79,10 +96,11 @@ class BasicDERModel(BaseModel):
     """Basic DER model used in solar scenario development."""
 
     name: str
-    kw: confloat(ge=0)
+    kw: Annotated[float, Field(ge=0)]
     customer: CustomerModel
     der_type: DERType
     der_tag: str = ''
+    profile: str
 
 class DistDERScenarioModel(BaseModel):
     """Model for storing solars in a given scenario."""
@@ -98,6 +116,31 @@ class LoadMetadataModel(BaseModel):
 
     name: str
     bus: str
-    num_phase: conint(ge=1, le=3)
-    kv: confloat(gt=0)
-    yearly: Optional[str]
+    num_phase: Annotated[int, Field(ge=1, le=3)]
+    kv: Annotated[float, Field(gt=0)]
+    yearly: Optional[str] = None
+
+
+
+class DERScenarioInputModel(_DERScenarioInput):
+    """ Interface for der scenario input model. """
+    file_name: str
+    selection_strategy: SelectionStrategyEnum
+    other_ders: List[_DERScenarioInput]
+
+
+class ScenarioBaseConfig(BaseModel):
+    """ Interface for basic settings in defining scenario."""
+    pct_resolution: Annotated[float, Field(gt=0, le=100)] = Field(
+        description="Percentage resolution or step resolution"
+    )
+    num_of_penetration: Annotated[int, Field(gt=0)]
+    max_num_of_samples: Annotated[int, Field(ge=1)] = 1
+
+class DERScenarioConfigModel(ScenarioBaseConfig):
+    """CLI interface model for generating solar scenarios."""
+
+    master_file: str
+    output_folder: str
+    opendss_attr: Literal['yearly', 'class'] = 'class'
+    der_scenario: List[DERScenarioInputModel]

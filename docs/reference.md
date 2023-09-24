@@ -62,16 +62,16 @@
       heading_level: 4
 
 
-### <p style="color:teal;border-bottom:1px solid teal;width:max-content;">emerge.scenarios.pv_scenario </p>
+### <p style="color:teal;border-bottom:1px solid teal;width:max-content;">emerge.scenarios.scenario </p>
 
-::: emerge.scenarios.pv_scenario
+::: emerge.scenarios.scenario
     options:
       show_source: true
       heading_level: 4
 
-### <p style="color:teal;border-bottom:1px solid teal;width:max-content;">emerge.scenarios.strategy </p>
+### <p style="color:teal;border-bottom:1px solid teal;width:max-content;">emerge.scenarios.sizing_strategy </p>
 
-::: emerge.scenarios.strategy
+::: emerge.scenarios.sizing_strategy
     options:
       show_source: true
       heading_level: 4

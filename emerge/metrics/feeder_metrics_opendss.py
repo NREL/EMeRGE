@@ -4,15 +4,11 @@
  Extract base level metrics
 """
 # standard imports
-import logging
-import json
 
 # third-party imports
 import networkx as nx
 
 # internal imports
-from emerge.utils.util import setup_logging
-from emerge.simulator.opendss import OpenDSSSimulator
 from emerge.metrics.feeder_metrics_model import (
     AssetMetrics,
     FeederMetrics,
@@ -22,7 +18,6 @@ from emerge.metrics.feeder_metrics_model import (
     RegulatorsAssetMetrics,
     TransformersAssetMetrics
 )
-from emerge.db.db_handler import TinyDBHandler
 
 def opendss_load_metrics_extractor(dss_instance):
 
@@ -265,15 +260,4 @@ def get_coordinates(dss_instance):
         
     return coordinates
 
-logger = logging.getLogger(__name__)
 
-if __name__ == '__main__':
-
-    setup_logging()
-    db_instance = TinyDBHandler()
-    opendss_instance = OpenDSSSimulator(r'C:\Users\KDUWADI\Desktop\NREL_Projects\ciff_track_2\exports\opendss_new\master.dss')
-    # asset_metrics = aggregate_asset_metrics(opendss_instance.dss_instance).dict()
-    # print(asset_metrics)
-    # db_instance.db.insert({"type": "asset_metrics", "metrics": asset_metrics})
-    coordinates = get_coordinates(opendss_instance.dss_instance)
-    db_instance.db.insert({"type": "coordinates", "data": coordinates})

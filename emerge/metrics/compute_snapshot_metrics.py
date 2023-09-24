@@ -73,8 +73,3 @@ def compute_snapshot_metrics(
             "label": "peak_load", 
             "data":  xfmr_loading_df.to_dict()['loading(pu)']})
 
-if __name__ == '__main__':
-    
-    compute_snapshot_metrics(
-        r'C:\Users\KDUWADI\Desktop\NREL_Projects\ciff_track_2\exports\opendss_new\master.dss'
-    )

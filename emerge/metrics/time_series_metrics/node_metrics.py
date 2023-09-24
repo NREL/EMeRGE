@@ -1,11 +1,10 @@
 """ Module for managing computation of node level metrics. """
-import copy
-import sys
 
+# third-party imports
 import opendssdirect as dss
 import pandas as pd
-import networkx as nx
 
+# internal imports
 from emerge.metrics.time_series_metrics import observer
 from emerge.metrics import data_model
 from emerge.metrics import powerflow_metrics_opendss

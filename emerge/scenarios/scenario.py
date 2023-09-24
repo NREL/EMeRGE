@@ -5,12 +5,16 @@ of base distribution system model that uses some rules/forecast/expertise
 to come up with number, size and location of solar units to be installed.
 This is then can be used in various analysis. 
 """
-
+# standard imports
 from typing import List
 
+
+# internal imports
 from emerge.scenarios import data_model
 from emerge.scenarios import selection_strategy, sizing_strategy
-
+from emerge.utils import dss_util
+from emerge.simulator import opendss
+from emerge.scenarios import opendss_writer
 
 def _get_sizing_func_input(item: data_model._DERScenarioInput):
     return {
@@ -18,6 +22,7 @@ def _get_sizing_func_input(item: data_model._DERScenarioInput):
         data_model.CapacityStrategyEnum.peak_multiplier: item.peakmult_sizing_input,
         data_model.CapacityStrategyEnum.fixed_sizing: item.fixed_sizing_input
     }.get(item.sizing_strategy)
+
 
 
 def _add_other_ders(
@@ -39,17 +44,21 @@ def _add_other_ders(
     for der in ders_list:
         if der.der_type == der_type:
             # pylint: disable=broad-exception-raised
-            raise Exception(f'DER type can not be same when adding other ders! {der} >> {der_type}')
+            raise ValueError(f'DER type can not be same when adding other ders! {der} >> {der_type}')
         
-        der_models.append(
-            data_model.BasicDERModel(
-                    name=der.name + f'_{der_type}',
-                    kw=strategy.return_size_in_kw(der.customer),
-                    customer=der.customer,
-                    der_type=der_type,
-                    der_tag=der_tag
-                )
-        )
+        der_cap, profile = strategy.return_kw_and_profile(der.customer)
+
+        if der_cap and profile:
+            der_models.append(
+                data_model.BasicDERModel(
+                        name=der.name + f'_{der_type}_{der_tag}',
+                        kw=der_cap,
+                        customer=der.customer,
+                        der_type=der_type,
+                        der_tag=der_tag,
+                        profile=profile
+                    )
+            )
     return der_models
 
 
@@ -77,9 +86,9 @@ def _get_ders(
         if target_kw <= 0:
             break
 
-        der_capacity = strategy.return_size_in_kw(customer)
+        der_capacity, profile = strategy.return_kw_and_profile(customer)
 
-        if der_capacity and der_capacity > 0:
+        if der_capacity and profile:
             der_capacity = min(der_capacity, target_kw)
 
             target_kw -= der_capacity
@@ -89,7 +98,8 @@ def _get_ders(
                     kw=der_capacity,
                     customer=customer,
                     der_type=der_type,
-                    der_tag=der_tag
+                    der_tag=der_tag,
+                    profile=profile
                 )
             )
 
@@ -99,8 +109,8 @@ def _get_ders(
 # pylint: disable=too-many-locals
 def create_der_scenarios(
     list_of_customers: List[data_model.CustomerModel],
-    scenario_config: data_model.ScenarioConfig,
-    der_config: data_model.DERScenarioInput
+    scenario_config: data_model.ScenarioBaseConfig,
+    der_config: data_model.DERScenarioInputModel
 ) -> List[data_model.DistDERScenarioModel]:
     """Function for creating distributed DER scenarios
     for distribution system.
@@ -108,9 +118,9 @@ def create_der_scenarios(
     Args:
         list_of_loads (List[data_model.CustomerModel]): List of customer for
                 scenario generation.
-        scenario_config (data_model.ScenarioConfig): Configuration data for
+        scenario_config (data_model.ScenarioBaseConfig): Basic configuration data for
                 generating scenarios
-        der_types List[data_model.DERType]: DER types to be added for a load
+        der_config List[data_model.DERScenarioInputModel]: DER config.
     Returns:
         List[data_model.DistDERScenarioModel]: List of `DistDERScenarioModel`
             models.
@@ -176,3 +186,26 @@ def create_der_scenarios(
             scenarios.append(scenario)
 
     return scenarios
+
+def generate_scenarios(config_data: data_model.DERScenarioConfigModel )-> None:
+
+    for der_scen in config_data.der_scenario:
+
+        simulator = opendss.OpenDSSSimulator(config_data.master_file)
+        list_of_customers = dss_util.get_list_of_customer_models(simulator.dss_instance, 1, 
+                                                                 cust_type=config_data.opendss_attr)
+        mapper_object = dss_util.get_load_mapper_objects(simulator.dss_instance)
+
+        derscenarios = create_der_scenarios(
+            list_of_customers, data_model.ScenarioBaseConfig(
+                **config_data.model_dump(include=['pct_resolution', 
+                                                  'num_of_penetration', 'max_num_of_samples']) 
+            ),
+            der_config=der_scen
+        )
+        writer_object = opendss_writer.OpenDSSPVScenarioWriter(
+            derscenarios, config_data.output_folder
+        )
+        writer_object.write(mapper_object,
+            file_name=der_scen.file_name         
+        )

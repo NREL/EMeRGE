@@ -2,12 +2,23 @@
 solar scenarios. """
 
 import abc
-from typing import Union, Dict, Optional
+from typing import Union, Dict, Optional, Tuple
 from emerge.scenarios.data_model import (
     EnergyBasedSolarSizingStrategyInput,
     CustomerModel,
-    CapacityStrategyEnum
+    CapacityStrategyEnum,
+    SizeWithProbabilityModel
 )
+import numpy as np
+
+def _get_value_from_proability(config: Optional[SizeWithProbabilityModel]):
+    """ Returns specific value from size with probability model. """
+
+    if config is None:
+        raise ValueError(f"Input can not be null >> {config}")
+        
+    return config.sizes if isinstance(config.sizes, float) \
+        else np.random.choice(config.sizes, p=config.probabilites)
 
 
 # pylint: disable=too-few-public-methods
@@ -15,9 +26,8 @@ class SizingStrategy(abc.ABC):
     """Abstract class for sizing strategy."""
 
     @abc.abstractmethod
-    def return_size_in_kw(self, customer: CustomerModel) -> Optional[float]:
+    def return_kw_and_profile(self, customer: CustomerModel) -> Optional[Tuple[float, str]]:
         """Abstract method for returning size."""
-
 
 class EnergyBasedSolarSizingStrategy(SizingStrategy):
     """Default strategy is to size solar based on
@@ -31,8 +41,9 @@ class EnergyBasedSolarSizingStrategy(SizingStrategy):
         ],
     ):
         self.config = config
-
-    def return_size_in_kw(self, customer: CustomerModel) -> float:
+       
+    def return_kw_and_profile(self, customer: CustomerModel) -> Optional[Tuple[float, str]]:
+        
         def _return_size(load_kw: float, _config: EnergyBasedSolarSizingStrategyInput):
             return round(
                 (load_kw * _config.load_factor * _config.max_pct_production)
@@ -43,11 +54,12 @@ class EnergyBasedSolarSizingStrategy(SizingStrategy):
         if isinstance(self.config, dict):
             if customer.cust_type not in self.config:
                 print(
-                    f"{customer.cust_type}" f"missing from config data {self.config}"
+                    f"{customer.cust_type} missing from config data {self.config}"
                 )
-                return
-            _return_size(customer.kw, self.config.get(customer.cust_type))
-        _return_size(customer.kw, self.config)
+                return (None, None)
+            (_return_size(customer.kw, self.config.get(customer.cust_type)), 
+             self.config.get(customer.cust_type).profile)
+        (_return_size(customer.kw, self.config), self.config.profile)
 
 
 class PeakMultiplierSizingStrategy(SizingStrategy):
@@ -57,26 +69,37 @@ class PeakMultiplierSizingStrategy(SizingStrategy):
     def __init__(
         self,
         config: Union[
-            float,
-            Dict[str, float],
+            SizeWithProbabilityModel,
+            Dict[str, SizeWithProbabilityModel],
         ],
     ):
         self.config = config
 
-    def return_size_in_kw(
+ 
+    def return_kw_and_profile(
         self,
         customer: CustomerModel,
-    ):
+    ) -> Optional[Tuple[float, str]]:
+        
+        def _get_kw_and_profile(config: Optional[SizeWithProbabilityModel]):
+            
+            multiplier = _get_value_from_proability(config)
+            profile = dict(zip(config.sizes, config.profile)).get(multiplier) \
+                if isinstance(config.profile, list) else config.profile
+            
+            return (round(
+                customer.kw * multiplier , 3
+            ), profile)
+        
         if isinstance(self.config, dict):
             if customer.cust_type not in self.config:
                 print(
-                    f"{customer.cust_type}" f"missing from config data {self.config}"
+                    f"{customer.cust_type} missing from config data {self.config}"
                 )
-                return
-            return round(
-                customer.kw * self.config.get(customer.cust_type), 3
-            )
-        return round(customer.kw * self.config, 3)
+                return (None, None)
+            return _get_kw_and_profile(self.config.get(customer.cust_type))
+        
+        return _get_kw_and_profile(self.config)
     
 class FixedSizingStrategy(SizingStrategy):
     """Fixed sizing strategy uses fixed kw with user defined
@@ -85,26 +108,35 @@ class FixedSizingStrategy(SizingStrategy):
     def __init__(
         self,
         config: Union[
-            float,
-            Dict[str, float],
+            SizeWithProbabilityModel,
+            Dict[str, SizeWithProbabilityModel],
         ],
     ):
         self.config = config
 
-    def return_size_in_kw(
+
+    def return_kw_and_profile(
         self,
         customer: CustomerModel,
-    ):
+    ) -> Optional[Tuple[float, str]]:
+        
+        def _get_kw_and_profile(config: Optional[SizeWithProbabilityModel]):
+            
+            fixed_value = _get_value_from_proability(config)
+            profile = dict(zip(config.sizes, config.profile)).get(fixed_value) \
+                if isinstance(config.profile, list) else config.profile
+            
+            return (fixed_value, profile)
+        
         if isinstance(self.config, dict):
             if customer.cust_type not in self.config:
                 print(
-                    f"{customer.cust_type}" f"missing from config data {self.config}"
+                    f"{customer.cust_type} missing from config data {self.config}"
                 )
-                return
-            return round(
-                self.config.get(customer.cust_type), 3
-            )
-        return round(customer.kw, 3)
+                return (None, None)
+            return _get_kw_and_profile(self.config.get(customer.cust_type))
+            
+        return _get_kw_and_profile(self.config)
     
 
 SIZING_STRATEGY_MAPPER  ={

@@ -1,6 +1,6 @@
 """ Module for managing export of scenarions in opendss format. """
 
-from typing import List, Dict, Optional
+from typing import List
 from pathlib import Path
 
 from emerge.scenarios import data_model
@@ -31,7 +31,7 @@ class OpenDSSPVScenarioWriter:
         self.output_path.mkdir(exist_ok=True, parents=True)
 
     def write(self, load_mapper_model: List[data_model.LoadMetadataModel],
-               file_name: str, tag_name: str, )-> None:
+               file_name: str )-> None:
         """Method for writing the scenarios.
         
         Args:
@@ -51,29 +51,27 @@ class OpenDSSPVScenarioWriter:
                 f"! DER Scenario for {scenario.penetration} kW total size, Sample {scenario.sample_id} \n"
             )
             der_models.append(
-                f"==============================================DER SCENARIO FILE====================================\n\n"
+                "==============================================DER SCENARIO FILE====================================\n\n"
             )
 
             for der in scenario.ders:
                 mapper = next(
                     filter(lambda d: d.name == der.customer.name, load_mapper_model)
                 )
-
                 
-                yearly_text = f"yearly={mapper.yearly}_{str(der.der_tag)}" if mapper.yearly else ''
-
                 if der.der_type == data_model.DERType.solar:
                     der_models.append(
                         f"new pvsystem.{der.name.replace('.', '_')} phases={mapper.num_phase}"
                         f" bus1={mapper.bus} kv={mapper.kv} irradiance=1 pmpp={der.kw} kva={der.kw}"
-                        f" conn=wye %cutin=0.1 %cutout=0.1 vmaxpu=1.2 {yearly_text}\n" 
+                        f" conn=wye %cutin=0.1 %cutout=0.1 vmaxpu=1.2 yearly={der.profile}\n" 
                     )
                 elif der.der_type == data_model.DERType.load:
-                    der_models.append(
-                        f"new load.{der.name.replace('.', '_')} phases={mapper.num_phase}"
-                        f" bus1={mapper.bus} kv={mapper.kv} kvar={0} kva={der.kw}"
-                        f" {yearly_text}\n" 
-                    )
+                    if der.kw !=0 :
+                        der_models.append(
+                            f"new load.{der.name.replace('.', '_')} phases={mapper.num_phase}"
+                            f" bus1={mapper.bus} kv={mapper.kv} kvar={0} kva={der.kw}"
+                            f" yearly={der.profile}\n" 
+                        )
                 else:
                     raise NotImplementedError(f"{der.der_type} has not been implementes.")
                 

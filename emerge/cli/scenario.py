@@ -3,18 +3,13 @@
 import click
 import json
 
-import pydantic
-
 from emerge.scenarios import (
     data_model,
     scenario,
-    sizing_strategy,
-    selection_strategy,
     opendss_writer,
 )
 from emerge.utils import dss_util
 from emerge.simulator import opendss
-from emerge.cli.interface import PVSceanarioCliInputModel
 
 
 @click.command()
@@ -35,8 +30,9 @@ def generate_pv_scenarios_for_feeder(config, customer_type):
     # pylint: disable=no-member
     with open(config, "r", encoding="utf-8") as file:
         config_dict = json.load(file)
-    config_data = pydantic.parse_obj_as(
-        PVSceanarioCliInputModel, config_dict)
+    
+    config_data = data_model.DERScenarioConfigModel.model_validate(
+        config_dict)
     
     for der_scen in config_data.der_scenario:
 
@@ -45,12 +41,16 @@ def generate_pv_scenarios_for_feeder(config, customer_type):
         mapper_object = dss_util.get_load_mapper_objects(simulator.dss_instance)
 
         derscenarios = scenario.create_der_scenarios(
-            list_of_customers, config_data.basic_config,
+            list_of_customers, 
+            data_model.ScenarioBaseConfig(
+                **config_data.model_dump(include=['pct_resolution', 
+                                                  'num_of_penetration', 'max_num_of_samples']) 
+            ),
             der_config=der_scen
         )
         writer_object = opendss_writer.OpenDSSPVScenarioWriter(
             derscenarios, config_data.output_folder
         )
         writer_object.write(mapper_object,
-            file_name=der_scen.file_name, tag_name=der_scen.tag_name            
+            file_name=der_scen.file_name         
         )

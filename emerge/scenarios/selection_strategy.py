@@ -7,8 +7,6 @@ import random
 from emerge.scenarios import data_model
 
 
-
-
 class SelectionStrategy(abc.ABC):
     """Abstract class for selection strategy.
 

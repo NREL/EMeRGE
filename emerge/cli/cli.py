@@ -22,6 +22,7 @@ from emerge.cli.multiscenario_metrics import (
     compute_multiscenario_time_series_metrics,
 )
 from emerge.cli.custom_metrics import compute_custom_metrics
+from emerge.cli.schema_generator import create_schemas
 
 
 @click.command()
@@ -194,3 +195,4 @@ cli.add_command(create_geojsons)
 cli.add_command(generate_pv_scenarios_for_feeder)
 cli.add_command(compute_multiscenario_time_series_metrics)
 cli.add_command(compute_custom_metrics)
+cli.add_command(create_schemas)
