@@ -1,5 +1,5 @@
 """ Modules containing test for exporting metrics. """
-
+import os
 
 from emerge.metrics import system_metrics
 from emerge.metrics import observer
@@ -27,4 +27,6 @@ def test_export_metrics():
         subject.attach(observer_)
 
     manager.simulate(subject)
+
     observer.export_tinydb_json(observers_, "db_metrics.json")
+    os.remove("db_metrics.json")
