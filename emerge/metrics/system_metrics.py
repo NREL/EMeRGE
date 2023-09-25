@@ -257,7 +257,7 @@ class SARDI_aggregated(observer.MetricObserver):
         
         
         total_load = dss_instance.Loads.Count()
-        affected_loads = list(set(self.load_bus_map.loc[total_impacted_load_buses]["loadname"]))
+        affected_loads = list(set(self.load_bus_map.loc[list(total_impacted_load_buses)]["loadname"]))
         self.sardi_aggregated += len(affected_loads)*100/total_load
       
         self.counter +=1
