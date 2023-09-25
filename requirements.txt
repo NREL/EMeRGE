@@ -11,3 +11,6 @@ uvicorn[standard]
 pytest
 fastapi
 jinja2
+json5
+polars
+pyarrow
