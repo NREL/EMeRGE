@@ -9,9 +9,9 @@ from pathlib import Path
 from emerge.utils.util import setup_logging
 from emerge.db.db_handler import TinyDBHandler
 from emerge.simulator.opendss import OpenDSSSimulator
-from emerge.metrics.feeder_metrics_opendss import (aggregate_asset_metrics,
+from emerge.network.asset_metrics import (aggregate_asset_metrics,
     get_coordinates)
-from emerge.metrics.powerflow_metrics_opendss import (
+from emerge.simulator.powerflow_results import (
     get_allbus_voltage_pu,
     get_voltage_by_distance,
     get_voltage_by_lat_lon,
@@ -73,8 +73,3 @@ def compute_snapshot_metrics(
             "label": "peak_load", 
             "data":  xfmr_loading_df.to_dict()['loading(pu)']})
 
-if __name__ == '__main__':
-    
-    compute_snapshot_metrics(
-        r'C:\Users\KDUWADI\Desktop\NREL_Projects\ciff_track_2\exports\opendss_new\master.dss'
-    )

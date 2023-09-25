@@ -6,6 +6,7 @@ from pathlib import Path
 import logging
 import logging.config
 import json
+import json5
 
 # third-party imports
 import yaml
@@ -55,7 +56,7 @@ def validate_path(
         raise Exception(f"Invalid file type passed {path} , \
             valid file types are {file_types}")
 
-def read_file(file_path: str) -> Dict:
+def read_file(file_path: str, use_json5=False) -> Dict:
     """ Reads a file and returns a python dictionary. """
 
     file_path = Path(file_path)
@@ -67,7 +68,7 @@ def read_file(file_path: str) -> Dict:
     # Handle JSON file read
     if file_path.suffix == '.json':
         with open(file_path, "r") as f:
-            content = json.load(f)
+            content = json.load(f) if not use_json5 else json5.load(f)
 
     # Handle YAML file read
     elif file_path.suffix == '.yaml':
@@ -83,7 +84,7 @@ def read_file(file_path: str) -> Dict:
     logger.debug(f"{file_path} read successfully")
     return content
 
-def write_file(content:dict, file_path: str, **kwargs) -> None:
+def write_file(content:dict, file_path: str, use_json5=False, **kwargs) -> None:
     """ Takes a python dictionary and writes it into a file. """
     file_path = Path(file_path)
     validate_path(file_path.parent)
@@ -91,7 +92,7 @@ def write_file(content:dict, file_path: str, **kwargs) -> None:
     # Handle JSON file write
     if file_path.suffix == '.json':
         with open(file_path, "w") as f:
-            json.dump(content, f, **kwargs)
+            json.dump(content, f, **kwargs) if not use_json5 else json5.dump(content, f, **kwargs)
 
     # Handle YAML file write
     elif file_path.suffix == '.yaml':

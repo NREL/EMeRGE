@@ -1,7 +1,7 @@
 """ This module contains tests for computing system level metrics."""
 
-from emerge.metrics.time_series_metrics import node_metrics
-from emerge.metrics.time_series_metrics import observer
+from emerge.metrics import node_metrics
+from emerge.metrics import observer
 from conftest import simulation_manager_setup
 
 def test_nvri_metric():

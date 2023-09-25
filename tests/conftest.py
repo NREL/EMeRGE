@@ -3,7 +3,7 @@
 import datetime
 from pathlib import Path
 
-from emerge.metrics.time_series_metrics import simulation_manager
+from emerge.simulator import simulation_manager
 
 def simulation_manager_setup():
     """ Fixture function for setting up simulation manager. """

@@ -4,21 +4,15 @@
  Extract base level metrics
 """
 # standard imports
-import logging
-import json
 import math
 
 # third-party imports
-import networkx as nx
 import numpy as np
 import opendssdirect as dss
 import pandas as pd
 
 # internal imports
-from emerge.utils.util import setup_logging
-from emerge.simulator.opendss import OpenDSSSimulator
-from emerge.db.db_handler import TinyDBHandler
-from emerge.metrics.feeder_metrics_opendss import networkx_from_opendss_model
+from emerge.network.asset_metrics import networkx_from_opendss_model
 
 
 def get_allbus_voltage_pu(dss_instance):

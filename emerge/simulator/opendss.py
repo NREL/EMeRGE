@@ -3,14 +3,13 @@
 # standard imports
 from pathlib import Path
 import logging
-from datetime import datetime, timedelta
 from abc import ABC, abstractmethod
 
 # third-party imports
 import opendssdirect as dss
 
 # internal imports
-from emerge.utils.util import validate_path, setup_logging
+from emerge.utils.util import validate_path
 
 logger = logging.getLogger(__name__)
 

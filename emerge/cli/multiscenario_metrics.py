@@ -1,14 +1,17 @@
 """ Module for computing time series metrics for multi scenario simulation."""
-
-import click
+# standard imports
 import datetime
 from pathlib import Path
 import multiprocessing
 
-from emerge.metrics.time_series_metrics import system_metrics
-from emerge.metrics.time_series_metrics import observer
-from emerge.metrics.time_series_metrics import node_metrics
-from emerge.metrics.time_series_metrics import simulation_manager
+# third-party imports
+import click
+
+# internal imports
+from emerge.metrics import system_metrics
+from emerge.metrics import observer
+from emerge.metrics import node_metrics
+from emerge.simulator import simulation_manager
 
 
 def _run_timeseries_sim(input):

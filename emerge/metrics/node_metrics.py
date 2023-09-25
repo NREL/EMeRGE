@@ -1,14 +1,13 @@
 """ Module for managing computation of node level metrics. """
-import copy
-import sys
 
+# third-party imports
 import opendssdirect as dss
 import pandas as pd
-import networkx as nx
 
-from emerge.metrics.time_series_metrics import observer
+# internal imports
+from emerge.metrics import observer
 from emerge.metrics import data_model
-from emerge.metrics import powerflow_metrics_opendss
+from emerge.simulator import powerflow_results
 from emerge.utils import dss_util
 
 
@@ -50,7 +49,7 @@ class TLRI(observer.MetricObserver):
         """Refer to base class for more details."""
 
         # Get voltage dataframe and load bus mapper
-        xmfr_loading_df = powerflow_metrics_opendss.get_transloading_dataframe(
+        xmfr_loading_df = powerflow_results.get_transloading_dataframe(
             dss_instance
         )
 
@@ -126,7 +125,7 @@ class LLRI(observer.MetricObserver):
         """Refer to base class for more details."""
 
         # Get voltage dataframe and load bus mapper
-        line_loading_df = powerflow_metrics_opendss.get_lineloading_dataframe(
+        line_loading_df = powerflow_results.get_lineloading_dataframe(
             dss_instance
         )
 
@@ -206,7 +205,7 @@ class NVRI(observer.MetricObserver):
         """Refer to base class for more details."""
 
         # Get voltage dataframe and load bus mapper
-        voltage_df = powerflow_metrics_opendss.get_voltage_dataframe(
+        voltage_df = powerflow_results.get_voltage_dataframe(
             dss_instance
         )
 

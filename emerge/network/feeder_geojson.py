@@ -7,7 +7,6 @@ from pathlib import Path
 
 # internal imports
 from emerge.utils.util import validate_path, write_file
-from emerge.simulator.opendss import OpenDSSSimulator
 
 def create_feeder_geojson(
     dss_instance,

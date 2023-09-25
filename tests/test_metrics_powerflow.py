@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from emerge.metrics import powerflow_metrics_opendss
+from emerge.simulator import powerflow_results
 from emerge.simulator import opendss
 
 def test_pv_power_dataframe():
@@ -16,7 +16,7 @@ def test_pv_power_dataframe():
     master_dss_file = root_path / 'examples' / 'opendss' / 'master.dss'
 
     simulator = opendss.OpenDSSSimulator(master_dss_file)
-    pv_df = powerflow_metrics_opendss.get_pv_power_dataframe(
+    pv_df = powerflow_results.get_pv_power_dataframe(
         simulator.dss_instance
     )
 
@@ -30,7 +30,7 @@ def test_get_voltage_by_dataframe():
     master_dss_file = root_path / 'examples' / 'opendss' / 'master.dss'
 
     simulator = opendss.OpenDSSSimulator(master_dss_file)
-    voltage_df = powerflow_metrics_opendss.get_voltage_dataframe(
+    voltage_df = powerflow_results.get_voltage_dataframe(
         simulator.dss_instance
     )
 
@@ -44,7 +44,7 @@ def test_get_lineloading_dataframe():
     master_dss_file = root_path / 'examples' / 'opendss' / 'master.dss'
 
     simulator = opendss.OpenDSSSimulator(master_dss_file)
-    line_loading_df = powerflow_metrics_opendss.get_lineloading_dataframe(
+    line_loading_df = powerflow_results.get_lineloading_dataframe(
         simulator.dss_instance
     )
 
@@ -58,7 +58,7 @@ def test_get_transloading_dataframe():
     master_dss_file = root_path / 'examples' / 'opendss' / 'master.dss'
 
     simulator = opendss.OpenDSSSimulator(master_dss_file)
-    xfmr_loading_df = powerflow_metrics_opendss.get_transloading_dataframe(
+    xfmr_loading_df = powerflow_results.get_transloading_dataframe(
         simulator.dss_instance
     )
 
