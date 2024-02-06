@@ -11,6 +11,7 @@ import json5
 # third-party imports
 import yaml
 
+
 logger = logging.getLogger(__name__)
 
 def get_map_centre(longitudes: List[float], latitudes: List[float])-> Dict:
