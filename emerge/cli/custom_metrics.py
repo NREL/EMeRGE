@@ -19,7 +19,7 @@ from emerge.metrics import line_loading_stats
 from emerge.metrics import xfmr_loading_stats
 
 
-def _get_observers(metrics: Dict):
+def get_observers(metrics: Dict):
     observers = {}
 
     class_mapper = {
@@ -77,7 +77,7 @@ def _run_timeseries_sim(
             manager.opendss_instance.execute_dss_command(f"Redirect {file_path}")
 
 
-    observers = _get_observers(metrics)
+    observers = get_observers(metrics)
     for _, observer_ in observers.items():
         subject.attach(observer_)
 
