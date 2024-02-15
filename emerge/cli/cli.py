@@ -38,20 +38,11 @@ from emerge.cli.schema_generator import create_schemas
     show_default=True,
     help="Ouput directory for storing the geojsons",
 )
-# @click.option(
-#     "-f",
-#     "--file-identifier",
-#     default="feeder_file_id",
-#     show_default=True,
-#     help="Input file name (feeder) reference.",    
-# )
-def create_geojsons(master_file, output_folder): # , feeder_file_id
+def create_geojsons(master_file, output_folder):
     """Command line function to generate geojsons from opendss model"""
-    
     opendss_instance = opendss.OpenDSSSimulator(master_file)
-    # print("handling file id : ", feeder_file_id)
     feeder_geojson.create_feeder_geojson(
-        opendss_instance.dss_instance, output_folder # , feeder_file_id
+        opendss_instance.dss_instance, output_folder 
     )
 
 

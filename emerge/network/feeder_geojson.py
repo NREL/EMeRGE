@@ -17,7 +17,6 @@ from emerge.utils.util import validate_path, write_file
 def create_feeder_geojson(
     dss_instance,
     output_folder,
-    # feeder_file_id
 ):
     print("################################################################  ")
     print(f"Parsing Power System Model Entities")
@@ -26,7 +25,6 @@ def create_feeder_geojson(
     output_folder = Path(output_folder)
     output_folder.mkdir(exist_ok=True)
     validate_path(output_folder)
-    # feeder_file_id = 'feeder_id'
 
     # Let's get all the buses
     bus_geojson = {"type": "FeatureCollection", "features": []}
@@ -41,8 +39,10 @@ def create_feeder_geojson(
     # print("################################################################  ")
     for bus in all_buses:
         dss_instance.Circuit.SetActiveBus(bus)
-        x, y = dss_instance.Bus.X(), dss_instance.Bus.Y()
-        lon, lat = convert_local_coords_to_WGS84([x,y], "EPSG:2925") # PROJCS["NAD83(HARN) / Virginia South
+        # x, y = dss_instance.Bus.X(), dss_instance.Bus.Y()
+        lon, lat = dss_instance.Bus.X(), dss_instance.Bus.Y()
+
+        # lon, lat = convert_local_coords_to_WGS84([x,y], "EPSG:2925") # PROJCS["NAD83(HARN) / Virginia South
 
         bus_coord_dict[bus] = {
             'longitude': lon,
@@ -64,7 +64,7 @@ def create_feeder_geojson(
                 }
             }
         )
-    # write_file(bus_geojson, output_folder / 'buses.json')
+    # write_file(bus_geojson, output_folder / f"{feederID}_buses.json")
 
     # Get all the line sections
     # print("################################################################  ")
@@ -106,7 +106,7 @@ def create_feeder_geojson(
 
         flag = dss_instance.Lines.Next()
     
-    # write_file(lines_geojson, output_folder / 'lines.json')
+    # write_file(lines_geojson, output_folder / f"{feederID}_lines.json")
 
     # Get all transformers
     # print("################################################################  ")
@@ -147,7 +147,7 @@ def create_feeder_geojson(
 
         flag = dss_instance.Transformers.Next()
     
-    # write_file(transformer_geojson, output_folder / 'transformers.json')
+    # write_file(transformer_geojson, output_folder / f"{feederID}_transformers.json")
 
     # Get all loads
     # print("################################################################  ")
@@ -183,7 +183,7 @@ def create_feeder_geojson(
 
         flag = dss_instance.Loads.Next()
     
-    # write_file(load_geojson, output_folder / 'loads.json')
+    # write_file(load_geojson, output_folder / f"{feederID}_loads.json")
         
     # Get all capacitors
     # print("################################################################  ")
@@ -215,7 +215,7 @@ def create_feeder_geojson(
 
         flag = dss_instance.Capacitors.Next()
     
-    # write_file(capacitors_geojson, output_folder / 'Capacitors.json')
+    # write_file(capacitors_geojson, output_folder / f"{feederID}_capacitors.json")
 
 
 
