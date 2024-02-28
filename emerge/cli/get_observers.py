@@ -14,6 +14,7 @@ CLASS_MAPPER = {
         'substation_power': system_metrics.TimeseriesTotalPower,
         'total_pvpower': system_metrics.TimeseriesTotalPVPower,
         'total_powerloss': system_metrics.TimeseriesTotalLoss,
+        'node_timeseries_voltage': node_voltage_stats.NodeVoltageTimeSeries,
         'node_voltage_stats': node_voltage_stats.NodeVoltageStats,
         'node_voltage_bins': node_voltage_stats.NodeVoltageBins,
         'line_loading_stats': line_loading_stats.LineLoadingStats,
@@ -41,7 +42,13 @@ class MetricEntry(BaseModel):
 
 class SimulationMetrics(BaseModel):
     """Interface for defining simulation metrics."""
-    
+    node_timeseries_voltage: Annotated[
+        MetricEntry,
+        Field(
+            MetricEntry(file_name="node_voltage_timeseries.csv"),
+            description="Statistics for node time series voltages.",
+        ),
+    ]
 
     node_voltage_stats: Annotated[
         MetricEntry,

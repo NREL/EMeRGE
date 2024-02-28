@@ -49,9 +49,10 @@ if __name__ == "__main__":
         start_time=datetime(2023,1,1,0,0,0),
         end_time=datetime(2023,1,1,23,0,0),
         profile_start_time=datetime(2023,1,1,0,0,0),
-        export_path="/home/ec2-user/panynj/exports/feb_9_test",
+        export_path="/home/ec2-user/panynj/exports/feb_12_test",
         master_dss_file="/home/ec2-user/panynj/opendss_models/lga_east_end_substation/new_master.dss"
     )
     compute_single_model_timeseries_metrics(
         config
     )
+
