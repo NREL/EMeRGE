@@ -4,16 +4,19 @@ run powerflow on single opendss model."""
 from datetime import datetime
 from pathlib import Path
 from typing import Annotated
+import json
+
+from pydantic import BaseModel, Field
+import click
+
 from emerge.cli import get_observers
 from emerge.cli.get_observers import SimulationMetrics
 from emerge.metrics import observer
 from emerge.simulator.simulation_manager import OpenDSSSimulationManager
 
-from pydantic import BaseModel, Field
 
-
-class SingleModelSimulationInput(BaseModel):
-    """Class interface for single model simulation input."""
+class TimeseriesSimulationInput(BaseModel):
+    """Interface for timeseries simulation input model."""
 
     master_dss_file: Annotated[Path, Field(..., description="Path to master dss file.")]
     start_time: Annotated[datetime, Field(..., description="Start time for simulation.")]
@@ -23,8 +26,8 @@ class SingleModelSimulationInput(BaseModel):
     resolution_min: Annotated[float, Field(60, gt=0, description="Simulation time resolution in minute.")]
     metrics: Annotated[SimulationMetrics, Field(SimulationMetrics(), description="Simulation metrics.")]
 
-def compute_single_model_timeseries_metrics(config: SingleModelSimulationInput):
-    """ Function to compute single model timeseries metrics."""
+def compute_timeseries_simulation_metrics(config: TimeseriesSimulationInput):
+    """ Function to compute metrics for timeseries simulation. """
 
     manager = OpenDSSSimulationManager(
         path_to_master_dss_file=config.master_dss_file,
@@ -44,15 +47,18 @@ def compute_single_model_timeseries_metrics(config: SingleModelSimulationInput):
     observer.export_csv(list(observers.values()), config.export_path)
 
 
-if __name__ == "__main__":
-    config = SingleModelSimulationInput(
-        start_time=datetime(2023,1,1,0,0,0),
-        end_time=datetime(2023,1,1,23,0,0),
-        profile_start_time=datetime(2023,1,1,0,0,0),
-        export_path="/home/ec2-user/panynj/exports/feb_12_test",
-        master_dss_file="/home/ec2-user/panynj/opendss_models/lga_east_end_substation/new_master.dss"
-    )
-    compute_single_model_timeseries_metrics(
-        config
-    )
 
+@click.command()
+@click.option(
+    "-c",
+    "--config",
+    help="Path to config file for generating scenarios",
+)
+def timeseries_simulation(config):
+    """Function to run timeseries simulation."""
+    
+    with open(config, "r", encoding="utf-8") as file:
+        config_dict = json.load(file)
+
+    config = TimeseriesSimulationInput.model_validate(config_dict)
+    compute_timeseries_simulation_metrics(config)

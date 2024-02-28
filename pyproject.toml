@@ -46,6 +46,13 @@ dependencies = [
     "uvicorn[standard]",
 ]
 
+[project.optional-dependencies]
+doc = [
+    "mkdocs",
+    "mkdocstrings[python]",
+    "mkdocs-material",
+]
+
 [project.scripts]
 emerge = "emerge.cli.cli:cli"
 

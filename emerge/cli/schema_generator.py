@@ -13,6 +13,7 @@ import pydantic
 # internal imports
 from emerge.scenarios import data_model
 from emerge.utils import util
+from emerge.cli.timeseries_simulation import TimeseriesSimulationInput
 
 class SchemaItemModel(BaseModel):
     name: str 
@@ -83,6 +84,8 @@ def create_schemas(vscode: bool):
     schema_manager = SchemaManager()
     schema_manager.add_schema("emerge_scenario_schema", 
                               data_model.DERScenarioConfigModel)
+    schema_manager.add_schema("emerge_timeseries_simulation_schema",
+                              TimeseriesSimulationInput)
     schema_manager.generate_and_save_schemas()
     if vscode:
         schema_manager.configure_vscode_settings()
