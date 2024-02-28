@@ -60,6 +60,7 @@ nav:
     - Getting Started (Needs Updating): getting_started.md
     - Developing Scenarios: developing-scenarios.md
     - Running Timeseries Simulation: tutorials/timeseries-simulation.md
+    - Multi Timeseries Simulation: tutorials/multitimeseries-simulation.md
   - How to Guides: how-to-guides.md
   - References: 
     - DER Scenario : der-scenario.md
