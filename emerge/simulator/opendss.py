@@ -52,7 +52,7 @@ class OpenDSSSimulator(AbstractSimulator):
             logger.error(f"Error executing command {dss_command} >> {error}")
             raise Exception(f"Error executing command {dss_command} >> {error}")
         logger.info(f"Sucessfully executed the command, {dss_command}")
-
+        return error
 
     def set_frequency(self, frequency):
         self.execute_dss_command(f"Set DefaultBaseFrequency={frequency}")

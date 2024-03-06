@@ -36,6 +36,7 @@ class OpenDSSSimulationManager:
         profile_start_time: datetime.datetime,
         simulation_end_time: datetime.datetime,
         simulation_timestep_min: float,
+        extra_dss_files: Union[list[str], None]  = None
     )-> None:
         
         self.path_to_master_dss_file = path_to_master_dss_file
@@ -45,6 +46,13 @@ class OpenDSSSimulationManager:
         self.simulation_timestep_min = simulation_timestep_min
 
         self.opendss_instance = opendss.OpenDSSSimulator(self.path_to_master_dss_file)
+        
+        if isinstance(extra_dss_files, list):
+            for file in extra_dss_files:
+                self.opendss_instance.execute_dss_command(f"Redirect {file}")
+            self.opendss_instance.execute_dss_command("calcv")
+            self.opendss_instance.execute_dss_command("solve")
+
         self.opendss_instance.set_mode(2)
         self.opendss_instance.set_simulation_time(
             self.simulation_start_time,

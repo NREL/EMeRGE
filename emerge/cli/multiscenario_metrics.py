@@ -24,16 +24,15 @@ def _run_timeseries_sim(config: ScenarioTimeseriesSimulationInput):
         simulation_start_time=config.start_time,
         profile_start_time=config.profile_start_time,
         simulation_end_time=config.end_time,
-        simulation_timestep_min=config.resolution_min
+        simulation_timestep_min=config.resolution_min,
+        extra_dss_files=[str(config.scenario_file.absolute())]
     )
-    manager.opendss_instance.execute_dss_command(f"Redirect {str(config.scenario_file)}")
+    
     subject = observer.MetricsSubject()
-
     observers = get_observers.get_observers(config.metrics.model_dump())
 
     for _, observer_ in observers.items():
         subject.attach(observer_)
-
   
     manager.simulate(subject)
 
