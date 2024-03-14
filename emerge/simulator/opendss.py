@@ -1,17 +1,12 @@
 """ OpenDSS simulator service for performing power flow."""
 
-# standard imports
 from pathlib import Path
-import logging
 from abc import ABC, abstractmethod
 
-# third-party imports
 import opendssdirect as dss
+from loguru import logger
 
-# internal imports
 from emerge.utils.util import validate_path
-
-logger = logging.getLogger(__name__)
 
 
 class AbstractSimulator(ABC):
@@ -70,13 +65,13 @@ class OpenDSSSimulator(AbstractSimulator):
 
     def post_redirect(self, dss_file_path: Path):
         """ Redirect this file."""
-        self.dss_instance.run_command(f"Redirect {str(dss_file_path.absolute())}")
+        self.execute_dss_command(f"Redirect {str(dss_file_path.absolute())}")
         self.recalc()
         self.solve()
 
     def recalc(self):
         """ Method to recal and solve. """
-        self.dss_instance.execute_dss_command("calcv")
+        self.execute_dss_command("calcv")
 
     def solve(self):
 

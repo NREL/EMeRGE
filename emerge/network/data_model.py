@@ -3,12 +3,11 @@
 """
  Extract base level metrics
 """
-# standard imports
 
-# third-party imports
+from typing_extensions import Annotated
+
 from pydantic import (
         Field, BaseModel)
-from typing_extensions import Annotated
 
 class LoadAssetMetrics(BaseModel):
     total_count: Annotated[int, Field(ge=0)] = 0

@@ -1,14 +1,9 @@
 
 
-"""
- Extract base level metrics
-"""
-# standard imports
+"""Extract base level metrics."""
 
-# third-party imports
 import networkx as nx
 
-# internal imports
 from emerge.network.data_model import (
     AssetMetrics,
     FeederMetrics,

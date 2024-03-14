@@ -1,17 +1,15 @@
 """ Basic utility functions. """
 
-# standard imports
 from typing import List, Dict, Union
 from pathlib import Path
-import logging
-import logging.config
 import json
 import json5
+import time
 
-# third-party imports
 import yaml
 
-logger = logging.getLogger(__name__)
+from loguru import logger
+
 
 def get_map_centre(longitudes: List[float], latitudes: List[float])-> Dict:
     """ Returns map centre by taking longitudes and latitudes. """
@@ -103,10 +101,12 @@ def write_file(content:dict, file_path: str, use_json5=False, **kwargs) -> None:
         raise Exception(f"File of type {file_path.suffix} \
             is not yet implemented for writing purpose")
 
-def setup_logging(filename: str = None):
-    """Creates log directory and sets up logging via logging.yaml. """
-    
-    if filename is None:
-        filename = Path(__file__).parents[2] / 'logging.yaml' 
-
-    logging.config.dictConfig(read_file(filename))
+def time_execution(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        logger.info(f" '{func.__name__}' took {elapsed_time:.6f}s to execute.")
+        return result
+    return wrapper

@@ -1,10 +1,7 @@
 
-"""
-Managing database
-"""
+"""Managing database."""
 
-# third-party imports
-from tinydb import TinyDB, Query
+from tinydb import TinyDB
 
 class TinyDBHandler:
     

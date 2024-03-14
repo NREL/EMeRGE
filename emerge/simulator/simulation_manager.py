@@ -55,8 +55,10 @@ class OpenDSSSimulationManager:
 
     def update_convergence_dict(self, current_time: datetime.datetime, convergence:bool):
         """ Updates convergence dict. """
-        self.convergence_dict['datetime'].append(current_time)
-        self.convergence_dict['convergence'].append(convergence)
+
+        if not convergence:
+            self.convergence_dict['datetime'].append(current_time)
+            self.convergence_dict['convergence'].append(convergence)
 
     def export_convergence(self, export_path:str = './convergence.csv'):
         """ Export the convergence."""
@@ -67,7 +69,6 @@ class OpenDSSSimulationManager:
 
     def simulate(self, subject: Union[observer.MetricsSubject, None] = None):
         """ Loops through all the simulation timesteps """
-
         while self.current_time <= self.simulation_end_time:
             
             convergence = self.opendss_instance.solve()
@@ -75,12 +76,9 @@ class OpenDSSSimulationManager:
 
             if subject:
                 subject.notify(self.opendss_instance.dss_instance)
-            
             self.current_time += datetime.timedelta(minutes=self.simulation_timestep_min)
             if not convergence:
                 logger.error(f"Simulation finished for {self.current_time} >> {convergence}")
-
-
     
 
         

@@ -1,17 +1,10 @@
-
-
-"""
- Extract base level metrics
-"""
-# standard imports
+"""Extract base level metrics"""
 import math
 
-# third-party imports
 import numpy as np
 import opendssdirect as dss
 import pandas as pd
 
-# internal imports
 from emerge.network.asset_metrics import networkx_from_opendss_model
 
 

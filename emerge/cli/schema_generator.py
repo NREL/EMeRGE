@@ -1,16 +1,13 @@
 """ This module implements commad line interface for exporting 
 schemas and handling opt in vscode update."""
 
-# standard imports
 from pathlib import Path
 from typing import List
 
-# third-party imports
 import click
 from pydantic import BaseModel
 import pydantic
 
-# internal imports
 from emerge.scenarios import data_model
 from emerge.utils import util
 from emerge.cli.timeseries_simulation import TimeseriesSimulationInput

@@ -1,10 +1,8 @@
 """ Module for managing computation of node level metrics. """
 
-# third-party imports
 import opendssdirect as dss
 import pandas as pd
 
-# internal imports
 from emerge.metrics import observer
 from emerge.metrics import data_model
 from emerge.simulator import powerflow_results

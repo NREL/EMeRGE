@@ -4,12 +4,10 @@
 from typing import List, Optional, Dict
 from enum import Enum
 
-# pylint: disable=no-name-in-module
 from pydantic import BaseModel, Field, model_validator
 from pydantic_core import PydanticCustomError
 from typing_extensions import Annotated, Literal
 
-# pylint: disable=too-few-public-methods
 
 class CustomerModel(BaseModel):
     """Interface for representing customer used in pv scenario development."""

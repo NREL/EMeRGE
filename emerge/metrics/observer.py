@@ -24,12 +24,13 @@ class MetricObserver(abc.ABC):
 class MetricsSubject:
     """ Class for managing metric subscribers """
 
-    _subscribers = []
+    def __init__(self):
+        self.subscribers: list[MetricObserver] = []
 
     def _observer_exists(self, observer: MetricObserver):
         """ Check whether the observer exists or not"""
         
-        for id, obs in enumerate(self._subscribers):
+        for id, obs in enumerate(self.subscribers):
             if obs._id == observer._id:
                 return id
 
@@ -38,19 +39,19 @@ class MetricsSubject:
     def attach(self, observer: MetricObserver):
         """ Method for attaching the observers. """
         if not self._observer_exists(observer):
-            self._subscribers.append(observer)
+            self.subscribers.append(observer)
 
     def detach(self, observer: MetricObserver):
         """ Method for deleting the observer object from the list. """
         
         observer_index = self._observer_exists(observer)
         if observer_index:
-            self._subscribers.pop(observer_index)
+            self.subscribers.pop(observer_index)
 
 
     def notify(self, *args, **kwargs):
         """ Method for notifying the observers. """
-        for obs in self._subscribers:
+        for obs in self.subscribers:
             obs.compute(*args, **kwargs)
 
     

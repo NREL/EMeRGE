@@ -2,10 +2,8 @@
 Create a geoJSON for a feeder model
 """
 
-# standard imports
 from pathlib import Path
 
-# internal imports
 from emerge.utils.util import validate_path, write_file
 
 def create_feeder_geojson(

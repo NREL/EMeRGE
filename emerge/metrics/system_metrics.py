@@ -1,6 +1,7 @@
 """ Module for managing computation of system level metrics. """
 import copy
 
+from emerge.utils.util import time_execution
 import opendssdirect as dss
 import networkx as nx
 
@@ -81,6 +82,7 @@ class TimeseriesTotalPVPower(observer.MetricObserver):
         self.active_power = []
         self.reactive_power = []
 
+    
     def compute(self, dss_instance:dss):
         """ Refer to base class for more details. """
         timestep = dss_instance.Solution.StepSize()/(3600)
@@ -129,15 +131,23 @@ class TotalEnergy(observer.MetricObserver):
         total_energy (float): Store for total energy
     """
 
-    def __init__(self):
+    def __init__(self, export_only:bool=False, import_only:bool=False):
 
         self.total_energy = {"active_power": 0, "reactive_power": 0}
+        self.export_only = export_only
+        self.import_only = import_only
 
     def compute(self, dss_instance:dss):
         """ Refer to base class for more details. """
         timestep = dss_instance.Solution.StepSize()/(3600)
         sub_power = dss_instance.Circuit.TotalPower()
-      
+
+        if self.export_only and not self.import_only and sub_power[0] <0:
+            return
+
+        if self.import_only and not self.export_only and sub_power[0] > 0:
+            return 
+        
         self.total_energy['active_power'] += (-sub_power[0])*timestep/1000
         self.total_energy['reactive_power'] += (-sub_power[1])*timestep/1000
 

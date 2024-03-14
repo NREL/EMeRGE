@@ -1,14 +1,11 @@
 """ Module for computing timeseries line loading stats. """
 
-# standard imports
 from typing import Dict, List
 import numpy as np
 
-# third-party imports
 import polars
 import opendssdirect as dss
 
-# internal imports
 from emerge.metrics import observer
 from emerge.simulator import powerflow_results
 

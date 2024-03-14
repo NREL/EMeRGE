@@ -4,11 +4,9 @@ A distributed energy resource (DER) deployment scenario is a hypothetical scenar
 of base distribution system model that uses some rules/forecast/expertise
 to come up with number, size and location of der units to be installed.
 """
-# standard imports
 from typing import List
 
 
-# internal imports
 from emerge.scenarios import data_model
 from emerge.scenarios import selection_strategy, sizing_strategy
 from emerge.utils import dss_util

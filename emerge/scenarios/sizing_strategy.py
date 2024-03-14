@@ -3,13 +3,15 @@ solar scenarios. """
 
 import abc
 from typing import Union, Dict, Optional, Tuple
+
+import numpy as np
+
 from emerge.scenarios.data_model import (
     EnergyBasedSolarSizingStrategyInput,
     CustomerModel,
     CapacityStrategyEnum,
     SizeWithProbabilityModel
 )
-import numpy as np
 
 def _get_value_from_proability(config: Optional[SizeWithProbabilityModel]):
     """ Returns specific value from size with probability model. """

@@ -1,14 +1,11 @@
 """ Module for computing timeseries transformer loading stats. """
 
-# standard imports
 from typing import Dict, List
 
-# third-party imports
 import polars
 import opendssdirect as dss
 import numpy as np
 
-# internal imports
 from emerge.metrics import observer
 from emerge.simulator import powerflow_results
 

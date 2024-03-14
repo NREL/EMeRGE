@@ -1,5 +1,4 @@
 """ Module for computing time series metrics for multi scenario simulation."""
-import os
 from pathlib import Path
 import multiprocessing
 from typing import Annotated

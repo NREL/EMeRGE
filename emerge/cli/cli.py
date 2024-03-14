@@ -1,6 +1,4 @@
-"""
-Command line utility for EMeRGE
-"""
+"""Command line utility for EMeRGE."""
 
 from pathlib import Path
 

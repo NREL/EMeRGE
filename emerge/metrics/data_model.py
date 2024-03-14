@@ -1,7 +1,8 @@
 """ Module for managing pydantic data models."""
-# pylint: disable=no-name-in-module
-from pydantic import Field, BaseModel
+
 from typing_extensions import Annotated
+
+from pydantic import Field, BaseModel
 
 
 class ThermalLoadingLimit(BaseModel):

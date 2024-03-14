@@ -1,13 +1,10 @@
 """ Module for computing timeseries voltage stats. """
 
-# standard imports
 from typing import Dict, List
 
-# third-party imports
 import opendssdirect as dss
 import polars 
 
-# internal imports
 from emerge.metrics import observer
 from emerge.simulator import powerflow_results
 

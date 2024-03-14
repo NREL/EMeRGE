@@ -2,11 +2,8 @@
 Higher level wrapper to compute all the metrics
 """
 
-# third-party imports
 from pathlib import Path
 
-# internal imports
-from emerge.utils.util import setup_logging
 from emerge.db.db_handler import TinyDBHandler
 from emerge.simulator.opendss import OpenDSSSimulator
 from emerge.network.asset_metrics import (aggregate_asset_metrics,
@@ -28,7 +25,6 @@ def compute_snapshot_metrics(
     computes all the snapshot metrics for the purpose of visualization. This will create a
     db json file which is used by dashboard to plot results """
     
-    setup_logging()
     db_instance = TinyDBHandler(output_path)
     opendss_instance = OpenDSSSimulator(master_dss_file_path)
     opendss_instance.solve()
