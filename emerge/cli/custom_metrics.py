@@ -1,16 +1,14 @@
 """ Module for computing time series metrics for multi scenario simulation."""
 
-# standard imports
 import datetime
 from pathlib import Path
 from typing import Dict
 import concurrent.futures
 
-# third-party imports
 import click
+from emerge.simulator.opendss import OpenDSSSimulator
 import yaml
 
-# internal imports
 from emerge.metrics import system_metrics
 from emerge.metrics import observer
 from emerge.simulator import simulation_manager
@@ -61,8 +59,9 @@ def _run_timeseries_sim(
         scenario_folder_path = None,
 ):
     date_format = "%Y-%m-%d %H:%M:%S"
+    opendss_instance = OpenDSSSimulator(master_dss_file_path)
     manager = simulation_manager.OpenDSSSimulationManager(
-                master_dss_file_path,
+                opendss_instance,
                 datetime.datetime.strptime(start_time, date_format),
                 datetime.datetime.strptime(profile_start_time, date_format),
                 datetime.datetime.strptime(end_time, date_format),

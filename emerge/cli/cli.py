@@ -16,6 +16,7 @@ from emerge.cli.multiscenario_metrics import (
 from emerge.cli.custom_metrics import compute_custom_metrics
 from emerge.cli.schema_generator import create_schemas
 from emerge.cli.timeseries_simulation import timeseries_simulation
+from emerge.cli.nodal_hosting_capacity import nodal_hosting_analysis
 
 
 @click.command()
@@ -68,3 +69,4 @@ cli.add_command(generate_scenarios)
 cli.add_command(multi_timeseries_simulation)
 cli.add_command(compute_custom_metrics)
 cli.add_command(create_schemas)
+cli.add_command(nodal_hosting_analysis)

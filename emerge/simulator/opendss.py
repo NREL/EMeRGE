@@ -68,6 +68,16 @@ class OpenDSSSimulator(AbstractSimulator):
     def set_stepsize(self, step_in_min):
         self.dss_instance.Solution.StepSizeMin(step_in_min)
 
+    def post_redirect(self, dss_file_path: Path):
+        """ Redirect this file."""
+        self.dss_instance.run_command(f"Redirect {str(dss_file_path.absolute())}")
+        self.recalc()
+        self.solve()
+
+    def recalc(self):
+        """ Method to recal and solve. """
+        self.dss_instance.execute_dss_command("calcv")
+
     def solve(self):
 
         self.dss_instance.Solution.Number(1)

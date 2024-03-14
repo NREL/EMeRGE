@@ -6,11 +6,12 @@ from typing import Annotated
 import json
 
 import click
-from emerge.cli import get_observers
+from emerge.cli import get_num_core, get_observers
 from emerge.cli.timeseries_simulation import TimeseriesSimulationInput
 
 from emerge.metrics import observer
 from emerge.simulator import simulation_manager
+from emerge.simulator.opendss import OpenDSSSimulator
 from pydantic import Field
 
 
@@ -19,13 +20,15 @@ class ScenarioTimeseriesSimulationInput(TimeseriesSimulationInput):
 
 def _run_timeseries_sim(config: ScenarioTimeseriesSimulationInput):
 
+    opendss_instance = OpenDSSSimulator(config.master_dss_file)
+    opendss_instance.post_redirect(config.scenario_file.absolute())
+
     manager = simulation_manager.OpenDSSSimulationManager(
-        path_to_master_dss_file=config.master_dss_file,
+        opendss_instance=opendss_instance,
         simulation_start_time=config.start_time,
         profile_start_time=config.profile_start_time,
         simulation_end_time=config.end_time,
         simulation_timestep_min=config.resolution_min,
-        extra_dss_files=[str(config.scenario_file.absolute())]
     )
     
     subject = observer.MetricsSubject()
@@ -83,12 +86,8 @@ def multi_timeseries_simulation(
                 )
             )
 
-    if len(timeseries_input) < num_core:
-        num_core = len(timeseries_input)
-
-    if num_core > os.cpu_count():
-        num_core = os.cpu_count() - 1 or os.cpu_count()
-
+    num_core = get_num_core(num_core, len(timeseries_input) )
+    
     if num_core > 0:
         with multiprocessing.Pool(int(num_core)) as p:
             p.map(_run_timeseries_sim, timeseries_input)

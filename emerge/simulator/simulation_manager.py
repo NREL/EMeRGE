@@ -3,22 +3,20 @@ time series metrics. """
 
 from typing import Union
 import datetime
-import logging
 
 import pandas as pd
+from loguru import logger
 
 from emerge.simulator import opendss
 from emerge.metrics import observer
 
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", level=logging.DEBUG)
 
 class OpenDSSSimulationManager:
     """ Class for managing time series simulation using OpenDSS.
     
     Attributes:
-        path_to_master_dss_file (str): Path to Master.dss file
+        opendss_instance (opendss.OpenDSSSimulator): OpenDSS instance.
         simulation_start_time (datetime.datetime): Datetime indicating
             simulation start time
         profile_start_time (datetime.datetime): Datetime indicating
@@ -31,27 +29,18 @@ class OpenDSSSimulationManager:
 
     def __init__(
         self,
-        path_to_master_dss_file: str,
+        opendss_instance: opendss.OpenDSSSimulator,
         simulation_start_time: datetime.datetime,
         profile_start_time: datetime.datetime,
         simulation_end_time: datetime.datetime,
         simulation_timestep_min: float,
-        extra_dss_files: Union[list[str], None]  = None
     )-> None:
         
-        self.path_to_master_dss_file = path_to_master_dss_file
         self.simulation_start_time = simulation_start_time
         self.profile_start_time = profile_start_time
         self.simulation_end_time = simulation_end_time
         self.simulation_timestep_min = simulation_timestep_min
-
-        self.opendss_instance = opendss.OpenDSSSimulator(self.path_to_master_dss_file)
-        
-        if isinstance(extra_dss_files, list):
-            for file in extra_dss_files:
-                self.opendss_instance.execute_dss_command(f"Redirect {file}")
-            self.opendss_instance.execute_dss_command("calcv")
-            self.opendss_instance.execute_dss_command("solve")
+        self.opendss_instance = opendss_instance
 
         self.opendss_instance.set_mode(2)
         self.opendss_instance.set_simulation_time(
@@ -88,7 +77,8 @@ class OpenDSSSimulationManager:
                 subject.notify(self.opendss_instance.dss_instance)
             
             self.current_time += datetime.timedelta(minutes=self.simulation_timestep_min)
-            logger.info(f"Simulation finished for {self.current_time} >> {convergence}")
+            if not convergence:
+                logger.error(f"Simulation finished for {self.current_time} >> {convergence}")
 
 
     

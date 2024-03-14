@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Annotated
 import json
+from emerge.simulator.opendss import OpenDSSSimulator
 
 from pydantic import BaseModel, Field
 import click
@@ -29,8 +30,10 @@ class TimeseriesSimulationInput(BaseModel):
 def compute_timeseries_simulation_metrics(config: TimeseriesSimulationInput):
     """ Function to compute metrics for timeseries simulation. """
 
+    opendss_instance = OpenDSSSimulator(config.master_dss_file)
+
     manager = OpenDSSSimulationManager(
-        path_to_master_dss_file=config.master_dss_file,
+        opendss_instance=opendss_instance,
         simulation_start_time=config.start_time,
         profile_start_time=config.profile_start_time,
         simulation_end_time=config.end_time,

@@ -185,10 +185,7 @@ class SARDI_aggregated(observer.MetricObserver):
 
     def __init__(self, 
         loading_limit: float = 1.0,
-        voltage_limit: dict = {
-            'overvoltage_threshold': 1.05,
-            'undervoltage_threshold': 0.95
-            }
+        voltage_limit: dict | None = None
         ):
         """ Constructor for `SARDI_line` class. 
         
@@ -197,7 +194,11 @@ class SARDI_aggregated(observer.MetricObserver):
                 used for computing SARDI_line metric.
             voltage_limit (dict): Voltage threshold
         """
-
+        voltage_limit = {
+            'overvoltage_threshold': 1.05,
+            'undervoltage_threshold': 0.95
+            } if voltage_limit is None else voltage_limit
+        
         self.loading_limit = data_model.ThermalLoadingLimit(threshold=loading_limit)
         self.voltage_limit = data_model.VoltageViolationLimit(**voltage_limit)
         self.sardi_aggregated = 0

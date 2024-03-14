@@ -44,6 +44,7 @@ dependencies = [
     "pyyaml",
     "tinydb",
     "uvicorn[standard]",
+    "sqlmodel"
 ]
 
 [project.optional-dependencies]
