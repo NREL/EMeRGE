@@ -1,8 +1,4 @@
 """ Module for managing computation of system level metrics. """
-import copy
-import time
-
-
 import networkx as nx
 import opendssdirect as dss
 import polars as pl
@@ -12,8 +8,30 @@ from emerge.simulator import powerflow_results
 from emerge.utils import dss_util
 from emerge.metrics import data_model
 from emerge.network import asset_metrics
-import pandas as pd
 
+
+def _get_unimpacted_buses(graph: nx.Graph, impacted_edges: list[str], source_bus: str):
+    """Internal function to return unimpacted buses."""
+    
+    graph_copy = nx.Graph()
+    edge_to_be_removed = []
+    for edge in graph.edges():
+        graph_copy.add_edge(*edge)
+        edge_data = graph.get_edge_data(*edge)
+        if edge_data and 'name' in edge_data and edge_data['name'] in impacted_edges:
+            edge_to_be_removed.append(edge)
+
+    graph_copy.remove_edges_from(edge_to_be_removed)
+    connected_buses = nx.node_connected_component(graph_copy, source_bus)
+    return connected_buses
+
+    
+def _get_voltage_impacted_buses(voltage_df: pl.DataFrame, ov_th: float, uv_th: float)-> list[str]:
+    """ Internal function to return list of buses impacted by voltage violations."""
+    v_col = pl.col('voltage(pu)')
+    return voltage_df.filter(
+            (v_col > ov_th ) & (v_col < uv_th) & (v_col > 0)
+        ).group_by("busname").agg(v_col.mean())['busname'].to_list()
 
 class TimeseriesTotalLoss(observer.MetricObserver):
     """ Class for computing total loss.
@@ -180,13 +198,7 @@ class TotalPVGeneration(observer.MetricObserver):
     def get_metric(self):
         """ Refer to base class for more details. """
         return self.pv_energy
-    
-def _get_voltage_impacted_buses(voltage_df: pl.DataFrame, ov_th: float, uv_th: float)-> list[str]:
-    """ Internal function to return list of buses impacted by voltage violations."""
-    v_col = pl.col('voltage(pu)')
-    return voltage_df.filter(
-            (v_col > ov_th ) & (v_col < uv_th) & (v_col > 0)
-        ).group_by("busname").agg(v_col.mean())['busname'].to_list()
+
 
 class SARDI_aggregated(observer.MetricObserver):
     """ Class for computing SARDI aggregated metric.
@@ -241,45 +253,23 @@ class SARDI_aggregated(observer.MetricObserver):
         if not self.counter:
             self._get_initial_dataset(dss_instance)
 
-        # v_filter = voltage_df.loc[self.load_bus_map.index].drop_duplicates()
-
+      
         bus_with_voltage_violations = _get_voltage_impacted_buses(voltage_df,
             self.voltage_limit.overvoltage_threshold,
             self.voltage_limit.undervoltage_threshold)
 
-        # ov_flags = v_filter['voltage(pu)']>self.voltage_limit.overvoltage_threshold
-        # uv_flags = (v_filter['voltage(pu)']<self.voltage_limit.undervoltage_threshold)&(v_filter['voltage(pu)']>0)
-        # overvoltage_v = v_filter[ov_flags]
-        # undervoltage_v = v_filter[uv_flags]
-        # merged_load_buses = list(set(pd.concat([overvoltage_v, undervoltage_v]).index))
         
-        self.network_copy = copy.deepcopy(self.network)
-        # overloaded_lines = line_loading_df[line_loading_df['loading(pu)']> self.loading_limit.threshold]
         overloaded_branches = line_loading_df.filter(pl.col('loading(pu)')> self.loading_limit.threshold)["branch"].to_list()
-
-        if not overloaded_branches :
-            
-            edge_to_be_removed = []
-            
-            for edge in self.network_copy.edges():
-                edge_data = self.network_copy.get_edge_data(*edge)
-                if edge_data and 'name' in edge_data and edge_data['name'] in overloaded_branches:
-                    edge_to_be_removed.append(edge)
-
-            self.network_copy.remove_edges_from(edge_to_be_removed)
-            connected_buses = nx.node_connected_component(self.network_copy, self.substation_bus)
+        total_impacted_load_buses = bus_with_voltage_violations
+        if overloaded_branches :
+            connected_buses = _get_unimpacted_buses(self.network, overloaded_branches, self.substation_bus)
             impacted_buses = self.bus_load_flag_df.loc[self.bus_load_flag_df.index.difference(connected_buses)]
             impacted_load_buses = set(impacted_buses[impacted_buses['is_load']==1].index)
             total_impacted_load_buses = impacted_load_buses.union(bus_with_voltage_violations)
 
-        else:
-            total_impacted_load_buses = bus_with_voltage_violations
-        
-        
         total_load = dss_instance.Loads.Count()
         affected_loads = list(set(self.load_bus_map.loc[list(total_impacted_load_buses)]["loadname"]))
         self.sardi_aggregated += len(affected_loads)*100/total_load
-      
         self.counter +=1
 
     def get_metric(self):
@@ -332,20 +322,11 @@ class SARDI_line(observer.MetricObserver):
         if not self.counter:
             self._get_initial_dataset(dss_instance)
         
-        self.network_copy = copy.deepcopy(self.network)
         overloaded_lines = line_loading_df.filter(
             pl.col('loading(pu)')> self.loading_limit.threshold)["branch"].to_list()
         
-        if not overloaded_lines:
-            edge_to_be_removed = []
-            
-            for edge in self.network_copy.edges():
-                edge_data = self.network_copy.get_edge_data(*edge)
-                if edge_data and 'name' in edge_data and edge_data['name'] in overloaded_lines:
-                    edge_to_be_removed.append(edge)
-
-            self.network_copy.remove_edges_from(edge_to_be_removed)
-            connected_buses = nx.node_connected_component(self.network_copy, self.substation_bus)
+        if overloaded_lines:
+            connected_buses = _get_unimpacted_buses(self.network, overloaded_lines, self.substation_bus)
             impacted_buses = self.bus_load_flag_df.loc[self.bus_load_flag_df.index.difference(connected_buses)]
             impacted_load_buses = impacted_buses[impacted_buses['is_load']==1].index
             affected_loads = set(list(self.load_bus_map.loc[impacted_load_buses]["loadname"]))

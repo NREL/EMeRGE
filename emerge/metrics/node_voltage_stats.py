@@ -17,17 +17,15 @@ def get_voltage_df(dss_instance:dss):
 
 class NodeVoltageTimeSeries(observer.MetricObserver):
     def __init__(self):
-        self.metrics = {
-
-        }
+        self.metrics = {}
     def compute(self, dss_instance:dss) -> None:
-        df = powerflow_results.get_voltage_dataframe(dss_instance)
+        df = powerflow_results.get_voltage_dataframe()
         if not self.metrics:
             self.metrics = {busname: [] for busname in df.index}
         for key, value in df.to_dict()["voltage(pu)"].items():
             self.metrics[key].append(value) 
 
-    def get_metric(self) -> Dict:
+    def get_metric(self) -> dict:
         return self.metrics        
 
 

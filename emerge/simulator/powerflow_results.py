@@ -1,5 +1,4 @@
 """Extract base level metrics"""
-import math
 from functools import cache
 
 import numpy as np
@@ -91,7 +90,7 @@ def get_loading_dataframe():
         dss_instance (dss): Instance of OpenDSSDirect
     """
     loading = dss.PDElements.AllPctNorm(AllNodes=False)
-    return pl.DataFrame({'branch': get_branch_elements(), 'loading(pu)': loading})
+    return pl.DataFrame({'branch': get_branch_elements(), 'loading(pu)': np.array(loading)/100})
 
 def get_pv_power_dataframe(dss_instance: dss):
     """ Function to retrieve pv power dataframe.

@@ -84,7 +84,7 @@ class NodalHostingCapacityReport:
 
     def is_hosting_capacity_reached(self) -> bool:
         """ Method to check if hosting capacity is reached."""
-        return self.get_sardi_aggregated() > 0 or self.get_total_export_energy() !=0 # uncomment for reverse power flow
+        return self.get_sardi_aggregated() > 0 or self.get_total_export_energy() !=0
 
     def get_subject(self) -> observer.MetricsSubject:
         """ Return subject container containing observers."""
@@ -248,11 +248,7 @@ def nodal_hosting_analysis(
     else:
         buses = nodes.split(',')
 
-    create_table(config.export_sqlite_path)
-
-    # buses = ["86690a2f-1860-4367-b93f-6a7052b390e8"]
-    buses = ["802b3d17-08f4-4a70-b254-9ca4f233595c"]
-    
+    create_table(config.export_sqlite_path)    
     num_core = get_num_core.get_num_core(config.num_core, len(buses))
     with multiprocessing.Pool(int(num_core)) as pool:
         data_to_process = [
