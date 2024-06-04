@@ -1,9 +1,11 @@
 """Extract base level metrics"""
 import math
+from functools import cache
 
 import numpy as np
 import opendssdirect as dss
 import pandas as pd
+import polars as pl
 
 from emerge.network.asset_metrics import networkx_from_opendss_model
 
@@ -61,48 +63,35 @@ def get_voltage_by_lat_lon(dss_instance):
     
     return voltage_by_lat_lon
 
-def get_voltage_dataframe(dss_instance: dss):
+@cache
+def get_buses() -> list[str]:
+    """ Returns list of buses for all nodes in current opendss circuit."""
+    nodes = dss.Circuit.AllNodeNames()
+    return [el.split('.')[0] for el in nodes]
+
+@cache
+def get_branch_elements() -> list[str]:
+    """ Returns list of buses for all branches in current opendss circuit."""
+    return dss.PDElements.AllNames()
+
+def get_voltage_dataframe():
     """ Function to retrieve voltage dataframe for all buses. 
     
     Args:
         dss_instance (dss): Instance of OpenDSSDirect
     """
-
-    all_bus_voltage = dss_instance.Circuit.AllBusMagPu()
-    all_bus_names = dss_instance.Circuit.AllBusNames()
-
-    voltage_df = {"busname": [], "voltage(pu)": []}
-
-    for bus, voltage_pu in zip(all_bus_names, all_bus_voltage):
-        voltage_df['busname'].append(bus)
-        voltage_df['voltage(pu)'].append(voltage_pu)
-    
-    return pd.DataFrame(voltage_df).set_index("busname")
+    voltage_df = {"busname": get_buses(), "voltage(pu)": dss.Circuit.AllBusMagPu()}
+    return pl.DataFrame(voltage_df)
 
 
-def get_lineloading_dataframe(dss_instance: dss):
+def get_loading_dataframe():
     """ Function to retrieve line loading dataframe for all line segments. 
     
     Args:
         dss_instance (dss): Instance of OpenDSSDirect
     """
-    line_loading_df = {"linename": [], "loading(pu)": []}
-
-    dss_instance.Circuit.SetActiveClass("Line")
-    flag = dss_instance.ActiveClass.First()
-
-    while flag:
-        line_name = dss_instance.CktElement.Name().lower()
-        n_phases = dss_instance.CktElement.NumPhases()
-        line_limit = dss_instance.CktElement.NormalAmps()
-        currents = dss_instance.CktElement.CurrentsMagAng()[:2 * n_phases]
-        line_current = currents[::2]
-        ldg = max(line_current) / max(float(line_limit), 1)
-        line_loading_df['linename'].append(line_name)
-        line_loading_df['loading(pu)'].append(ldg)
-        flag = dss_instance.ActiveClass.Next()
-    
-    return pd.DataFrame(line_loading_df).set_index("linename")
+    loading = dss.PDElements.AllPctNorm(AllNodes=False)
+    return pl.DataFrame({'branch': get_branch_elements(), 'loading(pu)': loading})
 
 def get_pv_power_dataframe(dss_instance: dss):
     """ Function to retrieve pv power dataframe.
@@ -126,36 +115,3 @@ def get_pv_power_dataframe(dss_instance: dss):
         flag = dss_instance.PVsystems.Next()
     
     return pd.DataFrame(pv_power_df).set_index("pvname")
-
-
-
-def get_transloading_dataframe(dss_instance: dss):
-    """ Function to retrieve transformer loading dataframe for all transformers. 
-    
-    Args:
-        dss_instance (dss): Instance of OpenDSSDirect
-    """
-    trans_loading_df = {"transformername": [], "loading(pu)": []}
-
-    dss_instance.Circuit.SetActiveClass("Transformer")
-    flag = dss_instance.ActiveClass.First()
-
-    while flag:
-        xfmr_name = dss_instance.CktElement.Name().lower()
-        n_phases = dss_instance.CktElement.NumPhases()
-        hs_kv = float(dss_instance.Properties.Value('kVs').split('[')[1].split(',')[0])
-        kva = float(dss_instance.Properties.Value('kVA'))
-        if n_phases > 1:
-            xfmr_limit = kva / (hs_kv * math.sqrt(3))
-        else:
-            xfmr_limit = kva / (hs_kv)
-        currents = dss_instance.CktElement.CurrentsMagAng()[:2 * n_phases]
-        xfmr_current = currents[::2]
-        ldg = max(xfmr_current) / float(xfmr_limit)
-        
-        trans_loading_df['transformername'].append(xfmr_name)
-        trans_loading_df['loading(pu)'].append(ldg)
-        flag = dss_instance.ActiveClass.Next()
-    
-    return pd.DataFrame(trans_loading_df).set_index("transformername")
-

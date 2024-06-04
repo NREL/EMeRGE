@@ -1,6 +1,7 @@
 """ Module for managing metric computation subscriber and publisher. """
 
 import abc
+import time
 import uuid
 from typing import Dict, List
 import polars

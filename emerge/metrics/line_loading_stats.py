@@ -10,10 +10,7 @@ from emerge.metrics import observer
 from emerge.simulator import powerflow_results
 
 def get_line_loading_df(dss_instance:dss):
-    return polars.from_pandas(
-            powerflow_results.get_lineloading_dataframe(
-            dss_instance
-        ))
+    return powerflow_results.get_loading_dataframe()
 
 class OverloadedLines(observer.MetricObserver):
     """Class for computing time series loading metrics for lines."""
@@ -23,8 +20,8 @@ class OverloadedLines(observer.MetricObserver):
 
     def compute(self, dss_instance: dss) -> None:
 
-        df = powerflow_results.get_lineloading_dataframe(dss_instance)
-        loading_dict = dict(zip(df.index, df["loading(pu)"]))
+        df = powerflow_results.get_loading_dataframe()
+        loading_dict = dict(zip(df["branch"], df["loading(pu)"]))
         if len(self.metrics) == 0:
             self.metrics = {key: [] for key in loading_dict}
 

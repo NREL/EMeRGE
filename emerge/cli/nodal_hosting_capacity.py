@@ -25,8 +25,8 @@ from emerge.simulator import opendss
 from emerge.cli.nodal_hosting_sqlite_tables import (
     HostingCapacityReport, 
     OverloadedLinesReport, 
-    OverloadedTransformersReport, 
-    SimulationConvergenceReport, 
+    SimulationConvergenceReport,
+    SimulationTime, 
     TotalEnergyReport, 
     create_table,
     get_engine
@@ -35,12 +35,10 @@ from emerge.metrics.line_loading_stats import OverloadedLines
 from emerge.metrics.system_metrics import (
     SARDI_aggregated, 
     SARDI_line, 
-    SARDI_transformer, 
     SARDI_voltage, 
     TotalEnergy, 
     TotalPVGeneration
 )
-from emerge.metrics.xfmr_loading_stats import OverloadedTransformers
 from emerge.simulator.simulation_manager import OpenDSSSimulationManager
 
 class BasicSimulationSettings(BaseModel):
@@ -75,28 +73,22 @@ class NodalHostingCapacityReport:
         self.sardi_agg = SARDI_aggregated()
         self.sardi_voltage = SARDI_voltage()
         self.sardi_line = SARDI_line()
-        self.sardi_xfmr = SARDI_transformer()
         self.solar_generation = TotalPVGeneration()
         self.ol_lines = OverloadedLines()
-        self.ol_xmfrs = OverloadedTransformers()
         self.circuit_energy = TotalEnergy()
         self.export_energy = TotalEnergy(export_only=True)
 
-        for obs in [self.sardi_agg, self.sardi_voltage, self.sardi_line, self.sardi_xfmr, 
-            self.solar_generation, self.ol_lines, self.ol_xmfrs, self.circuit_energy, self.export_energy]:
+        for obs in [self.sardi_agg, self.sardi_voltage, self.sardi_line,  
+            self.solar_generation, self.ol_lines, self.circuit_energy, self.export_energy]:
             self.subject.attach(obs)
 
     def is_hosting_capacity_reached(self) -> bool:
         """ Method to check if hosting capacity is reached."""
-        return self.get_sardi_aggregated() > 0 or self.get_total_export_energy() !=0
+        return self.get_sardi_aggregated() > 0 or self.get_total_export_energy() !=0 # uncomment for reverse power flow
 
     def get_subject(self) -> observer.MetricsSubject:
         """ Return subject container containing observers."""
         return self.subject 
-    
-    def get_overloaded_xfmr_loadings(self) -> dict[str, list[float]]:
-        """ Return overloaded transformers."""
-        return self.ol_xmfrs.get_metric()
     
     def get_overloaded_line_loadings(self) -> dict[str, list[float]]:
         """Returns overloaded lines."""
@@ -113,10 +105,6 @@ class NodalHostingCapacityReport:
     def get_sardi_line(self):
         """ Method to return SARDI line metric. """
         return pl.from_dict(self.sardi_line.get_metric())['sardi_line'].to_list()[0]
-
-    def get_sardi_transformer(self):
-        """ Method to return SARDI transformer metric. """
-        return pl.from_dict(self.sardi_xfmr.get_metric())['sardi_transformer'].to_list()[0]
 
     def get_solar_total_energy(self):
         """ Method to return total solar energy. """
@@ -144,7 +132,7 @@ def compute_hosting_capacity(config: SingleNodeHostingCapacityInput,
     engine = get_engine(sqlite_file)
 
     for capacity in np.arange(config.step_kw, config.max_kw, config.step_kw):
-
+        
         opendss_instance = opendss.OpenDSSSimulator(config.master_dss_file)
         opendss_instance.dss_instance.Circuit.SetActiveBus(bus)
         bus_kv = round(opendss_instance.dss_instance.Bus.kVBase()*math.sqrt(3), 2)
@@ -175,7 +163,6 @@ def compute_hosting_capacity(config: SingleNodeHostingCapacityInput,
         logger.info(f"Node finished {bus}, " 
                     f"elpased time {end_time - start_time} seconds")
         
-
         with Session(engine) as session:
             for timestamp, conv_ in zip(sim_manager.convergence_dict['datetime'], 
                                         sim_manager.convergence_dict['convergence']):
@@ -185,6 +172,12 @@ def compute_hosting_capacity(config: SingleNodeHostingCapacityInput,
                     capacity_kw=capacity,
                     timestamp=timestamp
                 ))
+
+            session.add(SimulationTime(
+                node_name=bus,
+                capacity=capacity,
+                compute_sec=(end_time - start_time)
+            ))
         
             session.add(TotalEnergyReport(
                 node_name=bus,
@@ -204,18 +197,8 @@ def compute_hosting_capacity(config: SingleNodeHostingCapacityInput,
                     )
                 )
 
-            for ol_xfmr, loadings in report_instance.get_overloaded_xfmr_loadings().items():
-                session.add(
-                    OverloadedTransformersReport(
-                    start_time=config.start_time,
-                    resolution_min=config.resolution_min,
-                    node_name=bus,
-                    xfmr_name=ol_xfmr,
-                    loadings=str(loadings)
-                    )
-                )
             session.commit()
-        
+
         if report_instance.is_hosting_capacity_reached() > 0:
             break
 
@@ -229,7 +212,6 @@ def compute_hosting_capacity(config: SingleNodeHostingCapacityInput,
             sardi_voltage=report_instance.get_sardi_voltage(),
             sardi_aggregated=report_instance.get_sardi_aggregated(),
             sardi_line=report_instance.get_sardi_line(),
-            sardi_transformer=report_instance.get_sardi_transformer()
         ))
         session.commit()
     
@@ -254,6 +236,7 @@ def nodal_hosting_analysis(
     """Run multiscenario time series simulation and compute
     time series metrics."""
 
+    analysis_start_time = time.time()
     with open(config, "r", encoding="utf-8") as file:
         config_dict = json.load(file)
 
@@ -267,6 +250,9 @@ def nodal_hosting_analysis(
 
     create_table(config.export_sqlite_path)
 
+    # buses = ["86690a2f-1860-4367-b93f-6a7052b390e8"]
+    buses = ["802b3d17-08f4-4a70-b254-9ca4f233595c"]
+    
     num_core = get_num_core.get_num_core(config.num_core, len(buses))
     with multiprocessing.Pool(int(num_core)) as pool:
         data_to_process = [
@@ -277,3 +263,6 @@ def nodal_hosting_analysis(
             ] for bus in buses
         ]
         pool.map(_compute_hosting_capacity, data_to_process)
+    analysis_end_time = time.time()
+    print(f"Required time: {analysis_end_time - analysis_start_time} seconds, num_core={num_core}")
+    

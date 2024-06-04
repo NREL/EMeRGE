@@ -59,6 +59,7 @@ class OpenDSSSimulator(AbstractSimulator):
 
     def set_max_iteration(self, max_iterations):
         self.dss_instance.Solution.MaxControlIterations(max_iterations)
+        self.dss_instance.Solution.MaxIterations(max_iterations)
 
     def set_stepsize(self, step_in_min):
         self.dss_instance.Solution.StepSizeMin(step_in_min)

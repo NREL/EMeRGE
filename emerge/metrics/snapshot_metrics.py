@@ -13,8 +13,7 @@ from emerge.simulator.powerflow_results import (
     get_voltage_by_distance,
     get_voltage_by_lat_lon,
     get_voltage_distribution,
-    get_lineloading_dataframe,
-    get_transloading_dataframe
+    get_loading_dataframe,
 )
 
 def compute_snapshot_metrics(
@@ -56,16 +55,10 @@ def compute_snapshot_metrics(
             "data":  voltage_by_lat_lon})
 
     """ line loading """
-    line_loading_df = get_lineloading_dataframe(opendss_instance.dss_instance)
+    line_loading_df = get_loading_dataframe(opendss_instance.dss_instance)
     db_instance.db.insert({
             "type": "snapshot_lineloading_for_heatmap", 
             "label": "peak_load", 
             "data":  line_loading_df.to_dict()['loading(pu)']})
 
-    """ transformer loading """
-    xfmr_loading_df = get_transloading_dataframe(opendss_instance.dss_instance)
-    db_instance.db.insert({
-            "type": "snapshot_xfmrloading_for_heatmap", 
-            "label": "peak_load", 
-            "data":  xfmr_loading_df.to_dict()['loading(pu)']})
 

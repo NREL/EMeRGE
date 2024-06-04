@@ -12,8 +12,13 @@ class HostingCapacityReport(SQLModel, table=True):
     hosting_capacity_kw: float
     sardi_voltage: float 
     sardi_line: float 
-    sardi_transformer: float 
     sardi_aggregated: float
+
+class SimulationTime(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    node_name: str 
+    capacity: float 
+    compute_sec: float
 
 
 class SimulationConvergenceReport(SQLModel, table=True):
@@ -37,14 +42,6 @@ class OverloadedLinesReport(SQLModel, table=True):
     resolution_min: int
     node_name: str 
     line_name: str 
-    loadings: str
-
-class OverloadedTransformersReport(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    start_time: datetime 
-    resolution_min: int
-    node_name: str 
-    xfmr_name: str 
     loadings: str
 
 def get_engine(sqlite_file: Path):

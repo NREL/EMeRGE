@@ -79,9 +79,3 @@ class OpenDSSSimulationManager:
             self.current_time += datetime.timedelta(minutes=self.simulation_timestep_min)
             if not convergence:
                 logger.error(f"Simulation finished for {self.current_time} >> {convergence}")
-    
-
-        
-
-
-

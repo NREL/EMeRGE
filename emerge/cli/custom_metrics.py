@@ -14,7 +14,6 @@ from emerge.metrics import observer
 from emerge.simulator import simulation_manager
 from emerge.metrics import node_voltage_stats
 from emerge.metrics import line_loading_stats
-from emerge.metrics import xfmr_loading_stats
 
 
 def get_observers(metrics: Dict):
@@ -28,13 +27,9 @@ def get_observers(metrics: Dict):
         'node_voltage_bins': node_voltage_stats.NodeVoltageBins,
         'line_loading_stats': line_loading_stats.LineLoadingStats,
         'line_loading_bins': line_loading_stats.LineLoadingBins,
-        'xfmr_loading_stats': xfmr_loading_stats.XfmrLoadingStats,
-        'xfmr_loading_bins': xfmr_loading_stats.XfmrLoadingBins,
         'overloaded_lines': line_loading_stats.OverloadedLines,
-        'overloaded_transformers': xfmr_loading_stats.OverloadedTransformers,
         'sardi_voltage': system_metrics.SARDI_voltage,
         'sardi_line': system_metrics.SARDI_line,
-        'sardi_xfmr': system_metrics.SARDI_transformer,
         'sardi_aggregated': system_metrics.SARDI_aggregated
     }
 
