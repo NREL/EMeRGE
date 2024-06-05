@@ -1,37 +1,16 @@
 """ OpenDSS simulator service for performing power flow."""
 
 from pathlib import Path
-from abc import ABC, abstractmethod
 
 import opendssdirect as dss
 from loguru import logger
 
-from emerge.utils.util import validate_path
 
-
-class AbstractSimulator(ABC):
-
-    @abstractmethod
-    def set_stepsize(self, step_in_min):
-        pass
-
-    @abstractmethod
-    def solve(self):
-        pass
-
-    @abstractmethod
-    def set_simulation_time(self, sim_time, profile_start_time):
-        pass 
-
-
-class OpenDSSSimulator(AbstractSimulator):
+class OpenDSSSimulator:
 
     def __init__(self, 
             path_to_master_dss_file,
         ):
-
-        validate_path(path_to_master_dss_file, check_for_dir=False, \
-            check_for_file=True, file_types=['.dss'])
         
         self.case_file = Path(path_to_master_dss_file)
         self.dss_instance = dss
@@ -41,7 +20,7 @@ class OpenDSSSimulator(AbstractSimulator):
         self.execute_dss_command(f'Redirect {self.case_file}')
 
     def execute_dss_command(self, dss_command: str):
-        
+        """ Method to run opendss commands."""
         error = self.dss_instance.run_command(dss_command)
         if error:
             logger.error(f"Error executing command {dss_command} >> {error}")
@@ -49,19 +28,25 @@ class OpenDSSSimulator(AbstractSimulator):
         logger.info(f"Sucessfully executed the command, {dss_command}")
         return error
 
-    def set_frequency(self, frequency):
+    def set_frequency(self, frequency: int):
+        """Method to set frequency."""
         self.execute_dss_command(f"Set DefaultBaseFrequency={frequency}")
         
 
-    def set_mode(self, mode):
-        ## Use it wisely if you need to e.g. mode =2 means QSTS powerflow
+    def set_mode(self, mode: int):
+        """ Method to set simulation mode.
+        
+        For example: 2 means QSTS mode.
+        """
         self.dss_instance.Solution.Mode(mode)
 
-    def set_max_iteration(self, max_iterations):
+    def set_max_iteration(self, max_iterations: int):
+        """"Method to set max iterations."""
         self.dss_instance.Solution.MaxControlIterations(max_iterations)
         self.dss_instance.Solution.MaxIterations(max_iterations)
 
-    def set_stepsize(self, step_in_min):
+    def set_stepsize(self, step_in_min: float):
+        """Method to set step size."""
         self.dss_instance.Solution.StepSizeMin(step_in_min)
 
     def post_redirect(self, dss_file_path: Path):

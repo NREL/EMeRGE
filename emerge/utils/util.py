@@ -11,12 +11,6 @@ import yaml
 from loguru import logger
 
 
-def get_map_centre(longitudes: List[float], latitudes: List[float])-> Dict:
-    """ Returns map centre by taking longitudes and latitudes. """
-
-    return {'lon': sum(longitudes)/len(longitudes), \
-        'lat': sum(latitudes)/len(latitudes)}
-
 def validate_path(
         path: str, 
         check_for_dir: bool =True, 
@@ -63,12 +57,10 @@ def read_file(file_path: str, use_json5=False) -> Dict:
     validate_path(file_path, check_for_dir=False, check_for_file=True, \
         file_types=['.json', '.yaml'])
 
-    # Handle JSON file read
     if file_path.suffix == '.json':
         with open(file_path, "r") as f:
             content = json.load(f) if not use_json5 else json5.load(f)
 
-    # Handle YAML file read
     elif file_path.suffix == '.yaml':
         with open(file_path, "r") as f:
             content = yaml.safe_load(f)
@@ -87,12 +79,10 @@ def write_file(content:dict, file_path: str, use_json5=False, **kwargs) -> None:
     file_path = Path(file_path)
     validate_path(file_path.parent)
 
-    # Handle JSON file write
     if file_path.suffix == '.json':
         with open(file_path, "w") as f:
             json.dump(content, f, **kwargs) if not use_json5 else json5.dump(content, f, **kwargs)
 
-    # Handle YAML file write
     elif file_path.suffix == '.yaml':
         with open(file_path, "w") as f:
             yaml.safe_dump(content, f, **kwargs)
@@ -101,7 +91,7 @@ def write_file(content:dict, file_path: str, use_json5=False, **kwargs) -> None:
         raise Exception(f"File of type {file_path.suffix} \
             is not yet implemented for writing purpose")
 
-def time_execution(func):
+def time_tracker(func):
     def wrapper(*args, **kwargs):
         start_time = time.time()
         result = func(*args, **kwargs)

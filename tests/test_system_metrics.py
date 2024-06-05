@@ -73,18 +73,6 @@ def test_sardi_line():
 
     manager.simulate(subject)
 
-def test_sardi_transformer():
-    """ Function to test the computation of SARDI transformer."""
-
-    manager = simulation_manager_setup()
-    subject = observer.MetricsSubject()
-
-    sardi_xfmr_observer = system_metrics.SARDI_transformer()
-    subject.attach(sardi_xfmr_observer)
-
-    manager.simulate(subject)
-    print(sardi_xfmr_observer.get_metric())
-
 def test_sardi_aggregated():
     """ Function to test the computation of SARDI aggregated."""
 
@@ -107,20 +95,16 @@ def test_sardi_metrics():
     sardi_voltage_observer = system_metrics.SARDI_voltage()
     sardi_line_observer = system_metrics.SARDI_line()
     sardi_aggregated_observer = system_metrics.SARDI_aggregated()
-    sardi_xfmr_observer = system_metrics.SARDI_transformer()
     
     subject.attach(sardi_voltage_observer)
     subject.attach(sardi_line_observer)
-    subject.attach(sardi_xfmr_observer)
     subject.attach(sardi_aggregated_observer)
 
     manager.simulate(subject)
 
     sardi_voltage = list(sardi_voltage_observer.get_metric().values())[0]
     sardi_line = list(sardi_line_observer.get_metric().values())[0]
-    sardi_xfmr = list(sardi_xfmr_observer.get_metric().values())[0]
     sardi_aggregated = list(sardi_aggregated_observer.get_metric().values())[0]
 
     assert sardi_aggregated >= sardi_voltage
     assert sardi_aggregated >= sardi_line
-    assert sardi_aggregated >= sardi_xfmr

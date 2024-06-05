@@ -7,6 +7,7 @@ import datetime
 import pandas as pd
 from loguru import logger
 
+from emerge.constants import OPENDSS_MAX_ITERATION, OPENDSS_QSTS_MODE
 from emerge.simulator import opendss
 from emerge.metrics import observer
 
@@ -15,16 +16,19 @@ from emerge.metrics import observer
 class OpenDSSSimulationManager:
     """ Class for managing time series simulation using OpenDSS.
     
-    Attributes:
-        opendss_instance (opendss.OpenDSSSimulator): OpenDSS instance.
-        simulation_start_time (datetime.datetime): Datetime indicating
-            simulation start time
-        profile_start_time (datetime.datetime): Datetime indicating
-            profile start time
-        simulation_end_time (datetime.datetime): Datetime indicating
-            when the simulation finishes
-        simulation_timestep_min (float): Simulation time resolution
-            in minutes
+    Parameters
+    ----------
+    
+    opendss_instance :opendss.OpenDSSSimulator
+        OpenDSS simulator instance.
+    simulation_start_time: datetime.datetime 
+        Datetime indicating simulation start time.
+    profile_start_time :datetime.datetime
+        Datetime indicating profile start time.
+    simulation_end_time :datetime.datetime
+        Datetime indicating when the simulation finishes.
+    simulation_timestep_min : float 
+        Simulation time resolution in minutes.
     """
 
     def __init__(
@@ -42,13 +46,13 @@ class OpenDSSSimulationManager:
         self.simulation_timestep_min = simulation_timestep_min
         self.opendss_instance = opendss_instance
 
-        self.opendss_instance.set_mode(2)
+        self.opendss_instance.set_mode(OPENDSS_QSTS_MODE)
         self.opendss_instance.set_simulation_time(
             self.simulation_start_time,
             self.profile_start_time
         )
         self.opendss_instance.set_stepsize(self.simulation_timestep_min)
-        self.opendss_instance.set_max_iteration(1000)
+        self.opendss_instance.set_max_iteration(OPENDSS_MAX_ITERATION)
         self.current_time = self.simulation_start_time
         self.convergence_dict  = {"datetime": [], "convergence": []}
 
@@ -75,7 +79,7 @@ class OpenDSSSimulationManager:
             self.update_convergence_dict(self.current_time, convergence)
 
             if subject:
-                subject.notify(self.opendss_instance.dss_instance)
+                subject.notify()
             self.current_time += datetime.timedelta(minutes=self.simulation_timestep_min)
             if not convergence:
                 logger.error(f"Simulation finished for {self.current_time} >> {convergence}")

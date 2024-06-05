@@ -1,6 +1,6 @@
 """ Module for managing computation of system level metrics. """
 import networkx as nx
-import opendssdirect as dss
+import opendssdirect as odd
 import polars as pl
 
 from emerge.metrics import observer
@@ -46,10 +46,10 @@ class TimeseriesTotalLoss(observer.MetricObserver):
         self.active_power = []
         self.reactive_power = []
 
-    def compute(self, dss_instance:dss):
+    def compute(self):
         """ Refer to base class for more details. """
-        timestep = dss_instance.Solution.StepSize()/(3600)
-        sub_losses = dss_instance.Circuit.Losses()
+        timestep = odd.Solution.StepSize()/(3600)
+        sub_losses = odd.Circuit.Losses()
       
         self.active_power.append((sub_losses[0])*timestep/1000)
         self.reactive_power.append((sub_losses[1])*timestep/1000)
@@ -74,10 +74,10 @@ class TimeseriesTotalPower(observer.MetricObserver):
         self.active_power = []
         self.reactive_power = []
 
-    def compute(self, dss_instance:dss):
+    def compute(self):
         """ Refer to base class for more details. """
-        timestep = dss_instance.Solution.StepSize()/(3600)
-        sub_power = dss_instance.Circuit.TotalPower()
+        timestep = odd.Solution.StepSize()/(3600)
+        sub_power = odd.Circuit.TotalPower()
       
         self.active_power.append((-sub_power[0])*timestep/1000)
         self.reactive_power.append((-sub_power[1])*timestep/1000)
@@ -103,10 +103,10 @@ class TimeseriesTotalPVPower(observer.MetricObserver):
         self.reactive_power = []
 
     
-    def compute(self, dss_instance:dss):
+    def compute(self):
         """ Refer to base class for more details. """
-        timestep = dss_instance.Solution.StepSize()/(3600)
-        pv_df = powerflow_results.get_pv_power_dataframe(dss_instance)
+        timestep = odd.Solution.StepSize()/(3600)
+        pv_df = powerflow_results.get_pv_power_dataframe()
         if not pv_df.empty:
             pv_power = pv_df.sum().to_dict()
             self.active_power.append(pv_power['active_power']*timestep/1000)
@@ -132,10 +132,10 @@ class TotalLossEnergy(observer.MetricObserver):
 
         self.total_loss = {"active_power": 0, "reactive_power": 0}
 
-    def compute(self, dss_instance:dss):
+    def compute(self):
         """ Refer to base class for more details. """
-        timestep = dss_instance.Solution.StepSize()/(3600)
-        sub_losses = dss_instance.Circuit.Losses()
+        timestep = odd.Solution.StepSize()/(3600)
+        sub_losses = odd.Circuit.Losses()
       
         self.total_loss['active_power'] += (sub_losses[0])*timestep/1000000
         self.total_loss['reactive_power'] += (sub_losses[1])*timestep/1000000
@@ -157,10 +157,10 @@ class TotalEnergy(observer.MetricObserver):
         self.export_only = export_only
         self.import_only = import_only
 
-    def compute(self, dss_instance:dss):
+    def compute(self):
         """ Refer to base class for more details. """
-        timestep = dss_instance.Solution.StepSize()/(3600)
-        sub_power = dss_instance.Circuit.TotalPower()
+        timestep = odd.Solution.StepSize()/(3600)
+        sub_power = odd.Circuit.TotalPower()
 
         if self.export_only and not self.import_only and sub_power[0] <0:
             return
@@ -186,10 +186,10 @@ class TotalPVGeneration(observer.MetricObserver):
 
         self.pv_energy = {"active_power": 0, "reactive_power": 0}
 
-    def compute(self, dss_instance:dss):
+    def compute(self):
         """ Refer to base class for more details. """
-        timestep = dss_instance.Solution.StepSize()/(3600)
-        pv_df = powerflow_results.get_pv_power_dataframe(dss_instance)
+        timestep = odd.Solution.StepSize()/(3600)
+        pv_df = powerflow_results.get_pv_power_dataframe()
         if not pv_df.empty:
             pv_power = pv_df.sum().to_dict()
             self.pv_energy['active_power'] += pv_power['active_power']*timestep/1000
@@ -235,15 +235,15 @@ class SARDI_aggregated(observer.MetricObserver):
         self.sardi_aggregated = 0
         self.counter = 0
     
-    def _get_initial_dataset(self, dss_instance: dss):
+    def _get_initial_dataset(self):
         
         """ Get initial dataset for computing the metric. """
-        self.network = asset_metrics.networkx_from_opendss_model(dss_instance)
-        self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")
-        self.substation_bus = dss_util.get_source_node(dss_instance)
-        self.bus_load_flag_df = dss_util.get_bus_load_flag(dss_instance)
+        self.network = asset_metrics.networkx_from_opendss_model()
+        self.load_bus_map = dss_util.get_bus_load_dataframe().set_index("busname")
+        self.substation_bus = dss_util.get_source_node()
+        self.bus_load_flag_df = dss_util.get_bus_load_flag()
 
-    def compute(self, dss_instance:dss):
+    def compute(self):
         """ Refer to base class for more details. """
 
         # Get line loading dataframe
@@ -251,7 +251,7 @@ class SARDI_aggregated(observer.MetricObserver):
         voltage_df = powerflow_results.get_voltage_dataframe()
         
         if not self.counter:
-            self._get_initial_dataset(dss_instance)
+            self._get_initial_dataset()
 
       
         bus_with_voltage_violations = _get_voltage_impacted_buses(voltage_df,
@@ -267,7 +267,7 @@ class SARDI_aggregated(observer.MetricObserver):
             impacted_load_buses = set(impacted_buses[impacted_buses['is_load']==1].index)
             total_impacted_load_buses = impacted_load_buses.union(bus_with_voltage_violations)
 
-        total_load = dss_instance.Loads.Count()
+        total_load = odd.Loads.Count()
         affected_loads = list(set(self.load_bus_map.loc[list(total_impacted_load_buses)]["loadname"]))
         self.sardi_aggregated += len(affected_loads)*100/total_load
         self.counter +=1
@@ -305,22 +305,22 @@ class SARDI_line(observer.MetricObserver):
         self.sardi_line = 0
         self.counter = 0
     
-    def _get_initial_dataset(self, dss_instance: dss):
+    def _get_initial_dataset(self):
         
         """ Get initial dataset for computing the metric. """
-        self.network = asset_metrics.networkx_from_opendss_model(dss_instance)
-        self.substation_bus = dss_util.get_source_node(dss_instance)
-        self.bus_load_flag_df = dss_util.get_bus_load_flag(dss_instance)
-        self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")
+        self.network = asset_metrics.networkx_from_opendss_model()
+        self.substation_bus = dss_util.get_source_node()
+        self.bus_load_flag_df = dss_util.get_bus_load_flag()
+        self.load_bus_map = dss_util.get_bus_load_dataframe().set_index("busname")
 
-    def compute(self, dss_instance:dss):
+    def compute(self):
         """ Refer to base class for more details. """
 
         # Get line loading dataframe
         line_loading_df = powerflow_results.get_loading_dataframe()
         
         if not self.counter:
-            self._get_initial_dataset(dss_instance)
+            self._get_initial_dataset()
         
         overloaded_lines = line_loading_df.filter(
             pl.col('loading(pu)')> self.loading_limit.threshold)["branch"].to_list()
@@ -330,7 +330,7 @@ class SARDI_line(observer.MetricObserver):
             impacted_buses = self.bus_load_flag_df.loc[self.bus_load_flag_df.index.difference(connected_buses)]
             impacted_load_buses = impacted_buses[impacted_buses['is_load']==1].index
             affected_loads = set(list(self.load_bus_map.loc[impacted_load_buses]["loadname"]))
-            total_load = dss_instance.Loads.Count()
+            total_load = odd.Loads.Count()
             self.sardi_line += len(affected_loads)*100/total_load
 
         self.counter +=1
@@ -372,14 +372,14 @@ class SARDI_voltage(observer.MetricObserver):
         self.sardi_voltage = 0
         self.counter = 0
 
-    def compute(self, dss_instance:dss):
+    def compute(self):
         """ Refer to base class for more details. """
 
         # Get voltage dataframe and load bus mapper
         voltage_df = powerflow_results.get_voltage_dataframe()
         
         if not hasattr(self, 'load_bus_map'):
-            self.load_bus_map = dss_util.get_bus_load_dataframe(dss_instance).set_index("busname")
+            self.load_bus_map = dss_util.get_bus_load_dataframe().set_index("busname")
         
         # Filter voltages for load buses only 
         # and count the number of overvoltages and undervoltages

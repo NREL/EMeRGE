@@ -1,0 +1,5 @@
+
+
+# Opendss simulation modes
+OPENDSS_QSTS_MODE = 2
+OPENDSS_MAX_ITERATION = 1000

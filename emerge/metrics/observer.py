@@ -1,12 +1,10 @@
 """ Module for managing metric computation subscriber and publisher. """
 
 import abc
-import time
 import uuid
 from typing import Dict, List
 import polars
 
-from emerge.db import db_handler
 
 class MetricObserver(abc.ABC):
     """ Abstracte interace for metrics observers"""
@@ -50,23 +48,10 @@ class MetricsSubject:
             self.subscribers.pop(observer_index)
 
 
-    def notify(self, *args, **kwargs):
+    def notify(self):
         """ Method for notifying the observers. """
         for obs in self.subscribers:
-            obs.compute(*args, **kwargs)
-
-    
-def export_tinydb_json(observers: List[MetricObserver], json_path: str ):
-    """ Function for exporting metrics. """
-    
-    db_instance = db_handler.TinyDBHandler(json_path)
-    for observer in observers:
-        db_instance.db.insert(
-            {
-                "type": "metrics", 
-                "name": observer.__class__.__name__,
-                "data": observer.get_metric()
-            })
+            obs.compute()
 
 def export_csv(observers: List[MetricObserver], export_path):
     

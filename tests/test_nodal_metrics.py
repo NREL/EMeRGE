@@ -29,16 +29,3 @@ def test_llri_metric():
     manager.simulate(subject)
     llri = llri_observer.get_metric()
     assert llri
-
-def test_tlri_metric():
-    """ Function to test the computation of TLRI ."""
-
-    manager = simulation_manager_setup()
-    subject = observer.MetricsSubject()
-
-    tlri_observer = node_metrics.TLRI()
-    subject.attach(tlri_observer)
-
-    manager.simulate(subject)
-    tlri = tlri_observer.get_metric()
-    assert tlri

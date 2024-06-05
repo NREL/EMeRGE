@@ -2,23 +2,20 @@
 
 from typing import Dict, List
 
-import opendssdirect as dss
+import opendssdirect as odd
 import polars 
 
 from emerge.metrics import observer
 from emerge.simulator import powerflow_results
 
 
-def get_voltage_df(dss_instance:dss):
-    return polars.from_pandas(
-            powerflow_results.get_voltage_dataframe(
-            dss_instance
-        ))
+def get_voltage_df():
+    return powerflow_results.get_voltage_dataframe()
 
 class NodeVoltageTimeSeries(observer.MetricObserver):
     def __init__(self):
         self.metrics = {}
-    def compute(self, dss_instance:dss) -> None:
+    def compute(self) -> None:
         df = powerflow_results.get_voltage_dataframe()
         if not self.metrics:
             self.metrics = {busname: [] for busname in df.index}
@@ -42,8 +39,8 @@ class NodeVoltageStats(observer.MetricObserver):
             ]
         }
 
-    def compute(self, dss_instance:dss) -> None:
-        df = get_voltage_df(dss_instance)
+    def compute(self) -> None:
+        df = get_voltage_df()
         for metric in self.metrics:
             
             if '_' not in metric:
@@ -55,7 +52,7 @@ class NodeVoltageStats(observer.MetricObserver):
                     eval(f"df.{metric.split('_')[0]}({param})['voltage(pu)'][0]"))
     
 
-    def get_metric(self) -> Dict:
+    def get_metric(self) -> dict:
         return self.metrics
 
 class NodeVoltageBins(observer.MetricObserver):
@@ -76,9 +73,9 @@ class NodeVoltageBins(observer.MetricObserver):
         self.metrics[f'>{bins[-1]}'] = 0
 
 
-    def compute(self, dss_instance:dss) -> None:
-        df = get_voltage_df(dss_instance)
-        timestep = dss_instance.Solution.StepSize()/(3600)
+    def compute(self) -> None:
+        df = get_voltage_df()
+        timestep = odd.Solution.StepSize()/(3600)
         
         for metric in self.metrics:
             
@@ -100,6 +97,6 @@ class NodeVoltageBins(observer.MetricObserver):
                     (polars.col('voltage(pu)')>high_val)))*timestep
 
 
-    def get_metric(self) -> Dict:
+    def get_metric(self) -> dict:
         return self.metrics
 
