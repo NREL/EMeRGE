@@ -31,7 +31,7 @@ dependencies = [
     "click",
     "json5",
     "networkx",
-    "OpenDSSDirect.py",
+    "OpenDSSDirect.py==0.8.4",
     "pandas",
     "polars",
     "pyarrow",
@@ -68,9 +68,6 @@ line-length = 99
 indent-width = 4
 target-version = "py311"
 
-[tool.pytest.ini_options]
-pythonpath = "src"
-testpaths = ["tests"]
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
