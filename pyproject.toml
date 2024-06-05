@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "NREL-emerge"
-dynamic = ["version"]
+version = "2.0.0"
 description = "Emerging technologies Management and Risk evaluation on distributions Grid Evolution"
 readme = "README.md"
 license = ""
@@ -103,9 +103,6 @@ allow-direct-references = true
 "__init__.py" = ["E402", "F401"]
 "**/{tests,docs,tools}/*" = ["E402"]
 
-
-[tool.hatch.version]
-path = "emerge/__init__.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
