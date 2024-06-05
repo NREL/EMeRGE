@@ -4,12 +4,12 @@ from typing import Dict, List
 import numpy as np
 
 import polars
-import opendssdirect as dss
+import opendssdirect as odd
 
 from emerge.metrics import observer
 from emerge.simulator import powerflow_results
 
-def get_line_loading_df(dss_instance:dss):
+def get_line_loading_df():
     return powerflow_results.get_loading_dataframe()
 
 class OverloadedLines(observer.MetricObserver):
@@ -18,7 +18,7 @@ class OverloadedLines(observer.MetricObserver):
     def __init__(self):
         self.metrics = {}
 
-    def compute(self, dss_instance: dss) -> None:
+    def compute(self) -> None:
 
         df = powerflow_results.get_loading_dataframe()
         loading_dict = dict(zip(df["branch"], df["loading(pu)"]))
@@ -57,9 +57,9 @@ class LineLoadingBins(observer.MetricObserver):
         self.metrics[f'>{bins[-1]}'] = 0
 
 
-    def compute(self, dss_instance:dss) -> None:
-        df = get_line_loading_df(dss_instance)
-        timestep = dss_instance.Solution.StepSize()/(3600)
+    def compute(self) -> None:
+        df = get_line_loading_df()
+        timestep = odd.Solution.StepSize()/(3600)
         
         for metric in self.metrics:
             
@@ -97,8 +97,8 @@ class LineLoadingStats(observer.MetricObserver):
             ]
         }
 
-    def compute(self, dss_instance:dss) -> None:
-        df = get_line_loading_df(dss_instance)
+    def compute(self) -> None:
+        df = get_line_loading_df()
         for metric in self.metrics:
             
             if '_' not in metric:
