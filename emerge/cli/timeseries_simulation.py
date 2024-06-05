@@ -1,4 +1,4 @@
-"""This module implements cli function to 
+"""This module implements cli function to
 run powerflow on single opendss model."""
 
 from datetime import datetime
@@ -24,11 +24,16 @@ class TimeseriesSimulationInput(BaseModel):
     end_time: Annotated[datetime, Field(..., description="End time for simulation.")]
     profile_start_time: Annotated[datetime, Field(..., description="Profile start time.")]
     export_path: Annotated[Path, Field(..., description="Path to export metric results.")]
-    resolution_min: Annotated[float, Field(60, gt=0, description="Simulation time resolution in minute.")]
-    metrics: Annotated[SimulationMetrics, Field(SimulationMetrics(), description="Simulation metrics.")]
+    resolution_min: Annotated[
+        float, Field(60, gt=0, description="Simulation time resolution in minute.")
+    ]
+    metrics: Annotated[
+        SimulationMetrics, Field(SimulationMetrics(), description="Simulation metrics.")
+    ]
+
 
 def compute_timeseries_simulation_metrics(config: TimeseriesSimulationInput):
-    """ Function to compute metrics for timeseries simulation. """
+    """Function to compute metrics for timeseries simulation."""
 
     opendss_instance = OpenDSSSimulator(config.master_dss_file)
 
@@ -37,7 +42,7 @@ def compute_timeseries_simulation_metrics(config: TimeseriesSimulationInput):
         simulation_start_time=config.start_time,
         profile_start_time=config.profile_start_time,
         simulation_end_time=config.end_time,
-        simulation_timestep_min=config.resolution_min
+        simulation_timestep_min=config.resolution_min,
     )
     subject = observer.MetricsSubject()
     observers = get_observers.get_observers(config.metrics.model_dump())
@@ -46,9 +51,8 @@ def compute_timeseries_simulation_metrics(config: TimeseriesSimulationInput):
         subject.attach(observer_)
 
     manager.simulate(subject)
-    manager.export_convergence(config.export_path / 'convergence_report.csv')
+    manager.export_convergence(config.export_path / "convergence_report.csv")
     observer.export_csv(list(observers.values()), config.export_path)
-
 
 
 @click.command()
@@ -59,7 +63,7 @@ def compute_timeseries_simulation_metrics(config: TimeseriesSimulationInput):
 )
 def timeseries_simulation(config):
     """Function to run timeseries simulation."""
-    
+
     with open(config, "r", encoding="utf-8") as file:
         config_dict = json.load(file)
 

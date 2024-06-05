@@ -8,25 +8,26 @@ from emerge.metrics import system_metrics
 from emerge.metrics import node_voltage_stats
 from emerge.metrics import line_loading_stats
 
-    
+
 CLASS_MAPPER = {
-        'substation_power': system_metrics.TimeseriesTotalPower,
-        'total_pvpower': system_metrics.TimeseriesTotalPVPower,
-        'total_powerloss': system_metrics.TimeseriesTotalLoss,
-        'node_timeseries_voltage': node_voltage_stats.NodeVoltageTimeSeries,
-        'node_voltage_stats': node_voltage_stats.NodeVoltageStats,
-        'node_voltage_bins': node_voltage_stats.NodeVoltageBins,
-        'line_loading_stats': line_loading_stats.LineLoadingStats,
-        'line_loading_bins': line_loading_stats.LineLoadingBins,
-        'overloaded_lines': line_loading_stats.OverloadedLines,
-        'sardi_voltage': system_metrics.SARDI_voltage,
-        'sardi_line': system_metrics.SARDI_line,
-        'sardi_aggregated': system_metrics.SARDI_aggregated
-    }
+    "substation_power": system_metrics.TimeseriesTotalPower,
+    "total_pvpower": system_metrics.TimeseriesTotalPVPower,
+    "total_powerloss": system_metrics.TimeseriesTotalLoss,
+    "node_timeseries_voltage": node_voltage_stats.NodeVoltageTimeSeries,
+    "node_voltage_stats": node_voltage_stats.NodeVoltageStats,
+    "node_voltage_bins": node_voltage_stats.NodeVoltageBins,
+    "line_loading_stats": line_loading_stats.LineLoadingStats,
+    "line_loading_bins": line_loading_stats.LineLoadingBins,
+    "overloaded_lines": line_loading_stats.OverloadedLines,
+    "sardi_voltage": system_metrics.SARDI_voltage,
+    "sardi_line": system_metrics.SARDI_line,
+    "sardi_aggregated": system_metrics.SARDI_aggregated,
+}
 
 
 class MetricEntry(BaseModel):
     """Interface for defining metric entry."""
+
     export_type: Annotated[
         Literal["csv"],
         Field("csv", description="Export format type. Only csv is supported for now."),
@@ -37,6 +38,7 @@ class MetricEntry(BaseModel):
 
 class SimulationMetrics(BaseModel):
     """Interface for defining simulation metrics."""
+
     node_timeseries_voltage: Annotated[
         MetricEntry,
         Field(
@@ -168,14 +170,15 @@ class SimulationMetrics(BaseModel):
         ),
     ]
 
+
 def get_observers(metrics: dict) -> dict:
-    """ Function to return list of observers."""
+    """Function to return list of observers."""
     observers = {}
 
     for key, subdict in metrics.items():
         if key in CLASS_MAPPER:
-            if 'args' not in subdict:
+            if "args" not in subdict:
                 observers[key] = CLASS_MAPPER[key]()
             else:
-                observers[key] = CLASS_MAPPER[key](*subdict['args'])
+                observers[key] = CLASS_MAPPER[key](*subdict["args"])
     return observers

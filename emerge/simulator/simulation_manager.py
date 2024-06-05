@@ -1,4 +1,4 @@
-""" This module manages time series simulation for computing 
+""" This module manages time series simulation for computing
 time series metrics. """
 
 from typing import Union
@@ -12,22 +12,21 @@ from emerge.simulator import opendss
 from emerge.metrics import observer
 
 
-
 class OpenDSSSimulationManager:
-    """ Class for managing time series simulation using OpenDSS.
-    
+    """Class for managing time series simulation using OpenDSS.
+
     Parameters
     ----------
-    
+
     opendss_instance :opendss.OpenDSSSimulator
         OpenDSS simulator instance.
-    simulation_start_time: datetime.datetime 
+    simulation_start_time: datetime.datetime
         Datetime indicating simulation start time.
     profile_start_time :datetime.datetime
         Datetime indicating profile start time.
     simulation_end_time :datetime.datetime
         Datetime indicating when the simulation finishes.
-    simulation_timestep_min : float 
+    simulation_timestep_min : float
         Simulation time resolution in minutes.
     """
 
@@ -38,8 +37,7 @@ class OpenDSSSimulationManager:
         profile_start_time: datetime.datetime,
         simulation_end_time: datetime.datetime,
         simulation_timestep_min: float,
-    )-> None:
-        
+    ) -> None:
         self.simulation_start_time = simulation_start_time
         self.profile_start_time = profile_start_time
         self.simulation_end_time = simulation_end_time
@@ -48,33 +46,29 @@ class OpenDSSSimulationManager:
 
         self.opendss_instance.set_mode(OPENDSS_QSTS_MODE)
         self.opendss_instance.set_simulation_time(
-            self.simulation_start_time,
-            self.profile_start_time
+            self.simulation_start_time, self.profile_start_time
         )
         self.opendss_instance.set_stepsize(self.simulation_timestep_min)
         self.opendss_instance.set_max_iteration(OPENDSS_MAX_ITERATION)
         self.current_time = self.simulation_start_time
-        self.convergence_dict  = {"datetime": [], "convergence": []}
+        self.convergence_dict = {"datetime": [], "convergence": []}
 
-
-    def update_convergence_dict(self, current_time: datetime.datetime, convergence:bool):
-        """ Updates convergence dict. """
+    def update_convergence_dict(self, current_time: datetime.datetime, convergence: bool):
+        """Updates convergence dict."""
 
         if not convergence:
-            self.convergence_dict['datetime'].append(current_time)
-            self.convergence_dict['convergence'].append(convergence)
+            self.convergence_dict["datetime"].append(current_time)
+            self.convergence_dict["convergence"].append(convergence)
 
-    def export_convergence(self, export_path:str = './convergence.csv'):
-        """ Export the convergence."""
-        
+    def export_convergence(self, export_path: str = "./convergence.csv"):
+        """Export the convergence."""
+
         export_df = pd.DataFrame(self.convergence_dict)
         export_df.to_csv(export_path)
 
-
     def simulate(self, subject: Union[observer.MetricsSubject, None] = None):
-        """ Loops through all the simulation timesteps """
+        """Loops through all the simulation timesteps"""
         while self.current_time <= self.simulation_end_time:
-            
             convergence = self.opendss_instance.solve()
             self.update_convergence_dict(self.current_time, convergence)
 

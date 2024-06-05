@@ -12,14 +12,14 @@ from emerge.network import asset_metrics
 from emerge.scenarios import data_model
 
 
-def get_bus_distance_dataframe()-> pd.DataFrame:
+def get_bus_distance_dataframe() -> pd.DataFrame:
     """Get bus distance dataframe.
 
     Returns
     -------
-        pd.DataFrame: Dataframe containing distance from 
+        pd.DataFrame: Dataframe containing distance from
             substation indexed by busname.
-    
+
     """
 
     bus_distance_df = {"busname": [], "distance": []}
@@ -38,11 +38,10 @@ def get_bus_distance_dataframe()-> pd.DataFrame:
 
 
 def get_list_of_customer_models(
-        load_multiplier=1.0,
-        cust_type: str = "yearly"
-    ) -> List[data_model.CustomerModel]:
+    load_multiplier=1.0, cust_type: str = "yearly"
+) -> List[data_model.CustomerModel]:
     """Returns list of customer models from odd instance.
-    
+
     Args:
         odd (odd): Instance of OpenoddDirect
 
@@ -50,22 +49,19 @@ def get_list_of_customer_models(
         List[data_model.CustomerModel]: List of customer data
             model.
     """
-    cust_type_func = {
-        "class": odd.Loads.Class,
-        "yearly": odd.Loads.Yearly
-    }.get(cust_type)
+    cust_type_func = {"class": odd.Loads.Class, "yearly": odd.Loads.Yearly}.get(cust_type)
 
     flag = odd.Loads.First()
     bus_distance_df = get_bus_distance_dataframe()
     customer_model = []
     while flag:
-        busname = odd.CktElement.BusNames()[0].split('.')[0]
+        busname = odd.CktElement.BusNames()[0].split(".")[0]
         customer_model.append(
             data_model.CustomerModel(
                 name=odd.CktElement.Name(),
-                kw=odd.Loads.kW()*load_multiplier,
-                distance=bus_distance_df.loc[busname]['distance'],
-                cust_type=str(cust_type_func())
+                kw=odd.Loads.kW() * load_multiplier,
+                distance=bus_distance_df.loc[busname]["distance"],
+                cust_type=str(cust_type_func()),
             )
         )
 
@@ -74,9 +70,9 @@ def get_list_of_customer_models(
     return customer_model
 
 
-def get_load_mapper_objects(odd: odd)-> List[data_model.LoadMetadataModel]:
+def get_load_mapper_objects() -> List[data_model.LoadMetadataModel]:
     """Returns list of load mapper object models.
-    
+
     Args:
         odd (odd): Instance of OpenoddDirect
 
@@ -94,7 +90,7 @@ def get_load_mapper_objects(odd: odd)-> List[data_model.LoadMetadataModel]:
                 bus=odd.CktElement.BusNames()[0],
                 num_phase=odd.Loads.Phases(),
                 kv=odd.Loads.kV(),
-                yearly=odd.Loads.Yearly()
+                yearly=odd.Loads.Yearly(),
             )
         )
 
@@ -103,9 +99,9 @@ def get_load_mapper_objects(odd: odd)-> List[data_model.LoadMetadataModel]:
     return mapper_model
 
 
-def get_bus_load_dataframe()-> pd.DataFrame:
+def get_bus_load_dataframe() -> pd.DataFrame:
     """Bus to load mapping dataframe.
-    
+
     Returns
     -------
         pd.DataFrame: Dataframe containing mapping between load
@@ -115,7 +111,6 @@ def get_bus_load_dataframe()-> pd.DataFrame:
     flag = odd.Loads.First()
     load_bus_name_dict = {"busname": [], "loadname": []}
     while flag:
-
         load_name = odd.CktElement.Name()
         busname = odd.CktElement.BusNames()[0].split(".")[0]
         load_bus_name_dict["busname"].append(busname)
@@ -147,7 +142,7 @@ def get_bus_load_flag() -> pd.DataFrame:
     return pd.DataFrame(is_bus_load).set_index("busname")
 
 
-def get_line_customers() ->pd.DataFrame:
+def get_line_customers() -> pd.DataFrame:
     """Function to retrieve dataframe containing number
     of downward serving customers for all line segments.
 
@@ -176,7 +171,7 @@ def get_line_customers() ->pd.DataFrame:
     return pd.DataFrame(line_customers_df).set_index("linename")
 
 
-def get_transformer_customers()-> pd.DataFrame:
+def get_transformer_customers() -> pd.DataFrame:
     """Function to retrieve dataframe containing number
     of downward serving customers for all transformers.
 
@@ -201,21 +196,13 @@ def get_transformer_customers()-> pd.DataFrame:
         edge_to_be_removed = []
         for edge in network_copy.edges():
             edge_data = network_copy.get_edge_data(*edge)
-            if (
-                edge_data
-                and "name" in edge_data
-                and edge_data["name"] == xmfr_name
-            ):
+            if edge_data and "name" in edge_data and edge_data["name"] == xmfr_name:
                 edge_to_be_removed.append(edge)
 
         network_copy.remove_edges_from(edge_to_be_removed)
-        connected_buses = nx.node_connected_component(
-            network_copy, substation_bus
-        )
+        connected_buses = nx.node_connected_component(network_copy, substation_bus)
 
-        filtered_bus_df = bus_load_flag_df.loc[
-            bus_load_flag_df.index.difference(connected_buses)
-        ]
+        filtered_bus_df = bus_load_flag_df.loc[bus_load_flag_df.index.difference(connected_buses)]
 
         n_customers = filtered_bus_df.sum()["is_load"]
         xfmr_customers_df["transformername"].append(xmfr_name)
@@ -226,9 +213,8 @@ def get_transformer_customers()-> pd.DataFrame:
 
 
 def get_source_node() -> str:
-
     """Function to return source node for odd model.
-    
+
     Returns
     -------
         str: Name of the source node

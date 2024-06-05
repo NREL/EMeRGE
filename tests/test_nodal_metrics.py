@@ -4,8 +4,9 @@ from emerge.metrics import node_metrics
 from emerge.metrics import observer
 from conftest import simulation_manager_setup
 
+
 def test_nvri_metric():
-    """ Function to test the computation of NVRI ."""
+    """Function to test the computation of NVRI ."""
 
     manager = simulation_manager_setup()
     subject = observer.MetricsSubject()
@@ -17,8 +18,9 @@ def test_nvri_metric():
     nvri = nvri_observer.get_metric()
     assert nvri
 
+
 def test_llri_metric():
-    """ Function to test the computation of LLRI ."""
+    """Function to test the computation of LLRI ."""
 
     manager = simulation_manager_setup()
     subject = observer.MetricsSubject()

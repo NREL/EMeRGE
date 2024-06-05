@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "Emerging technologies Management and Risk evaluation on distributions Grid Evolution"
 readme = "README.md"
 license = ""
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [
     { name = "Kapil Duwadi", email = "kapil.duwadi@nrel.gov" },
 ]
@@ -25,42 +25,84 @@ keywords = [
 classifiers = [
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
     "click",
-    "dash",
-    "fastapi",
-    "jinja2",
     "json5",
-    "matplotlib",
     "networkx",
     "OpenDSSDirect.py",
     "pandas",
     "polars",
     "pyarrow",
     "pydantic",
-    "pytest",
     "pyyaml",
-    "tinydb",
-    "uvicorn[standard]",
     "sqlmodel",
     "psutil",
     "loguru"
 ]
 
 [project.optional-dependencies]
+dev = ["pre-commit", "pytest", "pytest-cov", "ruff"]
 doc = [
-    "mkdocs",
-    "mkdocstrings[python]",
-    "mkdocs-material",
+  "sphinx",
+  "pydata-sphinx-theme",
+  "myst-parser",
+  "autodoc_pydantic",
+  "sphinxcontrib-mermaid",
 ]
 
 [project.scripts]
 emerge = "emerge.cli.cli:cli"
 
 [project.urls]
-Homepage = "https://github.com/NREL/EMeRGE"
+Documentation = "https://github.com/NREL/EMeRGE#readme"
+Issues = "https://github.com/NREL/EMeRGE/issues"
+Source = "https://github.com/NREL/EMeRGE/grid-data-models"
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [".git", ".ruff_cache", ".venv", "_build", "build", "dist", "venv"]
+ignore-init-module-imports = true
+line-length = 99
+indent-width = 4
+target-version = "py311"
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+testpaths = ["tests"]
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+select = [
+  "C901", # McCabe complexity
+  "E4",   # Subset of pycodestyle (E)
+  "E7",
+  "E9",
+  "F",    # Pyflakes
+  "W",    # pycodestyle warnings
+]
+ignore = []
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+"**/{tests,docs,tools}/*" = ["E402"]
+
 
 [tool.hatch.version]
 path = "emerge/__init__.py"

@@ -1,7 +1,7 @@
-
+# Developing Scenarios
 You can develop scenarios in two ways.
 
-### Developing Scenario Using Python 
+## Developing Scenario Using Python 
 
 Here is an example snippet you can use to develop and write der deployment scenario.
 EMERGE only supports writing scenarios in OpenDSS file format.
@@ -72,7 +72,7 @@ You can pass different multipliers for different groups of loads. In this case w
 Battries are sized using peak multiplier sizing strategy howvever electric vehicles are  sized based on fixed sizing strategy. Notice you don't have to specify selection strategy for other ders that is because it is decided using primary der which is solar in this case. For electric vehicles we are only selecting load of type "0" and distributing level 1 charger (1.2 kW) for 20% of customers and level 2 charger (7.6 kW) for 80% of the customer. 
 
 
-### Developing scenarios using Command Line Interface 
+## Developing scenarios using Command Line Interface 
 
 To develop scenarios using command line interface you can use following command. 
 
@@ -156,7 +156,7 @@ Here is an example JSON.
 
 ```
 
-### Adding Scenario JSON Schema to VSCode.
+## Adding Scenario JSON Schema to VSCode.
 
 You can add JSON Schema to your code editor of choice to get auto completion and validation as you type
 out your JSON file. Use the command below to generate schema and add to VScode.
@@ -166,5 +166,3 @@ emerge create-schemas --vscode "true"
 ```
 This will create a `emerge_scenario_schema.json` file within `.vscode` directory. If the directory is not present then it will
 create one for you and dump the file. It will also update `json.schemas`` field in `settings.json` file. 
-
-![](images/json_auto_validate.png)
